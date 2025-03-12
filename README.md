@@ -1,6 +1,6 @@
 # Windows Scripts
 
-### I. PowerShell - Mounting and Dismount an ISO Image
+### I. PowerShell - Mounting and Dismounting an ISO Image
 
 <br>Purpose: creating a Virtual Drive from an ISO Image
 
