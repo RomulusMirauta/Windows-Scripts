@@ -13,7 +13,7 @@ Utility:
 How to use:
 1. request from the hospital a copy of the files / gain access to a device that has an optical disc drive, insert the CD/DVD and copy the entire content to a new folder, on a USB stick *(for example)*
 2. use a free software like PowerISO *(https://www.poweriso.com/download.htm)* in order to create an ISO image from the new folder utilized in the previous step
-3. download the script from here [PowerShell_MountDismount_DiskImageISO.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/PowerShell_MountDismount_DiskImageISO.ps1)
+3. download the script from here [PowerShell_MountDismount_DiskImageISO.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/PowerShell_MountDismount_DiskImageISO.ps1) *(right-click and choose "Save link as...")*
 4. copy/move the script to the same directory that contains the created ISO image
 5. execute the script by double-clicking on it
 
