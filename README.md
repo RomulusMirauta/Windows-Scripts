@@ -1,6 +1,6 @@
 # Windows Scripts
 
-### I. PowerShell(Dis)MountDiskImageISO.ps1
+### I. PowerShell_MountDismount_DiskImageISO.ps1
 
 Purpose: creating a Virtual Drive from an ISO file
 
