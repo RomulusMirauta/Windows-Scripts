@@ -79,3 +79,8 @@ git add .
 git commit -m "Updated code for Hearthstone Collection badge"
 git push origin adding-new-badges
 _GitHub Project - Create Pull Request - WAIT_
+
+
+
+# Remove a Commit - that has not been pushed
+git reset --soft HEAD~1
