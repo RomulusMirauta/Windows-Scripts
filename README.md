@@ -4,7 +4,7 @@
 
 <br>Purpose: creating a Virtual Drive from an ISO Image
 
-<br>Utility: 
+<br>Utility/solved issue: 
 - you receive physical copies (CDs/DVDs), from the hospital, containing X-Ray (Radiography) software and imagery
 - one of the devices (PC/laptop) that you/your doctor need(s) to use does not have an ODD (optical disc drive)
 - you or the doctor need to check the imagery
