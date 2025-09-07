@@ -58,7 +58,7 @@ git clone https://github.com/%Username%/%ProjectName%.git
 
 
 
-#Contributing To GitHub Projects - example
+# Contributing To GitHub Projects - example
 
 git clone https://github.com/RomulusMirauta/markdown-badges
 cd markdown-badges
@@ -83,4 +83,14 @@ _GitHub Project - Create Pull Request - WAIT_
 
 
 # Remove a Commit - that has not been pushed
+
 git reset --soft HEAD~1
+
+
+
+# Merge Branches (merge the preview branch into the main branch)
+
+git checkout main
+git pull origin main
+git merge preview
+git push origin main
