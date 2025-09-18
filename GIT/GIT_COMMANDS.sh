@@ -11,6 +11,7 @@ git init
 git add .
 git commit -m "first commit"
 git remote add origin https://github.com/RomulusMirauta/%REPO_NAME%
+# made a mistake? git remote rm origin
 git push --set-upstream origin main
 
 
