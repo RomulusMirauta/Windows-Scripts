@@ -130,6 +130,18 @@ git reflog
 ## Commits can be recovered!
 ## Act fast! Entries expire: 90 days for reachable commits, 30 days for unreachable (orphaned) commits
 
+git merge --abort
+# To cancel the last merge (before committing)
+
+git branch -m new-branch-name
+# Rename the branch you are currently on
+
+git remote show origin
+# Check remote 'origin' details and which branch is considered the remote default (HEAD branch)
+
+git branch --all      
+# Show all branches - local and remote
+
 
 
 # Remove last Commit - that has not been pushed
