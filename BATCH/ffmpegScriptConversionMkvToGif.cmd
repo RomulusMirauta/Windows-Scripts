@@ -72,11 +72,25 @@ if errorlevel 1 (
   	exit
 ) else (
 	echo.
-	echo Output file created
+	echo.
+	echo Output file created.
 	echo File conversion completed successfully!
+	echo.
+	echo Press any key to clean-up and exit...
+	echo.
+	pause >nul
+)
+
+rem cleaning-up the workspace by removing file: palette1.png
+if not exist "palette1.png" (
+	echo.
+    echo WARNING! Required file was not found: palette1.png
 	echo.
 	echo Press any key to exit...
 	echo.
 	pause >nul
+	exit
+) else (
+	del "palette1.png"
 	exit
 )
