@@ -14,8 +14,8 @@
 
 
 ## Table of Contents
-I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](powershell-script-for-creating-a-virtual-drive-from-an-iso-image-is-available-in-a-separate-repo-mount_isops1) <br>
-II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting MKVs to GIFs for GitHub REPOs DEMOs - using PowerShell](https://github.com/RomulusMirauta/Windows-Scripts/edit/main/README.md#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format)
+I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](#i-script-for-creating-a-virtual-drive-from-an-iso-image---using-powershell) <br>
+II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting MKVs to GIFs for GitHub REPOs DEMOs - using PowerShell](#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format)
 
 
 <br><br>
