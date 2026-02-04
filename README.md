@@ -148,13 +148,18 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 ### Demo video
-- [DEMOs/AutoClicker.mp4](DEMOs/AutoClicker.mp4)
 - [Game: The Great Hatch](https://store.steampowered.com/app/3745230/The_Great_Hatch/)
+- [DEMOs/AutoClicker1.mp4](DEMOs/AutoClicker1.mp4)
+- [DEMOs/AutoClicker2.m4v](DEMOs/AutoClicker2.m4v)
 
 <br>
 
-<video controls src="DEMOs/AutoClicker1.mp4"></video><br>
-<video controls src="DEMOs/AutoClicker2.m4v"></video><br>
+<video controls>
+    <source src="DEMOs/AutoClicker1.mp4" type="video/mp4">
+</video><br>
+<video controls>
+    <source src="DEMOs/AutoClicker2.m4v" type="video/mp4">
+</video><br>
 <!-- <video controls src="DEMOs/AutoClicker3.mp4"></video> -->
 
 
