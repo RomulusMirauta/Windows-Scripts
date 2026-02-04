@@ -1,4 +1,4 @@
-function Pause-ForUser {
+function Wait-ForUser {
     param(
         [string]$Message = 'Press Enter to continue'
     )
@@ -26,7 +26,7 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 $installExit = $proc.ExitCode
             } else {
                 Write-Host "No supported package manager found (winget or choco). Please install ffmpeg manually." -ForegroundColor Yellow
-                Pause-ForUser
+                Wait-ForUser
                 exit 1
             }
 
@@ -39,7 +39,7 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
             # Re-check availability
             if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 Write-Host "ffmpeg still not found after installation. You may need to restart your shell or manually add it to PATH." -ForegroundColor Yellow
-                Pause-ForUser
+                Wait-ForUser
                 exit 1
             } else {
                 Write-Host "ffmpeg installed successfully." -ForegroundColor Green
@@ -129,8 +129,8 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Output file created."
     Write-Host "File conversion completed successfully!" -ForegroundColor Green
     Write-Host ""
-    Pause-ForUser -Message 'Press Enter to clean-up and exit'
-	Write-Host ""
+    Wait-ForUser -Message 'Press Enter to clean-up and exit'
+    Write-Host ""
 }
 
 # Cleaning-up the workspace by removing file: palette
