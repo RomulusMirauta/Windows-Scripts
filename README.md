@@ -95,7 +95,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
    - ***OR***
    - Click on link and press key combination `CTRL + SHIFT + S`
 3. Move/copy the script to OBS output folder *(default = "C:\Users\<username>\Videos\OBS")*
-4. Rename desired file to input (full file name = "input1.mkv")
+4. Rename desired file to "input" (e.g. full file name: "input.mkv", "input.mp4")
 5. Run the script
    - From Windows/File Explorer - right-click and choose "Run with PowerShell"
    - From PowerShell CLI
