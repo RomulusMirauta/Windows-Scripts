@@ -50,6 +50,8 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 
 <br>
 
+### Workarounds:
+
 > [!IMPORTANT]
 > Workaround ***for step 5*** - if the script is not executing - follow these steps:
 > - right-click on it and choose Properties
@@ -60,7 +62,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 > [!NOTE]
-> If the aforementioned workaround does not work, you might need to change the Execution Policy for PowerShell, using this command:
+> If the aforementioned workaround did not solve the issue, you might need to change the Execution Policy for PowerShell, using this command:
 > > ```ps1
 > > Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 > > ```
@@ -114,6 +116,11 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
        - ```ps1
          powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif.ps1
          ```
+
+<br>
+
+> [!IMPORTANT]
+> If you're having issues running the script, please try this [***workaround***](#workarounds).
 
 <br>
 
