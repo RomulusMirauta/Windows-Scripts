@@ -56,9 +56,9 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
 }
 
 # File names
-$input = 'input1.mkv'
-$palette = 'palette1.png'
-$output = 'output1.gif'
+$input = 'input.mkv'
+$palette = 'palette.png'
+$output = 'output.gif'
 
 # Ensure file exists: input
 if (-not (Test-Path $input)) {
