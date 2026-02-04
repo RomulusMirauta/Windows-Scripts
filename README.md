@@ -15,7 +15,8 @@
 
 ## Table of Contents
 I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](#i-script-for-creating-a-virtual-drive-from-an-iso-image---using-powershell) <br>
-II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting MKVs to GIFs for GitHub REPOs DEMOs - using PowerShell](#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format)
+II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting MKVs to GIFs for GitHub REPOs DEMOs - using PowerShell](#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format) <br>
+III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using-autohotkey)
 
 
 <br><br>
@@ -112,3 +113,43 @@ II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting MKVs to GIFs for GitHub REPOs
 > - MKV = Matroska Video = a free, open-source multimedia container format that bundles video, audio, subtitle, and image tracks into a single file
 > - GIF = Graphics Interchange Format = a digital image file format supporting both static pictures and short, looping, silent animations, widely used on the internet for reactions and short clips
 > - The resulting GIF file might be bigger than the video file used as input.
+
+
+<br><br><br>
+
+
+## III. AutoClicker - using AutoHotkey
+
+<br>
+
+### Files
+- [AHK/AutoClicker.ahk](AHK/AutoClicker.ahk)
+- [AHK/AutoClicker-Compatibility.ahk](AHK/AutoClicker-Compatibility.ahk)
+- [AHK/AutoClicker.exe](AHK/AutoClicker.exe)
+- [AHK/AutoClicker-Compatibility.exe](AHK/AutoClicker-Compatibility.exe)
+
+<br>
+
+### Hotkeys
+- F1 = Start/stop clicking
+- F2 = Reload script
+- F4 = Exit script
+
+<br>
+
+### Notes
+- AutoClicker.ahk uses a fast single click loop.
+- AutoClicker-Compatibility.ahk uses explicit mouse down/up with a small delay for compatibility.
+
+<br>
+
+### Demo video
+- [DEMOs/AutoClicker.mp4](DEMOs/AutoClicker.mp4)
+- [Game: The Great Hatch](https://store.steampowered.com/app/3745230/The_Great_Hatch/)
+
+<video controls src="DEMOs/AutoClicker.mp4"></video>
+
+
+
+
+
