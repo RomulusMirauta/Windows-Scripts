@@ -63,9 +63,9 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 
 > [!NOTE]
 > If the aforementioned workaround did not solve the issue, you might need to change the Execution Policy for PowerShell, using this command:
-> > ```ps1
-> > Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-> > ```
+> ```ps1
+> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
 > - Sets the Execution Policy to Remotely Signed *(allows to run any scripts created locally, without a digital signature)* for Current Windows User *(currently logged-in user)* <br>
 > - Error, e.g. "npm : File C:\Program Files\nodejs\npm.ps1 cannot be loaded because running scripts is disabled on this system. For more information, see..."
 
