@@ -142,49 +142,15 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 > [!NOTE]
-> - **AutoClicker.ahk** uses a fast single click loop.
-> - **AutoClicker-Compatibility.ahk** uses explicit mouse down/up with a small delay for compatibility.
+> - **AutoClicker.ahk** uses a fast, single-click loop.
+> - **AutoClicker-Compatibility.ahk** uses explicit mouse up/down with a small delay for compatibility.
 
 <br>
 
 ### Demo video
 - [Game: The Great Hatch](https://store.steampowered.com/app/3745230/The_Great_Hatch/)
-- [DEMOs/AutoClicker1.mp4](DEMOs/AutoClicker1.mp4)
-- [DEMOs/AutoClicker2.m4v](DEMOs/AutoClicker2.m4v)
+- [DEMOs/AutoClicker.gif](DEMOs/AutoClicker.gif)
 
 <br>
 
-<video controls>
-    <source src="DEMOs/AutoClicker1.mp4" type="video/mp4">
-</video><br>
-<video controls>
-    <source src="DEMOs/AutoClicker2.m4v" type="video/mp4">
-</video><br>
-<!-- <video controls src="DEMOs/AutoClicker3.mp4"></video> -->
-
-
-
-
-https://github.com/RomulusMirauta/Windows-Scripts/assets/your-user-id/DEMOs/AutoClicker1.mp4
-
-https://github.com/RomulusMirauta/Windows-Scripts/assets/your-user-id/DEMOs/AutoClicker2.m4v
-
-
-
-
-
-
-### Demo Videos
-
-**AutoClicker Demo 1:**
-
-https://github.com/RomulusMirauta/Windows-Scripts/assets/AutoClicker1.mp4
-
-**AutoClicker Demo 2:**
-
-https://github.com/RomulusMirauta/Windows-Scripts/assets/AutoClicker2.m4v
-
-> [!TIP]
-> If videos don't play inline, [download AutoClicker1.mp4](DEMOs/AutoClicker1.mp4) or [download AutoClicker2.m4v](DEMOs/AutoClicker2.m4v) to view locally.
-
-
+![AutoClicker Demo](DEMOs/AutoClicker.gif)
