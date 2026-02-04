@@ -90,7 +90,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
    - Software = [OBS](https://obsproject.com/)
    - Recording format (output) = Matroska Video (.mkv)
    - Muting / not recording audio *(not needed)*
-2. Download the script: [ffmpegScriptConversionMkvToGif.ps1](https://github.com/RomulusMirauta/Windows-Scripts/blob/main/POWERSHELL/ffmpegScriptConversionMkvToGif.ps1)
+2. Download the script: [ffmpegScriptConversionVideoToGif.ps1](https://github.com/RomulusMirauta/Windows-Scripts/blob/main/POWERSHELL/ffmpegScriptConversionVideoToGif.ps1)
    - Right-click and choose "Save link as..."
    - ***OR***
    - Click on link and press key combination `CTRL + SHIFT + S`
@@ -101,7 +101,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
    - From PowerShell CLI
        - `cd` to script's location
        - ```ps1
-         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionMkvToGif.ps1
+         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif.ps1
          ```
 
 <br>
