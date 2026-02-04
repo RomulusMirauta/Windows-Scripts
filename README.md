@@ -165,3 +165,26 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 
 
 
+https://github.com/RomulusMirauta/Windows-Scripts/assets/your-user-id/DEMOs/AutoClicker1.mp4
+
+https://github.com/RomulusMirauta/Windows-Scripts/assets/your-user-id/DEMOs/AutoClicker2.m4v
+
+
+
+
+
+
+### Demo Videos
+
+**AutoClicker Demo 1:**
+
+https://github.com/RomulusMirauta/Windows-Scripts/assets/AutoClicker1.mp4
+
+**AutoClicker Demo 2:**
+
+https://github.com/RomulusMirauta/Windows-Scripts/assets/AutoClicker2.m4v
+
+> [!TIP]
+> If videos don't play inline, [download AutoClicker1.mp4](DEMOs/AutoClicker1.mp4) or [download AutoClicker2.m4v](DEMOs/AutoClicker2.m4v) to view locally.
+
+
