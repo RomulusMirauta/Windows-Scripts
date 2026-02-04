@@ -56,19 +56,29 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
 }
 
 # File names
-$input = 'input.mkv'
+$inputBase = 'input'
 $palette = 'palette.png'
 $output = 'output.gif'
 
-# Ensure file exists: input
-if (-not (Test-Path $input)) {
+# Ensure file exists: input (any extension)
+$inputMatches = Get-ChildItem -File -Filter "$inputBase.*" -ErrorAction SilentlyContinue
+if (-not $inputMatches -or $inputMatches.Count -eq 0) {
     Write-Host ""
-    Write-Host "WARNING! Required file was not found: $input" -ForegroundColor Yellow
+    Write-Host "WARNING! Required file was not found: $inputBase.*" -ForegroundColor Yellow
     Write-Host "Please add the aforementioned file and run the script again."
     Write-Host ""
     Pause-ForUser
     exit 1
 }
+if ($inputMatches.Count -gt 1) {
+    Write-Host ""
+    Write-Host "WARNING! Multiple input files found: $inputBase.*" -ForegroundColor Yellow
+    Write-Host "Please keep only one input file and run the script again."
+    Write-Host ""
+    Pause-ForUser
+    exit 1
+}
+$input = $inputMatches[0].FullName
 
 # Avoid overwriting an existing file: palette
 if (Test-Path $palette) {
