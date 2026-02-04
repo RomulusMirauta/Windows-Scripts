@@ -55,15 +55,15 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
 }
 
 # File names
-$sourceBase = 'input'
+$inputBase = 'input'
 $palette = 'palette.png'
 $output = 'output.gif'
 
 # Ensure file exists: input (any extension)
-$sourceMatches = Get-ChildItem -File -Filter "$sourceBase.*" -ErrorAction SilentlyContinue
+$sourceMatches = Get-ChildItem -File -Filter "$inputBase.*" -ErrorAction SilentlyContinue
 if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
     Write-Host ""
-    Write-Host "WARNING! Required file was not found: $sourceBase.*" -ForegroundColor Yellow
+    Write-Host "WARNING! Required file was not found: $inputBase.*" -ForegroundColor Yellow
     Write-Host "Please add the aforementioned file and run the script again."
     Write-Host ""
             Wait-ForUser
@@ -71,7 +71,7 @@ if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
 }
 if ($sourceMatches.Count -gt 1) {
     Write-Host ""
-    Write-Host "WARNING! Multiple input files found: $sourceBase.*" -ForegroundColor Yellow
+    Write-Host "WARNING! Multiple input files found: $inputBase.*" -ForegroundColor Yellow
     Write-Host "Please keep only one input file and run the script again."
     Write-Host ""
     Wait-ForUser
