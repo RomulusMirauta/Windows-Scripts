@@ -27,11 +27,11 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 
 <br>
 
-#### Purpose: Creating a Virtual Drive from an ISO Image
+### Purpose: Creating a Virtual Drive from an ISO Image
 
 <br>
 
-#### Utility/solved issue: 
+### Utility/solved issue: 
 - You receive physical copies (CDs/DVDs), from the hospital, containing X-Ray (Radiography) software and imagery
 - One of the devices (PC/laptop) that you/your doctor need(s) to use does not have an ODD (optical disc drive)
 - You or the doctor need to check the imagery
