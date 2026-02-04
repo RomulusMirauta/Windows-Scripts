@@ -1,4 +1,4 @@
-function Pause-ForUser {
+function Wait-ForUser {
     param(
         [string]$Message = 'Press Enter to continue'
     )
@@ -18,28 +18,27 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
             $installExit = 1
 
             if (Get-Command winget -ErrorAction SilentlyContinue) {
-                $args = 'install --id Gyan.FFmpeg -e --accept-package-agreements --accept-source-agreements'
-                $proc = Start-Process -FilePath 'winget' -ArgumentList $args -Wait -NoNewWindow -PassThru
+                $proc = Start-Process -FilePath 'winget' -ArgumentList 'install --id Gyan.FFmpeg -e --accept-package-agreements --accept-source-agreements' -Wait -NoNewWindow -PassThru
                 $installExit = $proc.ExitCode
             } elseif (Get-Command choco -ErrorAction SilentlyContinue) {
                 $proc = Start-Process -FilePath 'choco' -ArgumentList 'install ffmpeg -y' -Wait -NoNewWindow -PassThru
                 $installExit = $proc.ExitCode
             } else {
                 Write-Host "No supported package manager found (winget or choco). Please install ffmpeg manually." -ForegroundColor Yellow
-                Pause-ForUser
+                Wait-ForUser
                 exit 1
             }
 
             if ($installExit -ne 0) {
                 Write-Host "Installation failed (exit code $installExit). Please install ffmpeg manually." -ForegroundColor Red
-                Pause-ForUser
+                Wait-ForUser
                 exit 1
             }
 
             # Re-check availability
             if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 Write-Host "ffmpeg still not found after installation. You may need to restart your shell or manually add it to PATH." -ForegroundColor Yellow
-                Pause-ForUser
+                Wait-ForUser
                 exit 1
             } else {
                 Write-Host "ffmpeg installed successfully." -ForegroundColor Green
@@ -47,7 +46,7 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
             }
         } elseif ($choice -match '^[Nn]$') {
             Write-Host "ffmpeg is required. Exiting the script..." -ForegroundColor Yellow
-            Pause-ForUser
+            Wait-ForUser
             exit 1
         } else {
             Write-Host "Invalid input. Please enter 'y' or 'n'." -ForegroundColor Yellow
@@ -56,17 +55,26 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
 }
 
 # File names
-$input = 'input1.mkv'
-$palette = 'palette1.png'
-$output = 'output1.gif'
+$sourceBase = 'input'
+$palette = 'palette.png'
+$output = 'output.gif'
 
-# Ensure file exists: input
-if (-not (Test-Path $input)) {
+# Ensure file exists: input (any extension)
+$sourceMatches = Get-ChildItem -File -Filter "$sourceBase.*" -ErrorAction SilentlyContinue
+if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
     Write-Host ""
-    Write-Host "WARNING! Required file was not found: $input" -ForegroundColor Yellow
+    Write-Host "WARNING! Required file was not found: $sourceBase.*" -ForegroundColor Yellow
     Write-Host "Please add the aforementioned file and run the script again."
     Write-Host ""
-    Pause-ForUser
+            Wait-ForUser
+    exit 1
+}
+if ($sourceMatches.Count -gt 1) {
+    Write-Host ""
+    Write-Host "WARNING! Multiple input files found: $sourceBase.*" -ForegroundColor Yellow
+    Write-Host "Please keep only one input file and run the script again."
+    Write-Host ""
+    Wait-ForUser
     exit 1
 }
 
@@ -76,7 +84,7 @@ if (Test-Path $palette) {
     Write-Host "WARNING! File already found: $palette" -ForegroundColor Yellow
     Write-Host "Please [re]move the aforementioned file and run the script again."
     Write-Host ""
-    Pause-ForUser
+    Wait-ForUser
     exit 1
 }
 
@@ -86,18 +94,18 @@ if (Test-Path $output) {
     Write-Host "WARNING! File already found: $output" -ForegroundColor Yellow
     Write-Host "Please [re]move the aforementioned file and run the script again."
     Write-Host ""
-    Pause-ForUser
+    Wait-ForUser
     exit 1
 }
 
 # Generating palette
 Write-Host ""
 Write-Host "Generating palette file..."
-& ffmpeg -n -i $input -vf "fps=15,scale=640:-1:flags=lanczos,palettegen" $palette
+& ffmpeg -n -i $sourceMatches[0].FullName -vf "fps=15,scale=640:-1:flags=lanczos,palettegen" $palette
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "ERROR! Failed to generate file: $palette" -ForegroundColor Red
-    Pause-ForUser
+    Wait-ForUser
     exit 1
 } else {
     Write-Host ""
@@ -107,11 +115,11 @@ if ($LASTEXITCODE -ne 0) {
 
 # Generating GIF
 Write-Host "Generating GIF..."
-& ffmpeg -n -i $input -i $palette -filter_complex "fps=15,scale=640:-1:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
+& ffmpeg -n -i $sourceMatches[0].FullName -i $palette -filter_complex "fps=15,scale=640:-1:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "ERROR! Failed to generate file: $output" -ForegroundColor Red
-    Pause-ForUser
+    Wait-ForUser
     exit 1
 } else {
     Write-Host ""
@@ -119,8 +127,8 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Output file created."
     Write-Host "File conversion completed successfully!" -ForegroundColor Green
     Write-Host ""
-    Pause-ForUser -Message 'Press Enter to clean-up and exit'
-	Write-Host ""
+    Wait-ForUser -Message 'Press Enter to clean-up and exit'
+    Write-Host ""
 }
 
 # Cleaning-up the workspace by removing file: palette
