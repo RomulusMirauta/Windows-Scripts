@@ -142,8 +142,8 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 > [!NOTE]
-> - AutoClicker.ahk uses a fast single click loop.
-> - AutoClicker-Compatibility.ahk uses explicit mouse down/up with a small delay for compatibility.
+> - **AutoClicker.ahk** uses a fast single click loop.
+> - **AutoClicker-Compatibility.ahk** uses explicit mouse down/up with a small delay for compatibility.
 
 <br>
 
@@ -153,8 +153,9 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 
 <br>
 
-<video controls src="DEMOs/AutoClicker.mp4"></video>
-
+<video controls src="DEMOs/AutoClicker1.mp4"></video><br>
+<video controls src="DEMOs/AutoClicker2.m4v"></video><br>
+<!-- <video controls src="DEMOs/AutoClicker3.mp4"></video> -->
 
 
 
