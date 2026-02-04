@@ -131,21 +131,23 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 ### Hotkeys
-- F1 = Start/stop clicking
-- F2 = Reload script
+- F1 = Start clicking
+- F2 = Pause/Reload script
 - F4 = Exit script
 
 <br>
 
-### Notes
-- AutoClicker.ahk uses a fast single click loop.
-- AutoClicker-Compatibility.ahk uses explicit mouse down/up with a small delay for compatibility.
+> [!NOTE]
+> - AutoClicker.ahk uses a fast single click loop.
+> - AutoClicker-Compatibility.ahk uses explicit mouse down/up with a small delay for compatibility.
 
 <br>
 
 ### Demo video
 - [DEMOs/AutoClicker.mp4](DEMOs/AutoClicker.mp4)
 - [Game: The Great Hatch](https://store.steampowered.com/app/3745230/The_Great_Hatch/)
+
+<br>
 
 <video controls src="DEMOs/AutoClicker.mp4"></video>
 
