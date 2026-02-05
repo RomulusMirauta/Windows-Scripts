@@ -42,7 +42,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 ### Instructions:
 1. Request from the hospital a copy of the files / gain access to a device that has an optical disc drive, insert the CD/DVD and copy the entire content to a new folder, on a USB stick *(for example)*
 2. Use a free software like PowerISO *(https://www.poweriso.com/download.htm)* in order to create an ISO image from the new folder utilized in the previous step (ISO filename: "rad")
-3. Download the script from here [Mount_ISO.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/PowerShell_MountDismount_DiskImageISO/Mount_ISO.ps1) *(right-click and choose "Save link as...")*
+3. Download the script from here [Mount_ISO.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/PowerShell_MountDismount_DiskImageISO/Mount_ISO.ps1) *(right-click and choose "Save link as...")*
 4. Copy/move the script to the same directory that contains the created ISO image
 5. Execute the script by right-clicking on it and choosing "Run with PowerShell"
 6. Open Windows Explorer and go to This PC - alongside the Local Disk(s), a virtual drive will be shown
@@ -103,7 +103,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
    - Software = [OBS](https://obsproject.com/)
    - Recording format (output) = Matroska Video (.mkv)
    - Muting / not recording audio *(not needed)*
-2. Download the script: [ffmpegScriptConversionVideoToGif.ps1](https://github.com/RomulusMirauta/Windows-Scripts/blob/main/POWERSHELL/ffmpegScriptConversionVideoToGif.ps1)
+2. Download the script: [ffmpegScriptConversionVideoToGif_v1.3.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpegScriptConversionVideoToGif/ffmpegScriptConversionVideoToGif_v1.3.ps1)
    - Right-click and choose "Save link as..."
    - ***OR***
    - Click on link and press key combination `CTRL + SHIFT + S`
@@ -114,7 +114,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
    - From PowerShell CLI
        - `cd` to script's location
        - ```ps1
-         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif.ps1
+         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif_v1.3.ps1
          ```
 
 <br>
