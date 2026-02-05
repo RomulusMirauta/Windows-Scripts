@@ -133,6 +133,14 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 > - The resulting GIF file might be bigger than the video file used as input.
 > - Other video file formats that are supported as input by ffmpeg: MP4, WebM, MOV, AVI, WMV, FLV, MPEG/MPG, M4V, 3GP, TS/M2TS, OGV, VOB.
 
+<br>
+
+### Script updates/features list:
+- **v1.0** - Initial release, features only MKV to GIF conversion <br>
+- **v1.1** - Switched from BATCH to PowerShell because of limitations; features: ffmpeg presence or auto-installation, as well as more descriptive messages for the end-user <br>
+- **v1.2** - Features conversion from any video file format supported by ffmpeg to GIF format, removed necessity of script re-run after ffmpeg installation <br>
+- **v1.3** - Removed requirement that input file be named "input" <br>
+
 <br><br><br>
 
 
