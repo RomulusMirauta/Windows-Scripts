@@ -8,7 +8,7 @@ function Wait-ForUser {
 # Ensure ffmpeg exists
 if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
     Write-Host ""
-    Write-Host "ERROR! ffmpeg was not found!" -ForegroundColor Red
+    Write-Host "ERROR: ffmpeg was not found." -ForegroundColor Red
     Write-Host ""
 
     while ($true) {
@@ -35,6 +35,21 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 exit 1
             }
 
+            # Refresh PATH in this session (avoid restart after install)
+            try {
+                $machinePath = [Environment]::GetEnvironmentVariable('Path', 'Machine')
+                $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
+                if ($machinePath -and $userPath) {
+                    $env:Path = "$machinePath;$userPath"
+                } elseif ($machinePath) {
+                    $env:Path = $machinePath
+                } elseif ($userPath) {
+                    $env:Path = $userPath
+                }
+            } catch {
+                Write-Host "WARNING: Could not refresh PATH automatically. Please run the script again or manually add ffmpeg to PATH." -ForegroundColor Yellow
+            }
+
             # Re-check availability
             if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 Write-Host "ffmpeg still not found after installation. You may need to restart your shell or manually add it to PATH." -ForegroundColor Yellow
@@ -45,7 +60,7 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 break
             }
         } elseif ($choice -match '^[Nn]$') {
-            Write-Host "ffmpeg is required. Exiting the script..." -ForegroundColor Yellow
+            Write-Host "ffmpeg installation is mandatory. Exiting the script..." -ForegroundColor Yellow
             Wait-ForUser
             exit 1
         } else {
@@ -63,7 +78,7 @@ $output = 'output.gif'
 $sourceMatches = Get-ChildItem -File -Filter "$inputBase.*" -ErrorAction SilentlyContinue
 if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
     Write-Host ""
-    Write-Host "WARNING! Required file was not found: $inputBase.*" -ForegroundColor Yellow
+    Write-Host "WARNING: Required file was not found: $inputBase.*" -ForegroundColor Yellow
     Write-Host "Please add the aforementioned file and run the script again."
     Write-Host ""
             Wait-ForUser
@@ -71,7 +86,7 @@ if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
 }
 if ($sourceMatches.Count -gt 1) {
     Write-Host ""
-    Write-Host "WARNING! Multiple input files found: $inputBase.*" -ForegroundColor Yellow
+    Write-Host "WARNING: Multiple input files found: $inputBase.*" -ForegroundColor Yellow
     Write-Host "Please keep only one input file and run the script again."
     Write-Host ""
     Wait-ForUser
@@ -81,7 +96,7 @@ if ($sourceMatches.Count -gt 1) {
 # Avoid overwriting an existing file: palette
 if (Test-Path $palette) {
     Write-Host ""
-    Write-Host "WARNING! File already found: $palette" -ForegroundColor Yellow
+    Write-Host "WARNING: File already found: $palette" -ForegroundColor Yellow
     Write-Host "Please [re]move the aforementioned file and run the script again."
     Write-Host ""
     Wait-ForUser
@@ -91,7 +106,7 @@ if (Test-Path $palette) {
 # Avoid overwriting an existing file: output
 if (Test-Path $output) {
     Write-Host ""
-    Write-Host "WARNING! File already found: $output" -ForegroundColor Yellow
+    Write-Host "WARNING: File already found: $output" -ForegroundColor Yellow
     Write-Host "Please [re]move the aforementioned file and run the script again."
     Write-Host ""
     Wait-ForUser
@@ -104,7 +119,7 @@ Write-Host "Generating palette file..."
 & ffmpeg -n -i $sourceMatches[0].FullName -vf "fps=15,scale=640:-1:flags=lanczos,palettegen" $palette
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
-    Write-Host "ERROR! Failed to generate file: $palette" -ForegroundColor Red
+    Write-Host "ERROR: Failed to generate file: $palette" -ForegroundColor Red
     Wait-ForUser
     exit 1
 } else {
@@ -118,7 +133,7 @@ Write-Host "Generating GIF..."
 & ffmpeg -n -i $sourceMatches[0].FullName -i $palette -filter_complex "fps=15,scale=640:-1:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
-    Write-Host "ERROR! Failed to generate file: $output" -ForegroundColor Red
+    Write-Host "ERROR: Failed to generate file: $output" -ForegroundColor Red
     Wait-ForUser
     exit 1
 } else {
@@ -134,10 +149,10 @@ if ($LASTEXITCODE -ne 0) {
 # Cleaning-up the workspace by removing file: palette
 if (-not (Test-Path $palette)) {
     Write-Host ""
-    Write-Host "WARNING! File required for deletion was not found: $palette" -ForegroundColor Yellow
+    Write-Host "WARNING: File required for deletion was not found: $palette" -ForegroundColor Yellow
 	Write-Host "Exiting the script..."
     Write-Host ""
-    Pause-ForUser
+    Wait-ForUser
     exit 1
 } else {
     Remove-Item -Force $palette
