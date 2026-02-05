@@ -56,6 +56,7 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 Wait-ForUser
                 exit 1
             } else {
+                Write-Host ""
                 Write-Host "ffmpeg installed successfully." -ForegroundColor Green
                 break
             }
