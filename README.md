@@ -172,3 +172,9 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 ![AutoClicker Demo](DEMOs/AutoClicker.gif)
+
+![AutoClicker Demo](DEMOs/output1280.gif)
+
+![AutoClicker Demo](DEMOs/output1600.gif)
+
+![AutoClicker Demo](DEMOs/output1920.gif)
