@@ -120,6 +120,7 @@ $scaleOptions = @(
     @{ Label = '640px width (default)'; Value = '640:-1' },
     @{ Label = '960px width'; Value = '960:-1' },
     @{ Label = '1280px width'; Value = '1280:-1' },
+    @{ Label = '1440px width'; Value = '1440:-1' },
     @{ Label = '1600px width'; Value = '1600:-1' },
     @{ Label = '1920px width'; Value = '1920:-1' },
     @{ Label = 'Custom width'; Value = 'custom' }
