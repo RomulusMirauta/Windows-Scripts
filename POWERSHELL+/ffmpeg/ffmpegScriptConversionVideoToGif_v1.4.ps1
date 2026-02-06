@@ -109,9 +109,8 @@ if ($sourceMatches.Count -gt 1) {
 
 $inputFile = $sourceMatches[0]
 
-# File names (match input file base name)
+# File name (match input file base name)
 $palette = "$($inputFile.BaseName).png"
-$output = "$($inputFile.BaseName).gif"
 
 # Scaling options
 $scaleOptions = @(
@@ -158,10 +157,18 @@ if ($selectedScale -eq 'custom') {
             break
         } else {
             Write-Host ""
-            Write-Host "Invalid width. Please enter a positive, higher than zero integer." -ForegroundColor Yellow
+            Write-Host "Invalid width. Please enter a higher than zero integer." -ForegroundColor Yellow
         }
     }
 }
+
+# Output file name includes scale option info
+$scaleSuffix = if ($selectedScale -eq 'iw:-1') {
+    'orig'
+} else {
+    ($selectedScale -split ':')[0]
+}
+$output = "$($inputFile.BaseName)_${scaleSuffix}.gif"
 
 # Avoid overwriting an existing file: palette
 if (Test-Path $palette) {

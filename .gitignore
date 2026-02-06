@@ -1,2 +1,5 @@
 script.sh
 /.donotpush
+
+/POWERSHELL+/ffmpeg/*.mp4
+/POWERSHELL+/ffmpeg/*.gif
