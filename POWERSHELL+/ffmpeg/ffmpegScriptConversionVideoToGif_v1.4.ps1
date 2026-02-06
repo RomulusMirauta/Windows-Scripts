@@ -128,23 +128,23 @@ $scaleOptions = @(
 Write-Host ""
 Write-Host "Please select the scaling option:" -ForegroundColor Cyan
 for ($i = 0; $i -lt $scaleOptions.Count; $i++) {
-    Write-Host "[$($i + 1)] $($scaleOptions[$i].Label)"
+    Write-Host "[$i] $($scaleOptions[$i].Label)"
 }
 
 Write-Host ""
 
 $selectedScale = $null
 while (-not $selectedScale) {
-    $choice = Read-Host -Prompt "Enter choice (1-$($scaleOptions.Count))"
+    $choice = Read-Host -Prompt "Enter choice (0-$($scaleOptions.Count - 1))"
     Write-Host ""
     if ($choice -match '^[0-9]+$') {
-        $index = [int]$choice - 1
+        $index = [int]$choice
         if ($index -ge 0 -and $index -lt $scaleOptions.Count) {
             $selectedScale = $scaleOptions[$index].Value
         }
     }
     if (-not $selectedScale) {
-        Write-Host "Invalid input. Please enter a number between 1 and $($scaleOptions.Count)." -ForegroundColor Yellow
+        Write-Host "Invalid input. Please enter a number between 0 and $($scaleOptions.Count - 1)." -ForegroundColor Yellow
     }
 }
 
