@@ -130,6 +130,12 @@ $trimSeconds = $null
 while (-not $trimSeconds) {
     Write-Host ""
 
+    if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
+        Write-Host "ERROR: ffprobe was not found in PATH. Please re-install ffmpeg (which includes ffprobe) or manually add ffprobe to PATH." -ForegroundColor Red
+        Wait-ForUser
+        exit 1
+    }
+
     $durationRaw = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputFile.FullName
     $duration = [double]$durationRaw
     Write-Host "Current video duration: $([math]::Round($duration, 2)) seconds"
@@ -144,15 +150,6 @@ while (-not $trimSeconds) {
 	}
 }
 
-$trimLabel = if ($trimChoice -eq '0') { 'beginning' } else { 'end' }
-$output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSeconds}$($inputFile.Extension)"
-
-if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
-    Write-Host "ERROR: ffprobe was not found in PATH. Please re-install ffmpeg (which includes ffprobe) or manually add ffprobe to PATH." -ForegroundColor Red
-    Wait-ForUser
-    exit 1
-}
-
  while ($trimSeconds -ge $duration) {
     Write-Host ""
      Write-Host "ERROR: Trim seconds must be less than video duration ($([math]::Round($duration, 2))s)." -ForegroundColor Red
@@ -164,6 +161,9 @@ if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
         Write-Host "Invalid input. Please enter a higher than zero integer." -ForegroundColor Yellow
      }
  }
+
+$trimLabel = if ($trimChoice -eq '0') { 'beginning' } else { 'end' }
+$output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSeconds}$($inputFile.Extension)"
 
 # Perform trim
 if ($trimChoice -eq '0') {
