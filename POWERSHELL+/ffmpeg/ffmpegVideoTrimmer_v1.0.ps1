@@ -190,4 +190,3 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "" 
 Write-Host "Output created: $output" -ForegroundColor Green
 Write-Host ""
-# Wait-ForUser
