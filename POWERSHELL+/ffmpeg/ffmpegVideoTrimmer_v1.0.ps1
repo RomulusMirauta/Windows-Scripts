@@ -145,7 +145,7 @@ $trimLabel = if ($trimChoice -eq '0') { 'beginning' } else { 'end' }
 $output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSeconds}$($inputFile.Extension)"
 
 if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
-    Write-Host "ERROR: ffprobe was not found in PATH." -ForegroundColor Red
+    Write-Host "ERROR: ffprobe was not found in PATH. Please re-install ffmpeg (which includes ffprobe) or manually add ffprobe to PATH." -ForegroundColor Red
     Wait-ForUser
     exit 1
 }
