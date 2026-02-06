@@ -104,7 +104,6 @@ if ($sourceMatches.Count -gt 1) {
 }
 
 $inputFile = $sourceMatches[0]
-$output = "${($inputFile.BaseName)}_trimmed$($inputFile.Extension)"
 
 # Choose trim position
 Write-Host ""
@@ -135,6 +134,9 @@ while (-not $trimSeconds) {
 		Write-Host "Invalid input. Please enter a higher than zero integer." -ForegroundColor Yellow
 	}
 }
+
+$trimLabel = if ($trimChoice -eq '0') { 'beginning' } else { 'end' }
+$output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSeconds}$($inputFile.Extension)"
 
 # Perform trim
 if ($trimChoice -eq '0') {
