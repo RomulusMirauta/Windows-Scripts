@@ -155,8 +155,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Output file created."
     Write-Host "File conversion completed successfully." -ForegroundColor Green
     Write-Host ""
-    Wait-ForUser -Message 'Press Enter to clean-up and exit'
-    Write-Host ""
+    Write-Host "Script will clean-up and exit." -ForegroundColor Green
 }
 
 # Cleaning-up the workspace by removing file: palette

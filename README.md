@@ -139,7 +139,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 - **v1.0** - Initial release, features only MKV to GIF conversion <br>
 - **v1.1** - Switched from BATCH to PowerShell because of limitations; features: ffmpeg presence or auto-installation, as well as more descriptive messages for the end-user <br>
 - **v1.2** - Features conversion from any video file format supported by ffmpeg to GIF format, removed necessity of script re-run after ffmpeg installation <br>
-- **v1.3** - Removed requirement that input file be named "input" <br>
+- **v1.3** - Removed requirement that input file be named "input", removed annoying final user input after successful file conversion <br>
 
 <br><br><br>
 
