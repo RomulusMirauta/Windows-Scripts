@@ -126,8 +126,14 @@ while (-not $trimChoice) {
 $trimSeconds = $null
 while (-not $trimSeconds) {
     Write-Host ""
-    Write-Host ""
+
+    $durationRaw = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputFile.FullName
+    $duration = [double]$durationRaw
+    Write-Host "" 
+    Write-Host "Current video duration: $([math]::Round($duration, 2)) seconds"
+
 	$secondsInput = Read-Host -Prompt "Enter number of seconds to trim (e.g., 5)"
+
 	if ($secondsInput -match '^[1-9][0-9]*$') {
 		$trimSeconds = [int]$secondsInput
 	} else {
@@ -137,6 +143,19 @@ while (-not $trimSeconds) {
 
 $trimLabel = if ($trimChoice -eq '0') { 'beginning' } else { 'end' }
 $output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSeconds}$($inputFile.Extension)"
+
+if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
+    Write-Host "ERROR: ffprobe was not found in PATH." -ForegroundColor Red
+    Wait-ForUser
+    exit 1
+}
+
+if ($trimSeconds -ge $duration) {
+    Write-Host ""
+    Write-Host "ERROR: Trim seconds must be less than video duration ($([math]::Round($duration, 2))s)." -ForegroundColor Red
+    Wait-ForUser
+    exit 1
+}
 
 # Perform trim
 if ($trimChoice -eq '0') {
@@ -148,19 +167,7 @@ if ($trimChoice -eq '0') {
     Write-Host ""
     Write-Host "Trimming $trimSeconds seconds from the end..."
     Write-Host ""
-    if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
-        Write-Host "ERROR: ffprobe was not found in PATH." -ForegroundColor Red
-        Wait-ForUser
-        exit 1
-    }
-    $durationRaw = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputFile.FullName
-    $duration = [double]$durationRaw
     $targetDuration = $duration - $trimSeconds
-    if ($targetDuration -le 0) {
-        Write-Host "ERROR: Trim seconds must be less than video duration ($([math]::Round($duration, 2))s)." -ForegroundColor Red
-        Wait-ForUser
-        exit 1
-    }
     & ffmpeg -n -t $targetDuration -i $inputFile.FullName -c copy $output
 }
 
