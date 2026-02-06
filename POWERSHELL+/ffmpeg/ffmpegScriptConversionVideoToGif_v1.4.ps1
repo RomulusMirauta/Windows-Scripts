@@ -126,6 +126,14 @@ $scaleOptions = @(
     @{ Label = 'Custom width'; Value = 'custom' }
 )
 
+$defaultScaleIndex = 0
+for ($i = 0; $i -lt $scaleOptions.Count; $i++) {
+    if ($scaleOptions[$i].Label -match '\(default\)') {
+        $defaultScaleIndex = $i
+        break
+    }
+}
+
 Write-Host ""
 Write-Host "Please select the scaling option:" -ForegroundColor Cyan
 for ($i = 0; $i -lt $scaleOptions.Count; $i++) {
@@ -136,16 +144,19 @@ Write-Host ""
 
 $selectedScale = $null
 while (-not $selectedScale) {
-    $choice = Read-Host -Prompt "Enter choice (0-$($scaleOptions.Count - 1))"
+    $choice = Read-Host -Prompt "Enter choice (0-$($scaleOptions.Count - 1)) or press Enter for default [$defaultScaleIndex]"
     Write-Host ""
-    if ($choice -match '^[0-9]+$') {
+    if ([string]::IsNullOrWhiteSpace($choice)) {
+        $index = $defaultScaleIndex
+        $selectedScale = $scaleOptions[$index].Value
+    } elseif ($choice -match '^[0-9]+$') {
         $index = [int]$choice
         if ($index -ge 0 -and $index -lt $scaleOptions.Count) {
             $selectedScale = $scaleOptions[$index].Value
         }
     }
     if (-not $selectedScale) {
-        Write-Host "Invalid input. Please enter a number between 0 and $($scaleOptions.Count - 1)." -ForegroundColor Yellow
+        Write-Host "Invalid input. Please enter a number between 0 and $($scaleOptions.Count - 1)" -ForegroundColor Yellow
     }
 }
 
