@@ -151,12 +151,14 @@ while (-not $selectedScale) {
 
 if ($selectedScale -eq 'custom') {
     while ($true) {
+        Write-Host ""
         $customWidth = Read-Host -Prompt "Enter custom width in pixels (e.g., 720)"
         if ($customWidth -match '^[1-9][0-9]*$') {
             $selectedScale = "${customWidth}:-1"
             break
         } else {
-            Write-Host "Invalid width. Please enter a positive integer." -ForegroundColor Yellow
+            Write-Host ""
+            Write-Host "Invalid width. Please enter a positive, higher than zero integer." -ForegroundColor Yellow
         }
     }
 }
@@ -184,7 +186,7 @@ if (Test-Path $output) {
 # Generating palette
 Write-Host ""
 Write-Host "Generating palette file..."
-& ffmpeg -n -i $inputFile.FullName -vf "fps=15,scale=$selectedScale:flags=lanczos,palettegen" $palette
+& ffmpeg -n -i $inputFile.FullName -vf "fps=15,scale=${selectedScale}:flags=lanczos,palettegen" $palette
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "ERROR: Failed to generate file: $palette" -ForegroundColor Red
@@ -198,7 +200,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Generating GIF
 Write-Host "Generating GIF..."
-& ffmpeg -n -i $inputFile.FullName -i $palette -filter_complex "fps=15,scale=$selectedScale:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
+& ffmpeg -n -i $inputFile.FullName -i $palette -filter_complex "fps=15,scale=${selectedScale}:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "ERROR: Failed to generate file: $output" -ForegroundColor Red

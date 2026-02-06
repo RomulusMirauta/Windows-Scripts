@@ -103,19 +103,20 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
    - Software = [OBS](https://obsproject.com/)
    - Recording format (output) = Matroska Video (.mkv)
    - Muting / not recording audio *(not needed)*
-2. Download the script: [ffmpegScriptConversionVideoToGif_v1.3.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpegScriptConversionVideoToGif/ffmpegScriptConversionVideoToGif_v1.3.ps1)
+2. Download the script: [ffmpegScriptConversionVideoToGif_v1.4.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpeg/ffmpegScriptConversionVideoToGif_v1.4.ps1)
    - Right-click and choose "Save link as..."
    - ***OR***
    - Click on link and press key combination `CTRL + SHIFT + S`
 3. Move/copy the script to OBS output folder *(default = "C:\Users\<username>\Videos\OBS")*
-4. Rename desired file to "input" (e.g. full file name: "input.mkv", "input.mp4")
-5. Run the script
+4. Create a new folder and copy/move the recorded video file to it
+6. Run the script
    - From Windows/File Explorer - right-click and choose "Run with PowerShell"
    - From PowerShell CLI
        - `cd` to script's location
        - ```ps1
-         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif_v1.3.ps1
+         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif_v1.4.ps1
          ```
+7. Follow the instructions shown in the PowerShell window
 
 <br>
 
@@ -140,7 +141,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 - **v1.1** - Switched from BATCH to PowerShell because of limitations; features: ffmpeg presence or auto-installation, as well as more descriptive messages for the end-user <br>
 - **v1.2** - Features conversion from any video file format supported by ffmpeg to GIF format, removed necessity of script re-run after ffmpeg installation <br>
 - **v1.3** - Removed requirement that input file be named "input", removed annoying final user input after successful file conversion <br>
-- **v1.4** - Adds user input for selecting between different scaling options *(output file resolution)* <br>
+- **v1.4** - Features user input for selecting between different scaling options *(output file resolution)* <br>
 
 <br>
 
