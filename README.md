@@ -149,6 +149,7 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 > - `scale=1920` - only sets the output width to 1920 pixels.
 > - The height will be computed automatically to whatever keeps the original aspect ratio (because of parameter `-1`). 
 > - Output file resolution will be 1920×1080 **only** if the source file resolution is 16:9.
+> - If the source file resolution is less than 1920 pixels in width, the output file will be upscaled, which might lead to a **decrease in quality**. In this case, you can choose a smaller width or use the option to set a **custom width** that is smaller than the source file width.
 
 
 
