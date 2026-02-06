@@ -59,10 +59,12 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                 Wait-ForUser
                 exit 1
             } else {
+                Write-Host ""
                 Write-Host "ffmpeg installed successfully." -ForegroundColor Green
                 break
             }
         } elseif ($choice -match '^[Nn]$') {
+            Write-Host ""
             Write-Host "ffmpeg installation is mandatory. Exiting the script..." -ForegroundColor Yellow
             Wait-ForUser
             exit 1
@@ -118,6 +120,7 @@ while (-not $trimChoice) {
 	if ($choice -eq '0' -or $choice -eq '1') {
 		$trimChoice = $choice
 	} else {
+        Write-Host ""
 		Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow
 	}
 }
@@ -129,7 +132,6 @@ while (-not $trimSeconds) {
 
     $durationRaw = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputFile.FullName
     $duration = [double]$durationRaw
-    Write-Host "" 
     Write-Host "Current video duration: $([math]::Round($duration, 2)) seconds"
 
 	$secondsInput = Read-Host -Prompt "Enter number of seconds to trim (e.g., 5)"
@@ -137,6 +139,7 @@ while (-not $trimSeconds) {
 	if ($secondsInput -match '^[1-9][0-9]*$') {
 		$trimSeconds = [int]$secondsInput
 	} else {
+        Write-Host ""
 		Write-Host "Invalid input. Please enter a higher than zero integer." -ForegroundColor Yellow
 	}
 }
@@ -186,5 +189,5 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "" 
 Write-Host "Output created: $output" -ForegroundColor Green
-Write-Host "" 
+Write-Host ""
 # Wait-ForUser
