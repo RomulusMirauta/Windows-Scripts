@@ -140,8 +140,19 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 - **v1.1** - Switched from BATCH to PowerShell because of limitations; features: ffmpeg presence or auto-installation, as well as more descriptive messages for the end-user <br>
 - **v1.2** - Features conversion from any video file format supported by ffmpeg to GIF format, removed necessity of script re-run after ffmpeg installation <br>
 - **v1.3** - Removed requirement that input file be named "input", removed annoying final user input after successful file conversion <br>
+- **v1.4** - Adds user input for selecting between different scaling options *(output file resolution)* <br>
+
+<br>
+
+> [!NOTE]
+> - `scale=1920` - only sets the output width to 1920 pixels.
+> - The height will be computed automatically to whatever keeps the original aspect ratio (because of parameter `-1`). 
+> - Output file resolution will be 1920×1080 **only** if the source file resolution is 16:9.
+
+
 
 <br><br><br>
+
 
 
 ## III. AutoClicker - using AutoHotkey
