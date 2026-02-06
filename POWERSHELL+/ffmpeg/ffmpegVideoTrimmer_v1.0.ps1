@@ -150,12 +150,17 @@ if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-if ($trimSeconds -ge $duration) {
+ while ($trimSeconds -ge $duration) {
     Write-Host ""
-    Write-Host "ERROR: Trim seconds must be less than video duration ($([math]::Round($duration, 2))s)." -ForegroundColor Red
-    Wait-ForUser
-    exit 1
-}
+     Write-Host "ERROR: Trim seconds must be less than video duration ($([math]::Round($duration, 2))s)." -ForegroundColor Red
+     $secondsInput = Read-Host -Prompt "Enter a valid number of seconds to trim"
+     if ($secondsInput -match '^[1-9][0-9]*$') {
+         $trimSeconds = [int]$secondsInput
+     } else {
+        Write-Host ""
+        Write-Host "Invalid input. Please enter a higher than zero integer." -ForegroundColor Yellow
+     }
+ }
 
 # Perform trim
 if ($trimChoice -eq '0') {
