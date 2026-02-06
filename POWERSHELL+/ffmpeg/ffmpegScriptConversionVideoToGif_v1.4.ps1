@@ -212,6 +212,9 @@ Write-Host "Generating GIF..."
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     Write-Host "ERROR: Failed to generate file: $output" -ForegroundColor Red
+    if (Test-Path $palette) {
+        Remove-Item -Force $palette
+    }
     Wait-ForUser
     exit 1
 } else {
