@@ -4,6 +4,18 @@
 
 $UserOrOrgName = ""
 
+# If no user/org specified, get the currently authenticated GitHub user
+if ([string]::IsNullOrWhiteSpace($UserOrOrgName)) {
+    try {
+        $UserOrOrgName = gh api user --jq .login
+        Write-Host "Detected GitHub user: $UserOrOrgName"
+    }
+    catch {
+        Write-Error "Could not determine GitHub user. Please set `"$UserOrOrgName`" explicitly. $_"
+        return
+    }
+}
+
 # Create backup folder name with current date (dd-MM-yyy)
 $Date = Get-Date -Format 'dd-MM-yyy'
 $BackupFolderName = ("!BackupGitHubAllRepos", $UserOrOrgName, $Date) -join "_"
