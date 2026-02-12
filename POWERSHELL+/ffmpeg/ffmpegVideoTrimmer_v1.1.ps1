@@ -190,7 +190,7 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
     $duration = [double]$durationRaw
     Write-Host "Current video duration: $([math]::Round($duration, 2)) seconds"
 
-    while ($trimSecondsStart -eq $null) {
+    while ($null -eq $trimSecondsStart) {
         $startInput = Read-Host -Prompt "Enter number of seconds to trim from the beginning (e.g., 5)"
         if ($startInput -match '^[0-9]+$') {
             $trimSecondsStart = [int]$startInput
@@ -199,7 +199,7 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
             Write-Host "Invalid input. Please enter a zero or positive integer." -ForegroundColor Yellow
         }
     }
-    while ($trimSecondsEnd -eq $null) {
+    while ($null -eq $trimSecondsEnd) {
         $endInput = Read-Host -Prompt "Enter number of seconds to trim from the end (e.g., 5)"
         if ($endInput -match '^[0-9]+$') {
             $trimSecondsEnd = [int]$endInput
@@ -213,7 +213,7 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
         Write-Host "ERROR: The sum of trim seconds must be less than video duration ($([math]::Round($duration, 2))s)." -ForegroundColor Red
         $trimSecondsStart = $null
         $trimSecondsEnd = $null
-        while ($trimSecondsStart -eq $null) {
+        while ($null -eq $trimSecondsStart) {
             $startInput = Read-Host -Prompt "Enter number of seconds to trim from the beginning (e.g., 5)"
             if ($startInput -match '^[0-9]+$') {
                 $trimSecondsStart = [int]$startInput
@@ -222,7 +222,7 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
                 Write-Host "Invalid input. Please enter a zero or positive integer." -ForegroundColor Yellow
             }
         }
-        while ($trimSecondsEnd -eq $null) {
+        while ($null -eq $trimSecondsEnd) {
             $endInput = Read-Host -Prompt "Enter number of seconds to trim from the end (e.g., 5)"
             if ($endInput -match '^[0-9]+$') {
                 $trimSecondsEnd = [int]$endInput
