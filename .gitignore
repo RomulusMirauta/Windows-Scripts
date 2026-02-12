@@ -6,6 +6,7 @@ script.sh
 
 /tools
 /demo_trimmed
+*.mkv
 *.mp4
 *.gif
 
