@@ -237,13 +237,43 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
 $trimLabel = if ($trimChoice -eq '0') { 'beginning' } elseif ($trimChoice -eq '1') { 'end' } else { 'both' }
 
 # Perform trim
+function Resolve-OutputPathAndSwitch {
+    param(
+        [string]$OutputDir,
+        [string]$Filename
+    )
+    $out = Join-Path -Path $OutputDir -ChildPath $Filename
+    if (Test-Path -Path $out) {
+        Write-Host ""
+        $ans = Read-Host -Prompt "Output already exists: $out. Overwrite? (y/n)"
+        if ($ans -match '^[Yy]$') {
+            return @{ Output = $out; Switch = '-y' }
+        } else {
+            $base = [System.IO.Path]::GetFileNameWithoutExtension($Filename)
+            $ext = [System.IO.Path]::GetExtension($Filename)
+            $i = 1
+            do {
+                $newName = "${base}_$i$ext"
+                $newOut = Join-Path -Path $OutputDir -ChildPath $newName
+                $i++
+            } while (Test-Path -Path $newOut)
+            Write-Host "Using new output: $newOut"
+            return @{ Output = $newOut; Switch = '-n' }
+        }
+    } else {
+        return @{ Output = $out; Switch = '-n' }
+    }
+}
 if ($trimChoice -eq '0') {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host "" 
     Write-Host "Trimming $trimSecondsStart seconds from the beginning..."
     Write-Host ""
-    & ffmpeg -n -ss $trimSecondsStart -i $inputFile.FullName -c copy $output
+    $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
+    $output = $info.Output
+    $overwriteSwitch = $info.Switch
+    & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputFile.FullName -c copy $output
 } elseif ($trimChoice -eq '1') {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -251,7 +281,10 @@ if ($trimChoice -eq '0') {
     Write-Host "Trimming $trimSecondsEnd seconds from the end..."
     Write-Host ""
     $targetDuration = $duration - $trimSecondsEnd
-    & ffmpeg -n -t $targetDuration -i $inputFile.FullName -c copy $output
+    $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
+    $output = $info.Output
+    $overwriteSwitch = $info.Switch
+    & ffmpeg $overwriteSwitch -t $targetDuration -i $inputFile.FullName -c copy $output
 } else {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -259,7 +292,10 @@ if ($trimChoice -eq '0') {
     Write-Host "Trimming $trimSecondsStart seconds from the beginning and $trimSecondsEnd seconds from the end..."
     Write-Host ""
     $targetDuration = $duration - $trimSecondsStart - $trimSecondsEnd
-    & ffmpeg -n -ss $trimSecondsStart -t $targetDuration -i $inputFile.FullName -c copy $output
+    $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
+    $output = $info.Output
+    $overwriteSwitch = $info.Switch
+    & ffmpeg $overwriteSwitch -ss $trimSecondsStart -t $targetDuration -i $inputFile.FullName -c copy $output
 }
 
 if ($LASTEXITCODE -ne 0) {
