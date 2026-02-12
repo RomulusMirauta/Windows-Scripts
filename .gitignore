@@ -1,8 +1,9 @@
 script.sh
 /.donotpush
 
-/POWERSHELL+/ffmpeg/*.mp4
-/POWERSHELL+/ffmpeg/*.gif
+# /POWERSHELL+/ffmpeg/*.mp4
+# /POWERSHELL+/ffmpeg/*.gif
 
 /tools
-/demo_trimmed/
+*.mp4
+*.gif
