@@ -1,6 +1,7 @@
-# DO NOT FORGET !!!
-# To modify UserOrOrgName variable according to the GitHub user or organization you want to backup repositories from.
-# By default, it will clone all repositories of the current user or organization (if logged in with gh auth login).
+# How to use:
+# UserOrOrgName is a variable, its value is used to backup repositories from the matching user/organization name.
+# Leave UserOrOrgName empty to auto-detect current gh user/organization; set to username/org to override.
+# gh = GitHub; gh command = 'gh auth login'
 
 $UserOrOrgName = ""
 
