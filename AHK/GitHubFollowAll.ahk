@@ -40,7 +40,7 @@ clickAllVisibleFollowButtons();
     Sleep 500
 
     ; Close Developer Tools
-    Send "{F12}"
+    ; Send "{F12}"
 Return
 }
 
