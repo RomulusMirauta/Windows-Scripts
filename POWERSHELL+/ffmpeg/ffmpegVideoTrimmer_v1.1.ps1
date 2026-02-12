@@ -244,21 +244,27 @@ function Resolve-OutputPathAndSwitch {
     )
     $out = Join-Path -Path $OutputDir -ChildPath $Filename
     if (Test-Path -Path $out) {
-        Write-Host ""
-        $ans = Read-Host -Prompt "Output already exists: $out. Overwrite? (y/n)"
-        if ($ans -match '^[Yy]$') {
-            return @{ Output = $out; Switch = '-y' }
-        } else {
-            $base = [System.IO.Path]::GetFileNameWithoutExtension($Filename)
-            $ext = [System.IO.Path]::GetExtension($Filename)
-            $i = 1
-            do {
-                $newName = "${base}_$i$ext"
-                $newOut = Join-Path -Path $OutputDir -ChildPath $newName
-                $i++
-            } while (Test-Path -Path $newOut)
-            Write-Host "Using new output: $newOut"
-            return @{ Output = $newOut; Switch = '-n' }
+        while ($true) {
+            Write-Host ""
+            Write-Host "Output already exists: $out."
+            Write-Host ""
+            $ans = Read-Host -Prompt  "Overwrite? (y/n)"
+            if ($ans -match '^[Yy]$') {
+                return @{ Output = $out; Switch = '-y' }
+            } elseif ($ans -match '^[Nn]$') {
+                $base = [System.IO.Path]::GetFileNameWithoutExtension($Filename)
+                $ext = [System.IO.Path]::GetExtension($Filename)
+                $i = 1
+                do {
+                    $newName = "${base}_$i$ext"
+                    $newOut = Join-Path -Path $OutputDir -ChildPath $newName
+                    $i++
+                } while (Test-Path -Path $newOut)
+                Write-Host "Using new output: $newOut"
+                return @{ Output = $newOut; Switch = '-n' }
+            } else {
+                Write-Host "Invalid input. Please enter 'y' or 'n'." -ForegroundColor Yellow
+            }
         }
     } else {
         return @{ Output = $out; Switch = '-n' }
@@ -268,7 +274,7 @@ if ($trimChoice -eq '0') {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host "" 
-    Write-Host "Trimming $trimSecondsStart seconds from the beginning..."
+    Write-Host "Trimming $trimSecondsStart second(s) from the beginning..."
     Write-Host ""
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
@@ -278,7 +284,7 @@ if ($trimChoice -eq '0') {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host ""
-    Write-Host "Trimming $trimSecondsEnd seconds from the end..."
+    Write-Host "Trimming $trimSecondsEnd second(s) from the end..."
     Write-Host ""
     $targetDuration = $duration - $trimSecondsEnd
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
@@ -289,7 +295,7 @@ if ($trimChoice -eq '0') {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host ""
-    Write-Host "Trimming $trimSecondsStart seconds from the beginning and $trimSecondsEnd seconds from the end..."
+    Write-Host "Trimming $trimSecondsStart second(s) from the beginning and $trimSecondsEnd second(s) from the end..."
     Write-Host ""
     $targetDuration = $duration - $trimSecondsStart - $trimSecondsEnd
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
