@@ -252,16 +252,10 @@ function Resolve-OutputPathAndSwitch {
             if ($ans -match '^[Yy]$') {
                 return @{ Output = $out; Switch = '-y' }
             } elseif ($ans -match '^[Nn]$') {
-                $base = [System.IO.Path]::GetFileNameWithoutExtension($Filename)
-                $ext = [System.IO.Path]::GetExtension($Filename)
-                $i = 1
-                do {
-                    $newName = "${base}_$i$ext"
-                    $newOut = Join-Path -Path $OutputDir -ChildPath $newName
-                    $i++
-                } while (Test-Path -Path $newOut)
-                Write-Host "Using new output: $newOut"
-                return @{ Output = $newOut; Switch = '-n' }
+                Write-Host ""
+                Write-Host "Operation canceled by user. Exiting script..." -ForegroundColor Yellow
+                Wait-ForUser
+                exit 0
             } else {
                 Write-Host "Invalid input. Please enter 'y' or 'n'." -ForegroundColor Yellow
             }
