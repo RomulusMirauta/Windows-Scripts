@@ -107,6 +107,11 @@ if ($sourceMatches.Count -gt 1) {
 
 $inputFile = $sourceMatches[0]
 
+# Create output directory named "<BaseName>_trimmed" next to the input file
+$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_trimmed")
+if (-not (Test-Path -Path $outputDir)) {
+    New-Item -Path $outputDir -ItemType Directory | Out-Null
+}
 # Choose trim position
 Write-Host ""
 Write-Host "Trim from where?" -ForegroundColor Cyan
@@ -233,20 +238,23 @@ $trimLabel = if ($trimChoice -eq '0') { 'beginning' } elseif ($trimChoice -eq '1
 
 # Perform trim
 if ($trimChoice -eq '0') {
-    $output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}$($inputFile.Extension)"
+    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}$($inputFile.Extension)"
+    $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host "" 
     Write-Host "Trimming $trimSecondsStart seconds from the beginning..."
     Write-Host ""
     & ffmpeg -n -ss $trimSecondsStart -i $inputFile.FullName -c copy $output
 } elseif ($trimChoice -eq '1') {
-    $output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}$($inputFile.Extension)"
+    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}$($inputFile.Extension)"
+    $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host ""
     Write-Host "Trimming $trimSecondsEnd seconds from the end..."
     Write-Host ""
     $targetDuration = $duration - $trimSecondsEnd
     & ffmpeg -n -t $targetDuration -i $inputFile.FullName -c copy $output
 } else {
-    $output = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
+    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
+    $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host ""
     Write-Host "Trimming $trimSecondsStart seconds from the beginning and $trimSecondsEnd seconds from the end..."
     Write-Host ""

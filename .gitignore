@@ -3,3 +3,5 @@ script.sh
 
 /POWERSHELL+/ffmpeg/*.mp4
 /POWERSHELL+/ffmpeg/*.gif
+
+/tools
