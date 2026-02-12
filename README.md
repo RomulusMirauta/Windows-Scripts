@@ -162,14 +162,14 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 <br>
 
 ### Source files
-- [AHK/AutoClicker.ahk](AHK/AutoClicker.ahk)
-- [AHK/AutoClicker-Compatibility.ahk](AHK/AutoClicker-Compatibility.ahk)
+- [AHK/AutoClicker.ahk](AHK/src/AutoClicker.ahk)
+- [AHK/AutoClicker-Compatibility.ahk](AHK/src/AutoClicker-Compatibility.ahk)
 
 <br>
 
 ### Executables
-- [AHK/AutoClicker.exe](AHK/AutoClicker.exe)
-- [AHK/AutoClicker-Compatibility.exe](AHK/AutoClicker-Compatibility.exe)
+- [AHK/AutoClicker.exe](AHK/compiled/AutoClicker.exe)
+- [AHK/AutoClicker-Compatibility.exe](AHK/compiled/AutoClicker-Compatibility.exe)
 
 <br>
 
