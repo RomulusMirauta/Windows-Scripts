@@ -34,9 +34,20 @@
 
 
 
+# Install GitHub
+
+winget install --id Git.Git -e --source winget
+
+
+
 # Login to GitHub
 
 git config --global credential.helper manager
+
+# OR
+
+git config --global user.name "%username%"
+git config --global user.email "%email%"
 
 
 
