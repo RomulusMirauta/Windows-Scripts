@@ -284,7 +284,7 @@ if ($trimChoice -eq '0') {
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
-    & ffmpeg $overwriteSwitch -t $targetDuration -i $inputFile.FullName -c copy $output
+    & ffmpeg $overwriteSwitch -i $inputFile.FullName -t $targetDuration -c copy $output
 } else {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -295,7 +295,7 @@ if ($trimChoice -eq '0') {
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
-    & ffmpeg $overwriteSwitch -ss $trimSecondsStart -t $targetDuration -i $inputFile.FullName -c copy $output
+    & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputFile.FullName -t $targetDuration -c copy $output
 }
 
 if ($LASTEXITCODE -ne 0) {
