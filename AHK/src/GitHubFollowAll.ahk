@@ -9,7 +9,7 @@ F1:: {
 
     ; Open Developer Tools Console
     Send "{F12}"
-    Sleep 500
+    ; Sleep 500
 
     ; Paste and run the JavaScript code to click follow buttons
     Clipboard := "
@@ -34,6 +34,9 @@ function clickAllVisibleFollowButtons() {
 
 clickAllVisibleFollowButtons();
         )"
+
+    Sleep 500
+
     Send "^v"
     Send "{Enter}"
 
