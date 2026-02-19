@@ -6,13 +6,13 @@
 F1:: {
     ; Activate the browser window (adjust class if needed, e.g., for Edge use ahk_class Chrome_WidgetWin_1 or check with Window Spy)
     ; WinActivate ahk_exe chrome.exe  ; For Chrome; change to msedge.exe for Edge
-
-    ; Open Developer Tools Console
-    Send "{F12}"
+    
+    ; Open Developer Tools - Console
+    Send "^+J"
     ; Sleep 500
 
-    ; Paste and run the JavaScript code to click follow buttons
-    Clipboard := "
+    ; Copy the JavaScript code to clipboard
+    A_Clipboard := "
         (
 function clickAllVisibleFollowButtons() {
     // Only click visible <button> elements with text 'Follow'
@@ -37,6 +37,7 @@ clickAllVisibleFollowButtons();
 
     Sleep 500
 
+    ; Paste and run the JS code - to click all "Follow" buttons
     Send "^v"
     Send "{Enter}"
 
