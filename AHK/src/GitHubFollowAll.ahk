@@ -14,35 +14,22 @@ F1:: {
         Return
     }
 
+
     ; Get the URL of the active browser tab
     ; activeURL := ControlGetText("Chrome_OmniboxView1", "A")
 
-
     ; Function to get the URL of the active browser tab using the Acc library
-GetActiveBrowserURL() {
-    global
-    try {
-        acc := Acc_ObjectFromWindow(WinExist("A")) ; Get the accessibility object for the active window
-        if !acc
-            return ""
-        return acc.accValue(0) ; Retrieve the value (URL) of the address bar
-    } catch {
-        return ""
-    }
-}
+    ; activeURL := GetActiveBrowserURL()
 
 
-    activeURL := GetActiveBrowserURL()
-
-    if !activeURL {
-        MsgBox("Unable to retrieve the active browser URL. Please ensure the browser supports automation.", "Error", 16)
-        Return
-    }
-    if !RegExMatch(activeURL, "^https://github\.com/[^/]+(\?tab=(followers|following))?$") {
-        MsgBox("The webpage must follow the format: https://github.com/%username%?tab=followers or https://github.com/%username%?tab=following.", "Warning", 48)
-        Return
-    }
-
+    ; if !activeURL {
+    ;     MsgBox("Unable to retrieve the active browser URL. Please ensure the browser supports automation.", "Error", 16)
+    ;     Return
+    ; }
+    ; if !RegExMatch(activeURL, "^https://github\.com/[^/]+(\?tab=(followers|following))?$") {
+    ;     MsgBox("The webpage must follow the format: https://github.com/%username%?tab=followers or https://github.com/%username%?tab=following.", "Warning", 48)
+    ;     Return
+    ; }
 
 
     ; Open Developer Tools - Console
