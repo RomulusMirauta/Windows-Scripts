@@ -115,6 +115,25 @@ $outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.
 if (-not (Test-Path -Path $outputDir)) {
     New-Item -Path $outputDir -ItemType Directory | Out-Null
 }
+
+# Choose trim method
+Write-Host ""
+Write-Host "Select trim method:" -ForegroundColor Cyan
+Write-Host "[0] Default (fast) - stream copy, no re-encoding"
+Write-Host "[1] Re-encode (slow) - frame-accurate, better precision"
+
+$trimMethod = $null
+while (-not $trimMethod) {
+    Write-Host ""
+    $methodChoice = Read-Host -Prompt "Enter choice (0-1)"
+    if ($methodChoice -in @('0','1')) {
+        $trimMethod = $methodChoice
+    } else {
+        Write-Host ""
+        Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow
+    }
+}
+
 # Choose trim position
 Write-Host ""
 Write-Host "Trim from where?" -ForegroundColor Cyan
@@ -276,7 +295,11 @@ if ($trimChoice -eq '0') {
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
-    & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c copy $output
+    if ($trimMethod -eq '0') {
+        & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c copy $output
+    } else {
+        & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c:v libx264 -c:a aac $output
+    }
 } elseif ($trimChoice -eq '1') {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -287,7 +310,11 @@ if ($trimChoice -eq '0') {
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
-    & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c copy $output
+    if ($trimMethod -eq '0') {
+        & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c copy $output
+    } else {
+        & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
+    }
 } else {
     $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -298,7 +325,11 @@ if ($trimChoice -eq '0') {
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
-    & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c copy $output
+    if ($trimMethod -eq '0') {
+        & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c copy $output
+    } else {
+        & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
+    }
 }
 
 if ($LASTEXITCODE -ne 0) {
