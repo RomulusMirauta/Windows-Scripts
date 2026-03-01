@@ -110,12 +110,6 @@ $inputFile = $sourceMatches[0]
 # Store the full path as a plain string to safely handle spaces or special chars
 $inputPath = [string]$inputFile.FullName
 
-# Create output directory named "<BaseName>_trimmed" next to the input file
-$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_trimmed")
-if (-not (Test-Path -Path $outputDir)) {
-    New-Item -Path $outputDir -ItemType Directory | Out-Null
-}
-
 # Choose trim method
 Write-Host ""
 Write-Host "Select trim method:" -ForegroundColor Cyan
@@ -257,6 +251,12 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
 }
 
 $trimLabel = if ($trimChoice -eq '0') { 'beginning' } elseif ($trimChoice -eq '1') { 'end' } else { 'both' }
+
+# Create output directory named "<BaseName>_trimmed" next to the input file
+$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_trimmed")
+if (-not (Test-Path -Path $outputDir)) {
+    New-Item -Path $outputDir -ItemType Directory | Out-Null
+}
 
 # Perform trim
 function Resolve-OutputPathAndSwitch {
