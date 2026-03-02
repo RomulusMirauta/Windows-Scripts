@@ -109,14 +109,14 @@ $sourceMatches = Get-ChildItem -File -ErrorAction SilentlyContinue | Where-Objec
 }
 
 if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
-    Write-Host "WARNING: No video files found in the current folder." -ForegroundColor Yellow
+    Write-Host "`nWARNING: No video files found in the current folder." -ForegroundColor Yellow
     Write-Host "Supported file extensions: $($videoExtensions -join ', ')"
     Write-Host ""
     Wait-ForUser
     exit 1
 }
 if ($sourceMatches.Count -gt 1) {
-    Write-Host "WARNING: Multiple video files found in the current folder." -ForegroundColor Yellow
+    Write-Host "`nWARNING: Multiple video files found in the current folder." -ForegroundColor Yellow
     Write-Host "Please keep only one video file and run the script again." -ForegroundColor Yellow
     Write-Host ""
     Wait-ForUser
@@ -141,7 +141,7 @@ $g = Get-Gcd -a $width -b $height
 $ratioW = [int]($width / $g)
 $ratioH = [int]($height / $g)
 
-Write-Host "Current video resolution: $width x $height" -ForegroundColor Cyan
+Write-Host "`nCurrent video resolution: $width x $height" -ForegroundColor Cyan
 Write-Host "Aspect ratio (reduced): $ratioW`:$ratioH" -ForegroundColor Cyan
 Write-Host ""
 
@@ -159,12 +159,12 @@ $formats = @{
 Write-Host "Select target format:" -ForegroundColor Cyan
 foreach ($k in $formats.Keys | Sort-Object) {
     $f = $formats[$k]
-    Write-Host "[$k] $($f.Label) $($f.W):$($f.H)"
+    Write-Host "[$k] $($f.Label)"
 }
 
 $targetChoice = $null
 while (-not $targetChoice) {
-    $choice = Read-Host -Prompt "Enter choice (0-6)"
+    $choice = Read-Host -Prompt "`nEnter choice (0-6)"
     if ($choice -in $formats.Keys) { $targetChoice = $choice } else { Write-Host "Invalid input. Please enter a number between 0 and 6." -ForegroundColor Yellow }
 }
 
@@ -265,9 +265,9 @@ if ($method -eq '0' -and $isRotationOnly) {
     $output = $info.Output
     $overwriteSwitch = $info.Switch
 
-    # Build vf filter: scale to fit then pad to exact
+    # Build vf filter: scale to fit then pad to exact (use -f formatting to avoid PowerShell $var parsing in the filter)
     $aspectExpr = "{0}/{1}" -f $tw, $th
-    $vf = "scale='if(gt(a,$aspectExpr),$outW,-2)':'if(gt(a,$aspectExpr),-2,$outH)',pad=$outW:$outH:(ow-iw)/2:(oh-ih)/2,setsar=1"
+    $vf = "scale='if(gt(a,{0}),{1},-2)':'if(gt(a,{0}),-2,{2})',pad={1}:{2}:(ow-iw)/2:(oh-ih)/2,setsar=1" -f $aspectExpr, $outW, $outH
 
     Write-Host "Re-encoding to $outW x $outH using scale+pad..." -ForegroundColor Cyan
     & ffmpeg $overwriteSwitch -i $inputPath -vf $vf -c:v libx264 -crf 18 -preset medium -c:a aac -b:a 128k $output
