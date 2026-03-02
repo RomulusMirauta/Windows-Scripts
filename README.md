@@ -15,10 +15,10 @@
 
 ## Table of Contents
 I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](#i-script-for-creating-a-virtual-drive-from-an-iso-image---using-powershell) <br>
-II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell](#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format) <br>
-III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using-autohotkey) <br>
-IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerShell](#iv-powershell-script-for-trimming-video-files-by-seconds-beginningendboth) <br>
-V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using PowerShell](#v-powershell-script-for-resizing-video-aspect-ratio---using-powershell) <br>
+II. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#ii-autoclicker---using-autohotkey) <br>
+III. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell](#iii-script-for-converting-video-files-to-gifs-for-github-repos-demos---using-powershell) <br>
+IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerShell](#iv-script-for-trimming-video-files-by-seconds---using-powershell) <br>
+V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using PowerShell](#v-script-for-resizing-video-aspect-ratio---using-powershell) <br>
 
 
 <br><br>
@@ -87,10 +87,61 @@ V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using Power
 2. Right-click on it and choose Eject
 
 
+
 <br><br><br>
 
 
-## II. PowerShell script for converting video files (e.g. MKV = Matroska Video format) to a GIF (Graphics Interchange Format)
+
+## II. AutoClicker - using AutoHotkey
+
+<br>
+
+### Source files
+- [AHK/AutoClicker.ahk](AHK/src/AutoClicker.ahk)
+- [AHK/AutoClicker-Compatibility.ahk](AHK/src/AutoClicker-Compatibility.ahk)
+
+<br>
+
+### Executables
+- [AHK/AutoClicker.exe](AHK/compiled/AutoClicker.exe)
+- [AHK/AutoClicker-Compatibility.exe](AHK/compiled/AutoClicker-Compatibility.exe)
+
+<br>
+
+### Hotkeys
+- F1 = Start clicking
+- F2 = Pause/Reload script
+- F4 = Exit script
+
+<br>
+
+> [!NOTE]
+> - **AutoClicker.ahk** uses a fast, single-click loop.
+> - **AutoClicker-Compatibility.ahk** uses explicit mouse up/down with a small delay for compatibility.
+
+<br>
+
+### Demo video
+- [Game: The Great Hatch](https://store.steampowered.com/app/3745230/The_Great_Hatch/)
+- [DEMOs/AutoClicker.gif](DEMOs/AutoClicker.gif)
+
+<br>
+
+![AutoClicker Demo](DEMOs/AutoClicker.gif)
+
+![AutoClicker Demo](DEMOs/output1280.gif)
+
+![AutoClicker Demo](DEMOs/output1600.gif)
+
+![AutoClicker Demo](DEMOs/output1920.gif)
+
+
+
+<br><br><br>
+
+
+
+## III. Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell
 
 <br>
 
@@ -159,54 +210,8 @@ V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using Power
 
 
 
-## III. AutoClicker - using AutoHotkey
 
-<br>
-
-### Source files
-- [AHK/AutoClicker.ahk](AHK/src/AutoClicker.ahk)
-- [AHK/AutoClicker-Compatibility.ahk](AHK/src/AutoClicker-Compatibility.ahk)
-
-<br>
-
-### Executables
-- [AHK/AutoClicker.exe](AHK/compiled/AutoClicker.exe)
-- [AHK/AutoClicker-Compatibility.exe](AHK/compiled/AutoClicker-Compatibility.exe)
-
-<br>
-
-### Hotkeys
-- F1 = Start clicking
-- F2 = Pause/Reload script
-- F4 = Exit script
-
-<br>
-
-> [!NOTE]
-> - **AutoClicker.ahk** uses a fast, single-click loop.
-> - **AutoClicker-Compatibility.ahk** uses explicit mouse up/down with a small delay for compatibility.
-
-<br>
-
-### Demo video
-- [Game: The Great Hatch](https://store.steampowered.com/app/3745230/The_Great_Hatch/)
-- [DEMOs/AutoClicker.gif](DEMOs/AutoClicker.gif)
-
-<br>
-
-![AutoClicker Demo](DEMOs/AutoClicker.gif)
-
-![AutoClicker Demo](DEMOs/output1280.gif)
-
-![AutoClicker Demo](DEMOs/output1600.gif)
-
-![AutoClicker Demo](DEMOs/output1920.gif)
-
-
-<br><br><br>
-
-
-## IV. PowerShell script for trimming video files by seconds (beginning/end/both)
+## IV. Script for trimming video files by seconds - using PowerShell
 
 <br>
 
@@ -248,7 +253,7 @@ V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using Power
 <br><br><br>
 
 
-## V. PowerShell script for resizing video aspect ratio - using PowerShell
+## V. Script for resizing video aspect ratio - using PowerShell
 
 <br>
 
