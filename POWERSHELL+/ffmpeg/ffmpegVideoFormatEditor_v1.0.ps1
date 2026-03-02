@@ -177,17 +177,16 @@ $target = $formats[$targetChoice]
 $tw = $target.W
 $th = $target.H
 
-Write-Host "Selected: $($target.Label) ($tw`:$th)" -ForegroundColor Green
-Write-Host ""
+Write-Host "`nSelected: $($target.Label) ($tw`:$th)" -ForegroundColor Green
 
 # Ask fast (metadata rotation) or re-encode
-Write-Host "Choose method:" -ForegroundColor Cyan
+Write-Host "`n`nChoose method:" -ForegroundColor Cyan
 Write-Host "[0] Fast (metadata rotation only, stream copy)"
 Write-Host "[1] Re-encode (apply scale/pad filters)"
 
 $method = $null
 while (-not $method) {
-    $m = Read-Host -Prompt "Enter choice (0-1)"
+    $m = Read-Host -Prompt "`nEnter choice (0-1)"
     if ($m -in @('0','1')) { $method = $m } else { Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow }
 }
 
@@ -208,7 +207,7 @@ function Resolve-OutputPathAndSwitch {
     if (Test-Path -Path $out) {
         while ($true) {
             Write-Host ""
-            Write-Host "WARNING: Output already exists:`n$out" -ForegroundColor Yellow
+            Write-Host "`nWARNING: Output already exists:`n$out" -ForegroundColor Yellow
             Write-Host ""
             $ans = Read-Host -Prompt  "Overwrite? (y/n)"
             if ($ans -match '^[Yy]$') {
