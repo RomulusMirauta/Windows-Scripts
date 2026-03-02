@@ -238,6 +238,17 @@ function Resolve-OutputPathAndSwitch {
     }
 }
 
+# Helper to run ffmpeg with an argument array and show the full command for debugging
+function Run-FFmpeg {
+    param(
+        [string[]]$FfmpegArgs
+    )
+    $cmdLine = 'ffmpeg ' + ($FfmpegArgs -join ' ')
+    Write-Host "Executing: $cmdLine" -ForegroundColor DarkGray
+    & ffmpeg @FfmpegArgs
+    return $LASTEXITCODE
+}
+
 # Prepare output directory and filename
 $outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_format")
 if (-not (Test-Path -Path $outputDir)) { New-Item -Path $outputDir -ItemType Directory | Out-Null }
@@ -251,7 +262,7 @@ if ($method -eq '0' -and -not $isRotationOnly) {
 if ($method -eq '0' -and $isRotationOnly) {
     $label = "$($target.Label)_rotated"
     $safeLabel = Sanitize-FileName -Name $label
-    $filename = "${($inputFile.BaseName)}_${safeLabel}${($inputFile.Extension)}"
+    $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
@@ -261,7 +272,37 @@ if ($method -eq '0' -and $isRotationOnly) {
 
     Write-Host "Applying metadata rotation ($rotateVal degrees) and copying streams..." -ForegroundColor Cyan
     Write-Host "Note: Not all containers honor rotate metadata." -ForegroundColor Yellow
-    & ffmpeg $overwriteSwitch -i $inputPath -c copy -metadata:s:v:0 rotate=$rotateVal $output
+    $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-c', 'copy', '-metadata:s:v:0', "rotate=$rotateVal", $output)
+    Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
+    $rc = Run-FFmpeg -FfmpegArgs $ffArgs
+    $LASTEXITCODE = $rc
+
+    if ($rc -ne 0) {
+        Write-Host "Fast (metadata) method failed; falling back to re-encode." -ForegroundColor Yellow
+        # Build re-encode args (same logic as below)
+        if ($tw -gt $th) {
+            $outW = [int]([math]::Round([double]([math]::Max($width, $height))))
+            $outH = [int]([math]::Round($outW * ($th / $tw)))
+        } else {
+            $outH = [int]([math]::Round([double]([math]::Max($width, $height))))
+            $outW = [int]([math]::Round($outH * ($tw / $th)))
+        }
+        if ($outW -lt 2) { $outW = 2 }
+        if ($outH -lt 2) { $outH = 2 }
+        $label = "$($target.Label)_${outW}x${outH}"
+        $safeLabel = Sanitize-FileName -Name $label
+        $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
+        $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
+        $output = $info.Output
+        $overwriteSwitch = $info.Switch
+        $aspectExpr = "{0}/{1}" -f $tw, $th
+        $vf = "scale='if(gt(a,{0}),{1},-2)':'if(gt(a,{0}),-2,{2})',pad={1}:{2}:(ow-iw)/2:(oh-ih)/2,setsar=1" -f $aspectExpr, $outW, $outH
+        Write-Host "Re-encoding to $outW x $outH using scale+pad..." -ForegroundColor Cyan
+        $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
+        Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
+        $rc = Run-FFmpeg -FfmpegArgs $ffArgs
+        $LASTEXITCODE = $rc
+    }
 
 } else {
     # Re-encode path: compute output target dimensions based on largest original side
@@ -278,7 +319,7 @@ if ($method -eq '0' -and $isRotationOnly) {
 
     $label = "$($target.Label)_${outW}x${outH}"
     $safeLabel = Sanitize-FileName -Name $label
-    $filename = "${($inputFile.BaseName)}_${safeLabel}${($inputFile.Extension)}"
+    $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
@@ -288,7 +329,10 @@ if ($method -eq '0' -and $isRotationOnly) {
     $vf = "scale='if(gt(a,{0}),{1},-2)':'if(gt(a,{0}),-2,{2})',pad={1}:{2}:(ow-iw)/2:(oh-ih)/2,setsar=1" -f $aspectExpr, $outW, $outH
 
     Write-Host "Re-encoding to $outW x $outH using scale+pad..." -ForegroundColor Cyan
-    & ffmpeg $overwriteSwitch -i $inputPath -vf $vf -c:v libx264 -crf 18 -preset medium -c:a aac -b:a 128k $output
+    $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
+    Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
+    $rc = Run-FFmpeg -FfmpegArgs $ffArgs
+    $LASTEXITCODE = $rc
 }
 
 if ($LASTEXITCODE -ne 0) {
