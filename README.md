@@ -17,7 +17,8 @@
 I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](#i-script-for-creating-a-virtual-drive-from-an-iso-image---using-powershell) <br>
 II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell](#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format) <br>
 III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using-autohotkey) <br>
-IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerShell](#iv-powershell-script-for-trimming-video-files-by-seconds-beginningendboth)
+IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerShell](#iv-powershell-script-for-trimming-video-files-by-seconds-beginningendboth) <br>
+V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using PowerShell](#v-powershell-script-for-resizing-video-aspect-ratio---using-powershell) <br>
 
 
 <br><br>
@@ -104,7 +105,7 @@ IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerS
    - Software = [OBS](https://obsproject.com/)
    - Recording format (output) = Matroska Video (.mkv)
    - Muting / not recording audio *(not needed)*
-2. Download the script: [ffmpegScriptConversionVideoToGif_v1.4.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpeg/ffmpegScriptConversionVideoToGif_v1.4.ps1)
+2. Download the script: [ffmpegVideoToGifConverter_v1.4.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpeg/ffmpegVideoToGifConverter_v1.4.ps1)
    - Right-click and choose "Save link as..."
    - ***OR***
    - Click on link and press key combination `CTRL + SHIFT + S`
@@ -115,7 +116,7 @@ IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerS
    - From PowerShell CLI
        - `cd` to script's location
        - ```ps1
-         powershell -ExecutionPolicy Bypass -File .\ffmpegScriptConversionVideoToGif_v1.4.ps1
+         powershell -ExecutionPolicy Bypass -File .\ffmpegVideoToGifConverter_v1.4.ps1
          ```
 7. Follow the instructions shown in the PowerShell window
 
@@ -236,6 +237,54 @@ IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerS
 - Uses `ffprobe` to read exact source duration before trimming
 - Output folder is created - useful for multiple trims: `<inputVideoName>_trimmed`
 - Output filename includes trim direction, trim amount, and method chosen (`fast` / `re-encode`)
+- Features prompts before overwrite when output file already exists
+
+<br>
+
+> [!IMPORTANT]
+> If you're having issues running the script, please try this [***workaround***](#workarounds).
+
+
+<br><br><br>
+
+
+## V. PowerShell script for resizing video aspect ratio - using PowerShell
+
+<br>
+
+### Steps to follow:
+1. Download the script: [ffmpegVideoAspectRatioResizer_v1.0.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpeg/ffmpegVideoAspectRatioResizer_v1.0.ps1)
+   - Right-click and choose "Save link as..."
+   - ***OR***
+   - Click on link and press key combination `CTRL + SHIFT + S`
+2. Place the script in the folder that contains the video file you want to convert (keep only one video file in that folder, the script converts one input video per run)
+3. Run the script
+    - From Windows/File Explorer - right-click and choose "Run with PowerShell"
+    - From PowerShell CLI
+         - `cd` to script's location
+         - ```ps1
+            powershell -ExecutionPolicy Bypass -File .\ffmpegVideoAspectRatioResizer_v1.0.ps1
+            ```
+4. Follow prompts:
+    - Choose target format: Wide 16:9 (YouTube), Vertical 9:16 (Instagram Reels/TikTok), Square 1:1 (Instagram posts), or other aspect ratios
+    - Choose method: **Fast (metadata rotation only)** or **Re-encode (scale + pad filters)**
+
+<br>
+
+### Features:
+- Detects input video resolution and aspect ratio automatically using `ffprobe`
+- Supports 7 common target formats with descriptive labels:
+  - **Wide 16:9** - YouTube and streaming sites
+  - **Vertical 9:16** - Instagram Reels and TikTok
+  - **Square 1:1** - Instagram posts
+  - Classic 4:3, Social 4:5, Cinema 21:9, Portrait 2:3
+- Two conversion methods:
+  - **Fast** - metadata rotation with stream copy (instant, when aspect is a simple 90° rotation)
+  - **Re-encode** - uses scale and pad filters for precise aspect ratio with pillarboxing/letterboxing
+- Auto-detects ffmpeg and can install it via `winget` or `choco`
+- Output folder created: `<inputVideoName>_format`
+- Output filename includes target format and resolution
+- Automatic fallback to re-encode if fast method fails
 - Features prompts before overwrite when output file already exists
 
 <br>
