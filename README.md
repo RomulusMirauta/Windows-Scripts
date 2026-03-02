@@ -17,6 +17,7 @@
 I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](#i-script-for-creating-a-virtual-drive-from-an-iso-image---using-powershell) <br>
 II. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell](#ii-powershell-script-for-converting-video-files-eg-mkv--matroska-video-format-to-a-gif-graphics-interchange-format) <br>
 III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using-autohotkey)
+IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerShell](#iv-powershell-script-for-trimming-video-files-by-seconds-beginningendboth)
 
 
 <br><br>
@@ -199,3 +200,47 @@ III. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#iii-autoclicker---using
 ![AutoClicker Demo](DEMOs/output1600.gif)
 
 ![AutoClicker Demo](DEMOs/output1920.gif)
+
+
+<br><br><br>
+
+
+## IV. PowerShell script for trimming video files by seconds (beginning/end/both)
+
+<br>
+
+### Script file
+- [ffmpegVideoTrimmer_v1.2.ps1](POWERSHELL+/ffmpeg/ffmpegVideoTrimmer_v1.2.ps1)
+
+<br>
+
+### Steps to follow:
+1. Download the script: [ffmpegVideoTrimmer_v1.2.ps1](https://raw.githubusercontent.com/RomulusMirauta/Windows-Scripts/main/POWERSHELL%2B/ffmpeg/ffmpegVideoTrimmer_v1.2.ps1)
+2. Place the script in the folder that contains the video file you want to trim
+3. Keep only one video file in that folder (the script trims one input video per run)
+4. Run the script
+    - From Windows/File Explorer - right-click and choose "Run with PowerShell"
+    - From PowerShell CLI
+         - `cd` to script's location
+         - ```ps1
+            powershell -ExecutionPolicy Bypass -File .\ffmpegVideoTrimmer_v1.2.ps1
+            ```
+5. Follow prompts:
+    - Choose trim method: **Default (fast)** or **Re-encode (slow)**
+    - Choose trim direction: beginning, end, or both
+    - Enter trim seconds
+
+<br>
+
+### Features:
+- Supports common video formats: MKV, MP4, WebM, MOV, AVI, WMV, FLV, MPEG/MPG, M4V, 3GP, TS/M2TS, OGV, VOB
+- Auto-detects ffmpeg and can install it via `winget` or `choco`
+- Uses `ffprobe` to read exact source duration before trimming
+- Output folder is created near source file: `<inputName>_trimmed`
+- Output filename includes trim direction, trim amount, and method chosen (`fast` / `reencode`)
+- Prompts before overwrite when output file already exists
+
+<br>
+
+> [!IMPORTANT]
+> If you're having issues running the script, please try this [***workaround***](#workarounds).
