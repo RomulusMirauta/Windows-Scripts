@@ -260,7 +260,7 @@ if ($method -eq '0' -and -not $isRotationOnly) {
 }
 
 if ($method -eq '0' -and $isRotationOnly) {
-    $label = "$($target.Label)_rotated"
+    $label = "$($target.Label)_rotated_fast"
     $safeLabel = ConvertTo-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
@@ -289,7 +289,7 @@ if ($method -eq '0' -and $isRotationOnly) {
         }
         if ($outW -lt 2) { $outW = 2 }
         if ($outH -lt 2) { $outH = 2 }
-        $label = "$($target.Label)_${outW}x${outH}"
+        $label = "$($target.Label)_${outW}x${outH}_re-encode"
         $safeLabel = ConvertTo-FileName -Name $label
         $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
         $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
