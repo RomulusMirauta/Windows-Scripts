@@ -5,6 +5,19 @@ function Wait-ForUser {
     Read-Host -Prompt $Message | Out-Null
 }
 
+function Get-Gcd {
+    param(
+        [int]$a,
+        [int]$b
+    )
+    while ($b -ne 0) {
+        $t = $b
+        $b = $a % $b
+        $a = $t
+    }
+    return [math]::Abs($a)
+}
+
 Write-Host "Video to GIF conversion script, by @echo off" -ForegroundColor Gray
 Write-Host ""
 
@@ -108,6 +121,25 @@ if ($sourceMatches.Count -gt 1) {
 }
 
 $inputFile = $sourceMatches[0]
+
+Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor White
+
+# Get input resolution
+$probe = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x $inputFile.FullName
+if ($probe) {
+    $parts = $probe -split 'x'
+    $width = [int]$parts[0]
+    $height = [int]$parts[1]
+    
+    $g = Get-Gcd -a $width -b $height
+    $ratioW = [int]($width / $g)
+    $ratioH = [int]($height / $g)
+    
+    Write-Host "Resolution: $width x $height" -ForegroundColor White
+    Write-Host "Aspect ratio (approximated): $ratioW`:$ratioH" -ForegroundColor White
+}
+
+Write-Host ""
 
 # Output folder
 $outputFolder = "$($inputFile.BaseName)_VideoToGifConverter"
