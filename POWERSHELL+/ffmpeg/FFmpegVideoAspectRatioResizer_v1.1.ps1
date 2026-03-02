@@ -18,6 +18,18 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
+function Maximize-ConsoleWindow {
+    # Maximize PowerShell window
+    try {
+        $console = [System.Console]
+        $console.WindowWidth = [System.Console]::LargestWindowWidth
+        $console.WindowHeight = [System.Console]::LargestWindowHeight
+    } catch {
+        # If direct method fails, try alternative
+        mode con: cols=200 lines=50 2>$null | Out-Null
+    }
+}
+
 # Replace or remove characters that are invalid in Windows filenames
 function SanitizeFileName {
     param(
@@ -32,6 +44,9 @@ function SanitizeFileName {
 
 Write-Host "Video Aspect Ratio Resizer" -ForegroundColor Gray
 Write-Host ""
+
+# Maximize console window
+Maximize-ConsoleWindow
 
 # Ensure FFmpeg exists
 if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
@@ -138,24 +153,85 @@ if ($sourceMatches.Count -gt 1) {
 $inputFile = $sourceMatches[0]
 $inputPath = [string]$inputFile.FullName
 
-# Get input resolution
-$probe = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x $inputPath
-if (-not $probe) {
-    Write-Host "ERROR: Could not read video stream information from input file." -ForegroundColor Red
-    Wait-ForUser
-    exit 1
-}
-$parts = $probe -split 'x'
-$width = [int]$parts[0]
-$height = [int]$parts[1]
+# Get comprehensive video information
+$probeJson = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate,codec_name,pix_fmt,color_space,bits_per_raw_sample,bit_rate -of json $inputPath
+$probeAudio = & ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,channels,sample_rate,bit_rate -of json $inputPath
 
+$videoInfo = $probeJson | ConvertFrom-Json
+$audioInfo = $probeAudio | ConvertFrom-Json
+
+# Extract video stream data
+if ($videoInfo.streams -and $videoInfo.streams.Count -gt 0) {
+    $vstream = $videoInfo.streams[0]
+    $width = $vstream.width
+    $height = $vstream.height
+    
+    # Parse frame rate from r_frame_rate (format: "30/1" or "24000/1001")
+    if ($vstream.r_frame_rate) {
+        $frParts = $vstream.r_frame_rate -split '/'
+        if ($frParts.Count -eq 2) {
+            $fps = [math]::Round([double]$frParts[0] / [double]$frParts[1], 3)
+        }
+    }
+    
+    $videoCodec = $vstream.codec_name
+    $pixFormat = $vstream.pix_fmt
+    $colorSpace = $vstream.color_space
+    $colorDepth = if ($vstream.bits_per_raw_sample) { "$($vstream.bits_per_raw_sample)-bit" } else { "8-bit" }
+    $videoBitrate = if ($vstream.bit_rate) { 
+        $br = [int]$vstream.bit_rate / 1000
+        "$br kbps"
+    } else { "Unknown" }
+}
+
+# Extract audio stream data
+if ($audioInfo.streams -and $audioInfo.streams.Count -gt 0) {
+    $astream = $audioInfo.streams[0]
+    $audioCodec = $astream.codec_name
+    $audioChannels = $astream.channels
+    $audioSampleRate = if ($astream.sample_rate) { "$($astream.sample_rate) Hz" } else { "Unknown" }
+    $audioBitrate = if ($astream.bit_rate) { 
+        $br = [int]$astream.bit_rate / 1000
+        "$br kbps"
+    } else { "Unknown" }
+}
+
+# Get file size
+$fileSizeMB = [math]::Round($inputFile.Length / 1MB, 2)
+
+# Calculate aspect ratio
 $g = Get-Gcd -a $width -b $height
 $ratioW = [int]($width / $g)
 $ratioH = [int]($height / $g)
 
-Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor White
-Write-Host "Resolution: $width x $height" -ForegroundColor White
-Write-Host "Aspect ratio (approximated): $ratioW`:$ratioH`n`n" -ForegroundColor White
+# Display comprehensive video information
+Write-Host "`n" -NoNewline
+Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
+Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
+
+Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
+Write-Host "  Resolution: $width x $height" -ForegroundColor White
+Write-Host "  Aspect ratio: $ratioW`:$ratioH" -ForegroundColor White
+Write-Host "  Frame rate: $fps fps" -ForegroundColor White
+Write-Host "  Codec: $videoCodec" -ForegroundColor White
+Write-Host "  Bitrate: $videoBitrate" -ForegroundColor White
+Write-Host "  Pixel format: $pixFormat" -ForegroundColor White
+Write-Host "  Color space: $colorSpace" -ForegroundColor White
+Write-Host "  Color depth: $colorDepth" -ForegroundColor White
+
+if ($audioCodec) {
+    Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
+    Write-Host "  Codec: $audioCodec" -ForegroundColor White
+    Write-Host "  Channels: $audioChannels" -ForegroundColor White
+    Write-Host "  Sample rate: $audioSampleRate" -ForegroundColor White
+    Write-Host "  Bitrate: $audioBitrate" -ForegroundColor White
+}
+
+Write-Host "`nFILE INFORMATION:" -ForegroundColor Yellow
+Write-Host "  Size: $fileSizeMB MB" -ForegroundColor White
+Write-Host "`n" -NoNewline
+Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
+Write-Host ""
 
 # Define target formats (Label, ratio and optional short Description)
 $formats = @{
