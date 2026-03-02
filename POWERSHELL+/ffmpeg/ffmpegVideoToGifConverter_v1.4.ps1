@@ -109,8 +109,11 @@ if ($sourceMatches.Count -gt 1) {
 
 $inputFile = $sourceMatches[0]
 
+# Output folder
+$outputFolder = "$($inputFile.BaseName)_VideoToGifConverter"
+
 # File name (match input file base name)
-$palette = "$($inputFile.BaseName).png"
+$palette = Join-Path $outputFolder "$($inputFile.BaseName).png"
 
 # Scaling options
 $scaleOptions = @(
@@ -180,7 +183,7 @@ $scaleSuffix = if ($selectedScale -eq 'iw:-1') {
 } else {
     ($selectedScale -split ':')[0]
 }
-$output = "$($inputFile.BaseName)_${scaleSuffix}.gif"
+$output = Join-Path $outputFolder "$($inputFile.BaseName)_${scaleSuffix}.gif"
 
 # Avoid overwriting an existing file: palette
 if (Test-Path $palette) {
@@ -200,6 +203,13 @@ if (Test-Path $output) {
     Write-Host ""
     Wait-ForUser
     exit 1
+}
+
+# Create output folder
+if (-not (Test-Path $outputFolder)) {
+    New-Item -ItemType Directory -Path $outputFolder -Force | Out-Null
+    Write-Host ""
+    Write-Host "Created output folder: $outputFolder" -ForegroundColor Green
 }
 
 # Generating palette

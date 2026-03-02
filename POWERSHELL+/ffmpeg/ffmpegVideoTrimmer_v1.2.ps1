@@ -254,8 +254,8 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
 $trimLabel = if ($trimChoice -eq '0') { 'beginning' } elseif ($trimChoice -eq '1') { 'end' } else { 'both' }
 $methodLabel = if ($trimMethod -eq '0') { 'fast' } else { 're-encode' }
 
-# Create output directory named "<BaseName>_trimmed" next to the input file
-$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_trimmed")
+# Create output directory named "<BaseName>_VideoTrimmer" next to the input file
+$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_VideoTrimmer")
 if (-not (Test-Path -Path $outputDir)) {
     New-Item -Path $outputDir -ItemType Directory | Out-Null
 }
