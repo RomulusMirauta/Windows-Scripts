@@ -130,6 +130,7 @@ while (-not $trimMethod) {
 
 # Choose trim position
 Write-Host ""
+Write-Host ""
 Write-Host "Trim from where?" -ForegroundColor Cyan
 Write-Host "[0] Beginning"
 Write-Host "[1] End"
@@ -268,7 +269,7 @@ function Resolve-OutputPathAndSwitch {
     if (Test-Path -Path $out) {
         while ($true) {
             Write-Host ""
-            Write-Host "Output already exists: $out."
+            Write-Host "WARNING: Output already exists:`n$out" -ForegroundColor Yellow
             Write-Host ""
             $ans = Read-Host -Prompt  "Overwrite? (y/n)"
             if ($ans -match '^[Yy]$') {
