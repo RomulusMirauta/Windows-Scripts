@@ -8,32 +8,32 @@ function Wait-ForUser {
 Write-Host "Video Trimmer (seconds)" -ForegroundColor Gray
 Write-Host ""
 
-# Ensure ffmpeg exists
-if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
+# Ensure FFmpeg exists
+if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
     Write-Host ""
-    Write-Host "ERROR: ffmpeg was not found." -ForegroundColor Red
+    Write-Host "ERROR: FFmpeg was not found." -ForegroundColor Red
     Write-Host ""
 
     while ($true) {
-        $choice = Read-Host -Prompt "Install ffmpeg now? (y/n)"
+        $choice = Read-Host -Prompt "Install FFmpeg now? (y/n)"
         if ($choice -match '^[Yy]$') {
-            Write-Host "Attempting to install ffmpeg..." -ForegroundColor Cyan
+            Write-Host "Attempting to install FFmpeg..." -ForegroundColor Cyan
             $installExit = 1
 
             if (Get-Command winget -ErrorAction SilentlyContinue) {
                 $proc = Start-Process -FilePath 'winget' -ArgumentList 'install --id Gyan.FFmpeg -e --accept-package-agreements --accept-source-agreements' -Wait -NoNewWindow -PassThru
                 $installExit = $proc.ExitCode
             } elseif (Get-Command choco -ErrorAction SilentlyContinue) {
-                $proc = Start-Process -FilePath 'choco' -ArgumentList 'install ffmpeg -y' -Wait -NoNewWindow -PassThru
+                $proc = Start-Process -FilePath 'choco' -ArgumentList 'install FFmpeg -y' -Wait -NoNewWindow -PassThru
                 $installExit = $proc.ExitCode
             } else {
-                Write-Host "No supported package manager found (winget or choco). Please install ffmpeg manually." -ForegroundColor Yellow
+                Write-Host "No supported package manager found (winget or choco). Please install FFmpeg manually." -ForegroundColor Yellow
                 Wait-ForUser
                 exit 1
             }
 
             if ($installExit -ne 0) {
-                Write-Host "Installation failed (exit code $installExit). Please install ffmpeg manually." -ForegroundColor Red
+                Write-Host "Installation failed (exit code $installExit). Please install FFmpeg manually." -ForegroundColor Red
                 Wait-ForUser
                 exit 1
             }
@@ -50,22 +50,22 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
                     $env:Path = $userPath
                 }
             } catch {
-                Write-Host "WARNING: Could not refresh PATH automatically. Please run the script again or manually add ffmpeg to PATH." -ForegroundColor Yellow
+                Write-Host "WARNING: Could not refresh PATH automatically. Please run the script again or manually add FFmpeg to PATH." -ForegroundColor Yellow
             }
 
             # Re-check availability
-            if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
-                Write-Host "ffmpeg still not found after installation. You may need to restart your shell or manually add it to PATH." -ForegroundColor Yellow
+            if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
+                Write-Host "FFmpeg still not found after installation. You may need to restart your shell or manually add it to PATH." -ForegroundColor Yellow
                 Wait-ForUser
                 exit 1
             } else {
                 Write-Host ""
-                Write-Host "ffmpeg installed successfully." -ForegroundColor Green
+                Write-Host "FFmpeg installed successfully." -ForegroundColor Green
                 break
             }
         } elseif ($choice -match '^[Nn]$') {
             Write-Host ""
-            Write-Host "ffmpeg installation is mandatory. Exiting the script..." -ForegroundColor Yellow
+            Write-Host "FFmpeg installation is mandatory. Exiting the script..." -ForegroundColor Yellow
             Wait-ForUser
             exit 1
         } else {
@@ -74,7 +74,7 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
     }
 } else {
     Write-Host ""
-    Write-Host "ffmpeg found, continuing script..." -ForegroundColor Green
+    Write-Host "FFmpeg found, continuing script..." -ForegroundColor Green
     Write-Host ""
 }
 
@@ -157,8 +157,8 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
     while (-not $trimSeconds) {
         Write-Host ""
 
-        if (-not (Get-Command ffprobe -ErrorAction SilentlyContinue)) {
-            Write-Host "ERROR: ffprobe was not found in PATH. Please re-install ffmpeg (which includes ffprobe) or manually add ffprobe to PATH." -ForegroundColor Red
+        if (-not (Get-Command FFprobe -ErrorAction SilentlyContinue)) {
+            Write-Host "ERROR: FFprobe was not found in PATH. Please re-install FFmpeg (which includes FFprobe) or manually add FFprobe to PATH." -ForegroundColor Red
             Wait-ForUser
             exit 1
         }
