@@ -206,18 +206,7 @@ $th = $target.H
 
 Write-Host "`nSelected: $($target.Label)" -ForegroundColor Green
 
-# Ask fast (metadata rotation) or re-encode
-Write-Host "`n`nChoose method:" -ForegroundColor Cyan
-Write-Host "[0] Fast (metadata rotation only, stream copy)"
-Write-Host "[1] Re-encode (apply scale/pad filters)"
-
-$method = $null
-while (-not $method) {
-    $m = Read-Host -Prompt "`nEnter choice (0-1)"
-    if ($m -in @('0','1')) { $method = $m } else { Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow }
-}
-
-# Reduce target ratio
+# Reduce target ratio early to check compatibility
 $g2 = Get-Gcd -a $tw -b $th
 $rtw = [int]($tw / $g2)
 $rth = [int]($th / $g2)
@@ -227,6 +216,20 @@ $isRotationOnly = ($rtw -eq $ratioH -and $rth -eq $ratioW)
 
 # Check if target ratio matches current ratio (no conversion needed)
 $isSameAspect = ($rtw -eq $ratioW -and $rth -eq $ratioH)
+
+# Ask fast (metadata rotation) or re-encode
+Write-Host "`n`nChoose method:" -ForegroundColor Cyan
+Write-Host "[0] Fast (metadata rotation only, stream copy)"
+if ($isRotationOnly) {
+    Write-Host "     WARNING: Only changes metadata, not actual pixels. Output will still be $width x $height." -ForegroundColor Yellow
+}
+Write-Host "[1] Re-encode (apply scale/pad filters)"
+
+$method = $null
+while (-not $method) {
+    $m = Read-Host -Prompt "`nEnter choice (0-1)"
+    if ($m -in @('0','1')) { $method = $m } else { Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow }
+}
 
 function Resolve-OutputPathAndSwitch {
     param(
@@ -289,6 +292,8 @@ if ($method -eq '0' -and ($isRotationOnly -or $isSameAspect)) {
     if ($isRotationOnly) {
         if ($width -gt $height -and $th -gt $tw) { $rotateVal = 90 } else { $rotateVal = 270 }
         Write-Host "Applying metadata rotation ($rotateVal degrees) and copying streams..." -ForegroundColor Cyan
+        Write-Host "WARNING: Metadata rotation only changes playback orientation, not actual pixel dimensions." -ForegroundColor Yellow
+        Write-Host "The output file will still be $width x $height; players that respect rotation will display it as $height x $width." -ForegroundColor Yellow
         Write-Host "Note: Not all containers honor rotate metadata." -ForegroundColor Yellow
         $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-c', 'copy', '-metadata:s:v:0', "rotate=$rotateVal", $output)
     } else {
