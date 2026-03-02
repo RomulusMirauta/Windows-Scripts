@@ -19,7 +19,7 @@ function Get-Gcd {
 }
 
 # Replace or remove characters that are invalid in Windows filenames
-function Sanitize-FileName {
+function ConvertTo-FileName {
     param(
         [string]$Name
     )
@@ -30,7 +30,7 @@ function Sanitize-FileName {
     return $out
 }
 
-Write-Host "Video Format Editor" -ForegroundColor Gray
+Write-Host "Aspect Ratio Resizer" -ForegroundColor Gray
 Write-Host ""
 
 # Ensure ffmpeg exists
@@ -261,7 +261,7 @@ if ($method -eq '0' -and -not $isRotationOnly) {
 
 if ($method -eq '0' -and $isRotationOnly) {
     $label = "$($target.Label)_rotated"
-    $safeLabel = Sanitize-FileName -Name $label
+    $safeLabel = ConvertTo-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
@@ -290,7 +290,7 @@ if ($method -eq '0' -and $isRotationOnly) {
         if ($outW -lt 2) { $outW = 2 }
         if ($outH -lt 2) { $outH = 2 }
         $label = "$($target.Label)_${outW}x${outH}"
-        $safeLabel = Sanitize-FileName -Name $label
+        $safeLabel = ConvertTo-FileName -Name $label
         $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
         $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
         $output = $info.Output
@@ -318,7 +318,7 @@ if ($method -eq '0' -and $isRotationOnly) {
     if ($outH -lt 2) { $outH = 2 }
 
     $label = "$($target.Label)_${outW}x${outH}"
-    $safeLabel = Sanitize-FileName -Name $label
+    $safeLabel = ConvertTo-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
