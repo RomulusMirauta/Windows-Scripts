@@ -5,6 +5,19 @@ function Wait-ForUser {
 	Read-Host -Prompt $Message | Out-Null
 }
 
+function Get-Gcd {
+    param(
+        [int]$a,
+        [int]$b
+    )
+    while ($b -ne 0) {
+        $t = $b
+        $b = $a % $b
+        $a = $t
+    }
+    return [math]::Abs($a)
+}
+
 Write-Host "Video Trimmer (seconds)" -ForegroundColor Gray
 Write-Host ""
 
@@ -109,6 +122,36 @@ $inputFile = $sourceMatches[0]
 
 # Store the full path as a plain string to safely handle spaces or special chars
 $inputPath = [string]$inputFile.FullName
+
+Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor White
+
+# Get input resolution and duration
+$probe = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x $inputPath
+if ($probe) {
+    $parts = $probe -split 'x'
+    $width = [int]$parts[0]
+    $height = [int]$parts[1]
+    
+    $g = Get-Gcd -a $width -b $height
+    $ratioW = [int]($width / $g)
+    $ratioH = [int]($height / $g)
+    
+    Write-Host "Resolution: $width x $height" -ForegroundColor White
+    Write-Host "Aspect ratio (approximated): $ratioW`:$ratioH" -ForegroundColor White
+}
+
+# Get video duration
+$durationRaw = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputPath
+if ($durationRaw) {
+    $duration = [double]$durationRaw
+    $hours = [int]($duration / 3600)
+    $minutes = [int](($duration % 3600) / 60)
+    $seconds = [int]($duration % 60)
+    $durationFormatted = "{0:D2}:{1:D2}:{2:D2}" -f $hours, $minutes, $seconds
+    Write-Host "Length: $durationFormatted ($([math]::Round($duration, 2))s)" -ForegroundColor White
+}
+
+Write-Host ""
 
 # Choose trim method
 Write-Host ""
