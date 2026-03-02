@@ -252,6 +252,7 @@ if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
 }
 
 $trimLabel = if ($trimChoice -eq '0') { 'beginning' } elseif ($trimChoice -eq '1') { 'end' } else { 'both' }
+$methodLabel = if ($trimMethod -eq '0') { 'fast' } else { 're-encode' }
 
 # Create output directory named "<BaseName>_trimmed" next to the input file
 $outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_trimmed")
@@ -288,7 +289,7 @@ function Resolve-OutputPathAndSwitch {
     }
 }
 if ($trimChoice -eq '0') {
-    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}$($inputFile.Extension)"
+    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}_${methodLabel}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host "" 
     Write-Host "Trimming $trimSecondsStart second(s) from the beginning..."
@@ -302,7 +303,7 @@ if ($trimChoice -eq '0') {
         & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c:v libx264 -c:a aac $output
     }
 } elseif ($trimChoice -eq '1') {
-    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}$($inputFile.Extension)"
+    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}_${methodLabel}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host ""
     Write-Host "Trimming $trimSecondsEnd second(s) from the end..."
@@ -317,7 +318,7 @@ if ($trimChoice -eq '0') {
         & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
     }
 } else {
-    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end$($inputFile.Extension)"
+    $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end_${methodLabel}$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     Write-Host ""
     Write-Host "Trimming $trimSecondsStart second(s) from the beginning and $trimSecondsEnd second(s) from the end..."
