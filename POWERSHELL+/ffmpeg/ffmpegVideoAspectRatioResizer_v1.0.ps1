@@ -210,6 +210,9 @@ $rth = [int]($th / $g2)
 # Determine if rotation-only can achieve target (swap of input reduced ratio)
 $isRotationOnly = ($rtw -eq $ratioH -and $rth -eq $ratioW)
 
+# Check if target ratio matches current ratio (no conversion needed)
+$isSameAspect = ($rtw -eq $ratioW -and $rth -eq $ratioH)
+
 function Resolve-OutputPathAndSwitch {
     param(
         [string]$OutputDir,
@@ -253,14 +256,14 @@ function Invoke-FFmpeg {
 $outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_AspectRatioResizer")
 if (-not (Test-Path -Path $outputDir)) { New-Item -Path $outputDir -ItemType Directory | Out-Null }
 
-if ($method -eq '0' -and -not $isRotationOnly) {
+if ($method -eq '0' -and -not $isRotationOnly -and -not $isSameAspect) {
     Write-Host "Fast method (metadata rotation) cannot produce the selected aspect ratio for this input." -ForegroundColor Yellow
     Write-Host "Falling back to re-encode method." -ForegroundColor Yellow
     $method = '1'
 }
 
-if ($method -eq '0' -and $isRotationOnly) {
-    $label = "$($target.Label)_rotated_fast"
+if ($method -eq '0' -and ($isRotationOnly -or $isSameAspect)) {
+    $label = "$($target.Label)_fast"
     $safeLabel = Sanitize-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
@@ -268,17 +271,21 @@ if ($method -eq '0' -and $isRotationOnly) {
     $overwriteSwitch = $info.Switch
 
     # Determine rotation value: rotate 90 if input is landscape -> target portrait, else 270
-    if ($width -gt $height -and $th -gt $tw) { $rotateVal = 90 } else { $rotateVal = 270 }
-
-    Write-Host "Applying metadata rotation ($rotateVal degrees) and copying streams..." -ForegroundColor Cyan
-    Write-Host "Note: Not all containers honor rotate metadata." -ForegroundColor Yellow
-    $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-c', 'copy', '-metadata:s:v:0', "rotate=$rotateVal", $output)
+    if ($isRotationOnly) {
+        if ($width -gt $height -and $th -gt $tw) { $rotateVal = 90 } else { $rotateVal = 270 }
+        Write-Host "Applying metadata rotation ($rotateVal degrees) and copying streams..." -ForegroundColor Cyan
+        Write-Host "Note: Not all containers honor rotate metadata." -ForegroundColor Yellow
+        $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-c', 'copy', '-metadata:s:v:0', "rotate=$rotateVal", $output)
+    } else {
+        Write-Host "Aspect ratio matches current video; using fast stream copy..." -ForegroundColor Cyan
+        $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-c', 'copy', $output)
+    }
     Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
     $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     $LASTEXITCODE = $rc
 
     if ($rc -ne 0) {
-        Write-Host "Fast (metadata) method failed; falling back to re-encode." -ForegroundColor Yellow
+        Write-Host "Fast method failed; falling back to re-encode." -ForegroundColor Yellow
         # Build re-encode args (same logic as below)
         if ($tw -gt $th) {
             $outW = [int]([math]::Round([double]([math]::Max($width, $height))))
