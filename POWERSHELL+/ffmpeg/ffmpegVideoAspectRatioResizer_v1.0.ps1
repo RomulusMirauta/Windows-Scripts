@@ -182,7 +182,22 @@ foreach ($k in $formats.Keys | Sort-Object) {
 $targetChoice = $null
 while (-not $targetChoice) {
     $choice = Read-Host -Prompt "`nEnter choice (0-6)"
-    if ($choice -in $formats.Keys) { $targetChoice = $choice } else { Write-Host "Invalid input. Please enter a number between 0 and 6." -ForegroundColor Yellow }
+    if ($choice -in $formats.Keys) {
+        # Check if this aspect ratio matches the current video
+        $testTarget = $formats[$choice]
+        $g2Test = Get-Gcd -a $testTarget.W -b $testTarget.H
+        $rtwTest = [int]($testTarget.W / $g2Test)
+        $rthTest = [int]($testTarget.H / $g2Test)
+        
+        if ($rtwTest -eq $ratioW -and $rthTest -eq $ratioH) {
+            Write-Host "`nWARNING: Selected format has the same aspect ratio as the current video ($ratioW`:$ratioH)." -ForegroundColor Yellow
+            Write-Host "No conversion is needed. Please select a different format." -ForegroundColor Yellow
+        } else {
+            $targetChoice = $choice
+        }
+    } else {
+        Write-Host "Invalid input. Please enter a number between 0 and 6." -ForegroundColor Yellow
+    }
 }
 
 $target = $formats[$targetChoice]
