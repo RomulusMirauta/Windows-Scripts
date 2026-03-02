@@ -15,8 +15,8 @@
 
 ## Table of Contents
 I. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Script for creating a Virtual Drive from an ISO Image - using PowerShell](#i-script-for-creating-a-virtual-drive-from-an-iso-image---using-powershell) <br>
-II. &nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#ii-autoclicker---using-autohotkey) <br>
-III. &nbsp;&nbsp;&nbsp;&nbsp;[Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell](#iii-script-for-converting-video-files-to-gifs-for-github-repos-demos---using-powershell) <br>
+II. &nbsp;&nbsp;&nbsp;&nbsp;[AutoClicker - using AutoHotkey](#ii-autoclicker---using-autohotkey) <br>
+III. &nbsp;&nbsp;&nbsp;[Script for converting video files to GIFs for GitHub REPOs DEMOs - using PowerShell](#iii-script-for-converting-video-files-to-gifs-for-github-repos-demos---using-powershell) <br>
 IV. &nbsp;&nbsp;&nbsp;[Script for trimming video files by seconds - using PowerShell](#iv-script-for-trimming-video-files-by-seconds---using-powershell) <br>
 V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using PowerShell](#v-script-for-resizing-video-aspect-ratio---using-powershell) <br>
 
