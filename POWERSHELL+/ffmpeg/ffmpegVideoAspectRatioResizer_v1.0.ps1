@@ -30,7 +30,7 @@ function ConvertTo-FileName {
     return $out
 }
 
-Write-Host "Aspect Ratio Resizer" -ForegroundColor Gray
+Write-Host "Video Aspect Ratio Resizer" -ForegroundColor Gray
 Write-Host ""
 
 # Ensure ffmpeg exists
@@ -250,7 +250,7 @@ function Invoke-FFmpeg {
 }
 
 # Prepare output directory and filename
-$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_format")
+$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_AspectRatioResizer")
 if (-not (Test-Path -Path $outputDir)) { New-Item -Path $outputDir -ItemType Directory | Out-Null }
 
 if ($method -eq '0' -and -not $isRotationOnly) {
