@@ -19,7 +19,7 @@ function Get-Gcd {
 }
 
 # Replace or remove characters that are invalid in Windows filenames
-function ConvertTo-FileName {
+function Sanitize-FileName {
     param(
         [string]$Name
     )
@@ -261,7 +261,7 @@ if ($method -eq '0' -and -not $isRotationOnly) {
 
 if ($method -eq '0' -and $isRotationOnly) {
     $label = "$($target.Label)_rotated_fast"
-    $safeLabel = ConvertTo-FileName -Name $label
+    $safeLabel = Sanitize-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
@@ -319,8 +319,6 @@ if ($method -eq '0' -and $isRotationOnly) {
 
     $label = "$($target.Label)_re-encode_${outW}x${outH}"
     $safeLabel = Sanitize-FileName -Name $label
-    $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
-    $safeLabel = ConvertTo-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
