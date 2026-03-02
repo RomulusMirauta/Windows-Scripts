@@ -142,24 +142,29 @@ $ratioW = [int]($width / $g)
 $ratioH = [int]($height / $g)
 
 Write-Host "`nCurrent video resolution: $width x $height" -ForegroundColor Cyan
-Write-Host "Aspect ratio (reduced): $ratioW`:$ratioH" -ForegroundColor Cyan
+Write-Host "Aspect ratio (approximated): $ratioW`:$ratioH" -ForegroundColor Cyan
 Write-Host ""
 
-# Define target formats
+# Define target formats (Label, ratio and optional short Description)
 $formats = @{
-    '0' = @{ Label='Wide 16:9'; W=16; H=9 }
-    '1' = @{ Label='Vertical 9:16'; W=9; H=16 }
-    '2' = @{ Label='Square 1:1'; W=1; H=1 }
-    '3' = @{ Label='Classic 4:3'; W=4; H=3 }
-    '4' = @{ Label='Social 4:5'; W=4; H=5 }
-    '5' = @{ Label='Cinema 21:9'; W=21; H=9 }
-    '6' = @{ Label='Portrait 2:3'; W=2; H=3 }
+    '0' = @{ Label='Wide 16:9'; W=16; H=9; Desc='YouTube and streaming sites' }
+    '1' = @{ Label='Vertical 9:16'; W=9; H=16; Desc='Instagram Reels and TikTok' }
+    '2' = @{ Label='Square 1:1'; W=1; H=1; Desc='Instagram posts' }
+    '3' = @{ Label='Classic 4:3'; W=4; H=3; Desc=$null }
+    '4' = @{ Label='Social 4:5'; W=4; H=5; Desc=$null }
+    '5' = @{ Label='Cinema 21:9'; W=21; H=9; Desc=$null }
+    '6' = @{ Label='Portrait 2:3'; W=2; H=3; Desc=$null }
 }
 
 Write-Host "Select target format:" -ForegroundColor Cyan
 foreach ($k in $formats.Keys | Sort-Object) {
     $f = $formats[$k]
-    Write-Host "[$k] $($f.Label)"
+    if ($f.Desc) {
+        $line = "[$k] $($f.Label) ($($f.Desc))"
+    } else {
+        $line = "[$k] $($f.Label)"
+    }
+    Write-Host $line
 }
 
 $targetChoice = $null
