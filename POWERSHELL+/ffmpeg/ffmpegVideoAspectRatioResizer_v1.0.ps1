@@ -19,7 +19,7 @@ function Get-Gcd {
 }
 
 # Replace or remove characters that are invalid in Windows filenames
-function Sanitize-FileName {
+function SanitizeFileName {
     param(
         [string]$Name
     )
@@ -282,7 +282,7 @@ if ($method -eq '0' -and -not $isRotationOnly -and -not $isSameAspect) {
 
 if ($method -eq '0' -and ($isRotationOnly -or $isSameAspect)) {
     $label = "$($target.Label)_fast"
-    $safeLabel = Sanitize-FileName -Name $label
+    $safeLabel = SanitizeFileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
@@ -317,7 +317,7 @@ if ($method -eq '0' -and ($isRotationOnly -or $isSameAspect)) {
         if ($outW -lt 2) { $outW = 2 }
         if ($outH -lt 2) { $outH = 2 }
         $label = "$($target.Label)_re-encode_${outW}x${outH}"
-        $safeLabel = Sanitize-FileName -Name $label
+        $safeLabel = SanitizeFileName -Name $label
         $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
         $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
         $output = $info.Output
@@ -345,7 +345,7 @@ if ($method -eq '0' -and ($isRotationOnly -or $isSameAspect)) {
     if ($outH -lt 2) { $outH = 2 }
 
     $label = "$($target.Label)_re-encode_${outW}x${outH}"
-    $safeLabel = Sanitize-FileName -Name $label
+    $safeLabel = SanitizeFileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
