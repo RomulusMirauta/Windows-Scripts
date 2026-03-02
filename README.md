@@ -129,11 +129,11 @@ V. &nbsp;&nbsp;&nbsp;&nbsp;[Script for resizing video aspect ratio - using Power
 
 ![AutoClicker Demo](DEMOs/AutoClicker.gif)
 
-![AutoClicker Demo](DEMOs/output1280.gif)
+<!-- ![AutoClicker Demo](DEMOs/output1280.gif)
 
 ![AutoClicker Demo](DEMOs/output1600.gif)
 
-![AutoClicker Demo](DEMOs/output1920.gif)
+![AutoClicker Demo](DEMOs/output1920.gif) -->
 
 
 
