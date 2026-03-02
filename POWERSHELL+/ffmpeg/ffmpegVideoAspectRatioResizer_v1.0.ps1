@@ -189,7 +189,7 @@ $target = $formats[$targetChoice]
 $tw = $target.W
 $th = $target.H
 
-Write-Host "`nSelected: $($target.Label) ($tw`:$th)" -ForegroundColor Green
+Write-Host "`nSelected: $($target.Label)" -ForegroundColor Green
 
 # Ask fast (metadata rotation) or re-encode
 Write-Host "`n`nChoose method:" -ForegroundColor Cyan
@@ -289,8 +289,8 @@ if ($method -eq '0' -and $isRotationOnly) {
         }
         if ($outW -lt 2) { $outW = 2 }
         if ($outH -lt 2) { $outH = 2 }
-        $label = "$($target.Label)_${outW}x${outH}_re-encode"
-        $safeLabel = ConvertTo-FileName -Name $label
+        $label = "$($target.Label)_re-encode_${outW}x${outH}"
+        $safeLabel = Sanitize-FileName -Name $label
         $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
         $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
         $output = $info.Output
@@ -317,7 +317,9 @@ if ($method -eq '0' -and $isRotationOnly) {
     if ($outW -lt 2) { $outW = 2 }
     if ($outH -lt 2) { $outH = 2 }
 
-    $label = "$($target.Label)_${outW}x${outH}"
+    $label = "$($target.Label)_re-encode_${outW}x${outH}"
+    $safeLabel = Sanitize-FileName -Name $label
+    $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $safeLabel = ConvertTo-FileName -Name $label
     $filename = "$($inputFile.BaseName)_$safeLabel$($inputFile.Extension)"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
