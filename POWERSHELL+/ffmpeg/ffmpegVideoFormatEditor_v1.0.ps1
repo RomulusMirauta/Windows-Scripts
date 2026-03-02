@@ -18,6 +18,18 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
+# Replace or remove characters that are invalid in Windows filenames
+function Sanitize-FileName {
+    param(
+        [string]$Name
+    )
+    if (-not $Name) { return $Name }
+    # replace forbidden characters with hyphen, collapse whitespace to single underscore
+    $out = $Name -replace '[:\\/\?\*"<>\|]', '-'
+    $out = $out -replace '\s+', '_'
+    return $out
+}
+
 Write-Host "Video Format Editor" -ForegroundColor Gray
 Write-Host ""
 
@@ -238,7 +250,8 @@ if ($method -eq '0' -and -not $isRotationOnly) {
 
 if ($method -eq '0' -and $isRotationOnly) {
     $label = "$($target.Label)_rotated"
-    $filename = "${($inputFile.BaseName)}_${label}${($inputFile.Extension)}"
+    $safeLabel = Sanitize-FileName -Name $label
+    $filename = "${($inputFile.BaseName)}_${safeLabel}${($inputFile.Extension)}"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
@@ -264,7 +277,8 @@ if ($method -eq '0' -and $isRotationOnly) {
     if ($outH -lt 2) { $outH = 2 }
 
     $label = "$($target.Label)_${outW}x${outH}"
-    $filename = "${($inputFile.BaseName)}_${label}${($inputFile.Extension)}"
+    $safeLabel = Sanitize-FileName -Name $label
+    $filename = "${($inputFile.BaseName)}_${safeLabel}${($inputFile.Extension)}"
     $info = Resolve-OutputPathAndSwitch -OutputDir $outputDir -Filename $filename
     $output = $info.Output
     $overwriteSwitch = $info.Switch
