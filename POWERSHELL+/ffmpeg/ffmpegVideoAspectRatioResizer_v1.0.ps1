@@ -153,9 +153,9 @@ $g = Get-Gcd -a $width -b $height
 $ratioW = [int]($width / $g)
 $ratioH = [int]($height / $g)
 
-Write-Host "`nCurrent video resolution: $width x $height" -ForegroundColor Cyan
-Write-Host "Aspect ratio (approximated): $ratioW`:$ratioH" -ForegroundColor Cyan
-Write-Host ""
+Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor White
+Write-Host "Resolution: $width x $height" -ForegroundColor White
+Write-Host "Aspect ratio (approximated): $ratioW`:$ratioH`n`n" -ForegroundColor White
 
 # Define target formats (Label, ratio and optional short Description)
 $formats = @{
