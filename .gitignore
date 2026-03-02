@@ -6,12 +6,12 @@ script.sh
 
 /tools
 
-/demo_trimmed
+demo_trimmed/
 *.mkv
 *.mp4
 *.gif
 
 BackupGitHubAllRepos_RomulusMirauta.ps1
 
-/demo
-2026-03-02 01-28-43_trimmed
+demo/
+2026-03-02 01-28-43_trimmed/
