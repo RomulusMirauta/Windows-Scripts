@@ -239,7 +239,7 @@ function Resolve-OutputPathAndSwitch {
 }
 
 # Helper to run ffmpeg with an argument array and show the full command for debugging
-function Run-FFmpeg {
+function Invoke-FFmpeg {
     param(
         [string[]]$FfmpegArgs
     )
@@ -274,7 +274,7 @@ if ($method -eq '0' -and $isRotationOnly) {
     Write-Host "Note: Not all containers honor rotate metadata." -ForegroundColor Yellow
     $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-c', 'copy', '-metadata:s:v:0', "rotate=$rotateVal", $output)
     Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
-    $rc = Run-FFmpeg -FfmpegArgs $ffArgs
+    $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     $LASTEXITCODE = $rc
 
     if ($rc -ne 0) {
@@ -300,7 +300,7 @@ if ($method -eq '0' -and $isRotationOnly) {
         Write-Host "Re-encoding to $outW x $outH using scale+pad..." -ForegroundColor Cyan
         $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
         Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
-        $rc = Run-FFmpeg -FfmpegArgs $ffArgs
+        $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
         $LASTEXITCODE = $rc
     }
 
@@ -331,7 +331,7 @@ if ($method -eq '0' -and $isRotationOnly) {
     Write-Host "Re-encoding to $outW x $outH using scale+pad..." -ForegroundColor Cyan
     $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
     Write-Host "FFmpeg args: " ($ffArgs -join ' | ') -ForegroundColor DarkGray
-    $rc = Run-FFmpeg -FfmpegArgs $ffArgs
+    $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     $LASTEXITCODE = $rc
 }
 
