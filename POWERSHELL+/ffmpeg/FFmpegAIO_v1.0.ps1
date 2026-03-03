@@ -1,1 +1,1 @@
-Write-Host "FFmpeg All-In-One Script Toolkit`n" -ForegroundColor Gray
+Write-Host "FFmpeg All-In-One Script`n" -ForegroundColor Gray
