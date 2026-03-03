@@ -198,7 +198,7 @@ $crops = @{
         Width=640; Height=480; X='(iw-640)/2'; Y='(ih-480)/2'
     }
     '1' = @{ 
-        Label='Centered Square Crop'; 
+        Label='AUTO-CROPPER - Centered Crop'; 
         Desc='Variable output, uses smallest dimension';
         Width='ih'; Height='ih'; X='(iw-ih)/2'; Y='0'
     }
