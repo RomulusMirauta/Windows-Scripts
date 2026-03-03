@@ -1588,8 +1588,11 @@ while ($true) {
         foreach ($file in $videoFiles) {
             Write-Host "  - $($file.BaseName)$($file.Extension)" -ForegroundColor Yellow
         }
+        Write-Host ""
     } else {
-        Write-Host "No video files were found in the current folder." -ForegroundColor Yellow
+        Write-Host "`n`nWARNING: No video files were found in the current folder." -ForegroundColor Yellow
+        Write-Host "Supported video file extensions: .mkv, .mp4, .webm, .mov, .avi, .wmv, .flv, .mpeg, .mpg, .m4v, .3gp, .ts, .m2ts, .ogv, .vob" -ForegroundColor Yellow
+        Write-Host "`nPlease add one video file in the current directory, and run the script again or press Enter to re-check." -ForegroundColor Yellow
         Write-Host ""
     }
     
