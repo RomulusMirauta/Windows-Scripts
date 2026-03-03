@@ -93,6 +93,49 @@ function ConsoleWindowMaximizer {
 }
 
 
+# Resize/maximize console window
+ConsoleWindowMaximizer
+
+
+# Helper function to safely build alternatives array
+function Get-AlternativesFromArray {
+    param([array]$DisplayArray, [int]$CurrentIndex)
+    
+    $alternatives = @()
+    for ($i = 0; $i -lt $DisplayArray.Count; $i++) {
+        if ($i -ne $CurrentIndex) {
+            $alternatives += $DisplayArray[$i]
+        }
+    }
+    return $alternatives
+}
+
+
+# Helper function to display parameter with current value and alternatives
+function Show-ParameterOptions {
+    param(
+        [string]$ParameterName,
+        [array]$OptionsArray,
+        [array]$DisplayArray,
+        [int]$CurrentIndex
+    )
+    
+    Write-Host "  $ParameterName`: " -ForegroundColor White -NoNewline
+    if ($CurrentIndex -ge 0) {
+        Write-Host $DisplayArray[$CurrentIndex] -ForegroundColor Green -NoNewline
+        if ($DisplayArray.Count -gt 1) {
+            Write-Host " | " -ForegroundColor DarkGray -NoNewline
+            $alternatives = Get-AlternativesFromArray $DisplayArray $CurrentIndex
+            Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
+        } else {
+            Write-Host "`n"
+        }
+    } else {
+        Write-Host $DisplayArray[0] -ForegroundColor White
+    }
+}
+
+
 # Helper to run FFmpeg with an argument array and show the full command for debugging
 function Invoke-FFmpeg {
     param(
@@ -116,7 +159,7 @@ function Invoke-FFplay {
 }
 
 
-Write-Host "Video Cropper (with auto-detect and preview`n)" -ForegroundColor Gray
+Write-Host "Video Cropper (with auto-detect and preview)`n" -ForegroundColor Gray
 
 
 # Ensure FFmpeg exists
@@ -614,121 +657,6 @@ Write-Host "══════════════════════�
 # BASE W/O INFO
 
 
-
-# Find media files in current directory
-$sourceMatches = Get-ChildItem -File -ErrorAction SilentlyContinue | Where-Object {
-    $supportedExtensions -contains $_.Extension.ToLower()
-}
-
-if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
-    Write-Host "`nWARNING: No video or image files found in the current folder." -ForegroundColor Yellow
-    Write-Host "Supported file extensions: $($supportedExtensions -join ', ')"
-    Write-Host ""
-    Wait-ForUser
-    exit 1
-}
-if ($sourceMatches.Count -gt 1) {
-    Write-Host "`nWARNING: Multiple media files found in the current folder." -ForegroundColor Yellow
-    Write-Host "Please keep only one media file and run the script again." -ForegroundColor Yellow
-    Write-Host ""
-    Wait-ForUser
-    exit 1
-}
-
-$inputFile = $sourceMatches[0]
-$inputPath = [string]$inputFile.FullName
-
-# Get input resolution
-$probe = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0:s=x $inputPath
-if (-not $probe) {
-    Write-Host "ERROR: Could not read video/image stream information from input file." -ForegroundColor Red
-    Wait-ForUser
-    exit 1
-}
-$parts = $probe -split 'x'
-$width = [int]$parts[0]
-$height = [int]$parts[1]
-
-Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
-Write-Host "Resolution: $width x $height" -ForegroundColor Cyan
-Write-Host ""
-
-# Show file/video/audio information (similar to AspectRatioResizer)
-$probeJsonInfo = & ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,r_frame_rate,pix_fmt,bit_rate -of json $inputPath
-$probeAudioInfo = & ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,channels,sample_rate,bit_rate -of json $inputPath
-$probeDurationInfo = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputPath
-
-$videoInfoObj = $null
-$audioInfoObj = $null
-try { if ($probeJsonInfo) { $videoInfoObj = $probeJsonInfo | ConvertFrom-Json } } catch {}
-try { if ($probeAudioInfo) { $audioInfoObj = $probeAudioInfo | ConvertFrom-Json } } catch {}
-
-$durationSeconds = 0
-if ($probeDurationInfo) {
-    try { $durationSeconds = [int][double]$probeDurationInfo } catch {}
-}
-$durationHours = [math]::Floor($durationSeconds / 3600)
-$durationMinutes = [math]::Floor(($durationSeconds % 3600) / 60)
-$durationSecs = $durationSeconds % 60
-$videoDuration = "{0:00}:{1:00}:{2:00}" -f $durationHours, $durationMinutes, $durationSecs
-
-$videoCodec = 'Unknown'
-$videoFps = 'Unknown'
-$pixelFormat = 'Unknown'
-$videoBitrate = 'Unknown'
-
-if ($videoInfoObj -and $videoInfoObj.streams -and $videoInfoObj.streams.Count -gt 0) {
-    $vs = $videoInfoObj.streams[0]
-    if ($vs.codec_name) { $videoCodec = $vs.codec_name }
-    if ($vs.pix_fmt) { $pixelFormat = $vs.pix_fmt }
-    if ($vs.bit_rate) {
-        $videoBitrate = "{0} kbps" -f ([int]$vs.bit_rate / 1000)
-    }
-    if ($vs.r_frame_rate) {
-        $fr = $vs.r_frame_rate -split '/'
-        if ($fr.Count -eq 2 -and [double]$fr[1] -ne 0) {
-            $videoFps = "{0}" -f ([math]::Round(([double]$fr[0] / [double]$fr[1]), 3))
-        }
-    }
-}
-
-$audioCodec = 'None'
-$audioChannels = 'N/A'
-$audioSampleRate = 'N/A'
-$audioBitrate = 'N/A'
-
-if ($audioInfoObj -and $audioInfoObj.streams -and $audioInfoObj.streams.Count -gt 0) {
-    $as = $audioInfoObj.streams[0]
-    if ($as.codec_name) { $audioCodec = $as.codec_name }
-    if ($as.channels) { $audioChannels = [string]$as.channels }
-    if ($as.sample_rate) { $audioSampleRate = "{0} Hz" -f $as.sample_rate }
-    if ($as.bit_rate) { $audioBitrate = "{0} kbps" -f ([int]$as.bit_rate / 1000) }
-}
-
-$fileSizeMB = [math]::Round($inputFile.Length / 1MB, 2)
-
-Write-Host "FILE INFORMATION:" -ForegroundColor Yellow
-Write-Host "  Name: $($inputFile.Name)" -ForegroundColor White
-Write-Host "  Size: $fileSizeMB MB" -ForegroundColor White
-Write-Host "  Duration: $videoDuration" -ForegroundColor White
-
-Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
-Write-Host "  Resolution: ${width}x${height}" -ForegroundColor White
-Write-Host "  Codec: $videoCodec" -ForegroundColor White
-Write-Host "  FPS: $videoFps" -ForegroundColor White
-Write-Host "  Pixel format: $pixelFormat" -ForegroundColor White
-Write-Host "  Bitrate: $videoBitrate" -ForegroundColor White
-
-Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
-if ($audioCodec -eq 'None') {
-    Write-Host "  No audio stream detected" -ForegroundColor Yellow
-} else {
-    Write-Host "  Codec: $audioCodec" -ForegroundColor White
-    Write-Host "  Channels: $audioChannels" -ForegroundColor White
-    Write-Host "  Sample rate: $audioSampleRate" -ForegroundColor White
-    Write-Host "  Bitrate: $audioBitrate" -ForegroundColor White
-}
-Write-Host ""
 
 # ============================================================================
 # PREDEFINED CROPS
