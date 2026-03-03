@@ -391,8 +391,17 @@ function Invoke-VideoTrimmer {
     
     $trimMethod = $null
     while (-not $trimMethod) {
-        Write-Host "Enter choice (0-1) or press Enter for Default: " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-1), or press Enter for Default. Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed (VirtualKeyCode 27)
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
         
         # Check if Enter key was pressed (VirtualKeyCode 13)
         if ($key.VirtualKeyCode -eq 13) {
@@ -419,14 +428,24 @@ function Invoke-VideoTrimmer {
     
     $trimChoice = $null
     while (-not $trimChoice) {
-        Write-Host "Enter choice (0-2): " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-2). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed (VirtualKeyCode 27)
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+        
         $choice = [char]$key.Character
         Write-Host $choice
         if ($choice -in @('0','1','2')) {
             $trimChoice = $choice
         } else {
-            Write-Host "`nInvalid input. Please enter 0, 1, or 2." -ForegroundColor Yellow
+            Write-Host "`nInvalid input. Please enter 0, 1, or 2. Press Escape to cancel workflow. " -ForegroundColor Yellow
         }
     }
     
@@ -630,14 +649,24 @@ function Invoke-VideoCropper {
     Write-Host ""
     $cropChoice = $null
     while (-not $cropChoice) {
-        Write-Host "Enter crop choice (0-8): " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter crop choice (0-8). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed (VirtualKeyCode 27)
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+        
         $choice = [char]$key.Character
         Write-Host $choice
         if ($choice -in $crops.Keys) {
             $cropChoice = $choice
         } else {
-            Write-Host "Invalid input. Please enter a number between 0 and 8." -ForegroundColor Yellow
+            Write-Host "Invalid input. Please enter a number between 0 and 8. Press Escape to cancel workflow. " -ForegroundColor Yellow
         }
     }
     
@@ -667,14 +696,24 @@ function Invoke-VideoCropper {
     
     $codecChoice = $null
     while (-not $codecChoice) {
-        Write-Host "Enter choice (0-3): " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-3). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed (VirtualKeyCode 27)
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+        
         $choice = [char]$key.Character
         Write-Host $choice
         if ($choice -in @('0', '1', '2', '3')) {
             $codecChoice = $choice
         } else {
-            Write-Host "Invalid input. Please enter 0, 1, 2, or 3." -ForegroundColor Yellow
+            Write-Host "Invalid input. Please enter 0, 1, 2, or 3. Press Escape to cancel workflow. " -ForegroundColor Yellow
         }
     }
     
@@ -792,8 +831,18 @@ function Invoke-VideoToGifConverter {
     Write-Host ""
     $selectedScale = $null
     while (-not $selectedScale) {
-        Write-Host "Enter choice (0-$($scaleOptions.Count - 1)) [default: 3]: " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-$($scaleOptions.Count - 1)) [default: 3]. Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed (VirtualKeyCode 27)
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+        
         $choice = [char]$key.Character
         Write-Host $choice
         if ([string]::IsNullOrWhiteSpace($choice)) {
@@ -803,10 +852,10 @@ function Invoke-VideoToGifConverter {
             if ($index -ge 0 -and $index -lt $scaleOptions.Count) {
                 $selectedScale = $scaleOptions[$index].Value
             } else {
-                Write-Host "Invalid input. Please enter a number between 0 and $($scaleOptions.Count - 1)." -ForegroundColor Yellow
+                Write-Host "Invalid input. Please enter a number between 0 and $($scaleOptions.Count - 1). Press Escape to cancel workflow. " -ForegroundColor Yellow
             }
         } else {
-            Write-Host "Invalid input. Please enter a number or press Enter for default." -ForegroundColor Yellow
+            Write-Host "Invalid input. Please enter a number or press Enter for default. Press Escape to cancel workflow. " -ForegroundColor Yellow
         }
     }
     
@@ -944,14 +993,24 @@ function Invoke-VideoAspectRatioResizer {
     Write-Host ""
     $targetChoice = $null
     while (-not $targetChoice) {
-        Write-Host "Enter choice (0-7): " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-7). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed (VirtualKeyCode 27)
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+        
         $choice = [char]$key.Character
         Write-Host $choice
         if ($choice -in $formats.Keys) {
             $targetChoice = $choice
         } else {
-            Write-Host "Invalid input. Please enter a number between 0 and 7." -ForegroundColor Yellow
+            Write-Host "Invalid input. Please enter a number between 0 and 7. Press Escape to cancel workflow. " -ForegroundColor Yellow
         }
     }
     
