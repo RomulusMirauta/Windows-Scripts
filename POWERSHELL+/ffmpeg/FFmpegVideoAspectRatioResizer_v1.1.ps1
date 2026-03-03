@@ -573,9 +573,6 @@ if ($audioCodec) {
     Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
     Write-Host "  No audio stream detected" -ForegroundColor Yellow
 }
-
-Write-Host "`nFILE INFORMATION:" -ForegroundColor Yellow
-Write-Host "  Size: $fileSizeMB MB" -ForegroundColor White
 Write-Host "`n" -NoNewline
 Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
 Write-Host ""
