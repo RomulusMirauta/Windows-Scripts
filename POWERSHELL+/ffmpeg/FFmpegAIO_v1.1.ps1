@@ -1573,6 +1573,24 @@ while ($true) {
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     
+    # Check for video files in current directory
+    $videoExtensions = @("*.mkv", "*.mp4", "*.webm", "*.mov", "*.avi", "*.wmv", "*.flv", "*.mpeg", "*.mpg", "*.m4v", "*.3gp", "*.ts", "*.m2ts", "*.ogv", "*.vob")
+    $videoFiles = Get-ChildItem -Path (Get-Location) -File | Where-Object { $_.Extension -in $videoExtensions -or $videoExtensions -contains ("*" + $_.Extension) }
+    
+    if ($videoFiles.Count -eq 1) {
+        Write-Host "`n`nInput file found: $($videoFiles[0].Name)" -ForegroundColor Green
+        Write-Host ""
+    } elseif ($videoFiles.Count -gt 1) {
+        Write-Host "`n`nWARNING: Multiple video files found in the current folder." -ForegroundColor Yellow
+        Write-Host "Please keep only one video file, and run the script again or press Enter to re-check." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "Found files:" -ForegroundColor Yellow
+        foreach ($file in $videoFiles) {
+            Write-Host "  - $($file.BaseName)$($file.Extension)" -ForegroundColor Yellow
+        }
+        Write-Host ""
+    }
+    
     Write-Host "`n"
     Write-Host "Select a workflow (0-6): " -NoNewline -ForegroundColor Gray
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
