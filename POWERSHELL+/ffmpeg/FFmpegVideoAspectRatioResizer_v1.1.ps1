@@ -482,8 +482,8 @@ foreach ($opt in $pixOptions) {
 $pixCurrentIdx = [array]::IndexOf($pixOptions, $pixFormat)
 Show-ParameterOptions "Pixel format" $pixOptions $pixDisplay $pixCurrentIdx
 
-# Color Space display (sorted alphabetically)
-$colorOptions = @("bt601", "bt709", "bt2020-10", "bt2020-12", "srgb")
+# Color Space display (sorted by visual fidelity/resolution: low → high)
+$colorOptions = @("bt601", "srgb", "bt709", "bt2020-10", "bt2020-12")
 $colorDisplay = @()
 foreach ($opt in $colorOptions) {
     if ($colorSpace -eq $opt) {
