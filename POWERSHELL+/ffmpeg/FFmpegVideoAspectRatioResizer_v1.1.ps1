@@ -19,15 +19,58 @@ function Get-Gcd {
 }
 
 function Maximize-ConsoleWindow {
-    # Maximize PowerShell window
+    # Maximize PowerShell window - aggressive approach for right-click "Run with PowerShell"
     try {
-        $console = [System.Console]
-        $console.WindowWidth = [System.Console]::LargestWindowWidth
-        $console.WindowHeight = [System.Console]::LargestWindowHeight
-    } catch {
-        # If direct method fails, try alternative
-        mode con: cols=200 lines=50 2>$null | Out-Null
-    }
+        $windowHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+        
+        if ($windowHandle -ne 0) {
+            Add-Type -TypeDefinition @"
+                using System;
+                using System.Runtime.InteropServices;
+                public class WindowAPI {
+                    [DllImport("user32.dll", SetLastError = true)]
+                    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+                    
+                    [DllImport("user32.dll", SetLastError = true)]
+                    public static extern bool SetForegroundWindow(IntPtr hWnd);
+                    
+                    [DllImport("user32.dll", SetLastError = true)]
+                    public static extern bool IsIconic(IntPtr hWnd);
+                    
+                    [DllImport("user32.dll", SetLastError = true)]
+                    public static extern IntPtr GetForegroundWindow();
+                }
+"@ -ErrorAction SilentlyContinue
+            
+            # Bring window to foreground
+            [WindowAPI]::SetForegroundWindow($windowHandle) | Out-Null
+            Start-Sleep -Milliseconds 100
+            
+            # Maximize window (ShowWindow command 3 = SW_MAXIMIZE)
+            [WindowAPI]::ShowWindow($windowHandle, 3) | Out-Null
+            Start-Sleep -Milliseconds 100
+            
+            # Ensure it's maximized by trying again
+            [WindowAPI]::ShowWindow($windowHandle, 3) | Out-Null
+            Start-Sleep -Milliseconds 100
+        }
+    } catch { }
+
+    # Method 2: Try PowerShell host UI
+    try {
+        $pshost = Get-Host
+        $pswindow = $pshost.UI.RawUI
+        
+        # Set to maximum available size
+        $maxWidth = $pswindow.BufferSize.Width
+        $maxHeight = $pswindow.BufferSize.Height
+        
+        if ($maxWidth -lt 200) { $maxWidth = 200 }
+        if ($maxHeight -lt 50) { $maxHeight = 50 }
+        
+        $pswindow.BufferSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+        $pswindow.WindowSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+    } catch { }
 }
 
 # Replace or remove characters that are invalid in Windows filenames
@@ -177,7 +220,8 @@ if ($videoInfo.streams -and $videoInfo.streams.Count -gt 0) {
     $videoCodec = $vstream.codec_name
     $pixFormat = $vstream.pix_fmt
     $colorSpace = $vstream.color_space
-    $colorDepth = if ($vstream.bits_per_raw_sample) { "$($vstream.bits_per_raw_sample)-bit" } else { "8-bit" }
+    $colorDepthBits = $vstream.bits_per_raw_sample
+    $colorDepth = if ($colorDepthBits) { "$colorDepthBits-bit" } else { "8-bit" }
     $videoBitrate = if ($vstream.bit_rate) { 
         $br = [int]$vstream.bit_rate / 1000
         "$br kbps"
@@ -217,7 +261,24 @@ Write-Host "  Codec: $videoCodec" -ForegroundColor White
 Write-Host "  Bitrate: $videoBitrate" -ForegroundColor White
 Write-Host "  Pixel format: $pixFormat" -ForegroundColor White
 Write-Host "  Color space: $colorSpace" -ForegroundColor White
-Write-Host "  Color depth: $colorDepth" -ForegroundColor White
+Write-Host "  Color depth: " -ForegroundColor White -NoNewline
+$depthOptions = @("8-bit", "10-bit", "12-bit", "16-bit")
+$depthDisplay = @()
+foreach ($opt in $depthOptions) {
+    if ($opt -eq $colorDepth) {
+        $depthDisplay += "$opt (current)"
+    } else {
+        $depthDisplay += $opt
+    }
+}
+$currentIdx = $depthOptions.IndexOf($colorDepth)
+if ($currentIdx -ge 0) {
+    Write-Host $depthDisplay[0] -ForegroundColor Green -NoNewline
+    Write-Host " | " -ForegroundColor DarkGray -NoNewline
+    Write-Host ($depthDisplay[1..($depthDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
+} else {
+    Write-Host $colorDepth -ForegroundColor White
+}
 
 if ($audioCodec) {
     Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
