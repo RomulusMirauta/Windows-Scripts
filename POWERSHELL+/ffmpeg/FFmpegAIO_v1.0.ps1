@@ -925,11 +925,21 @@ while ($true) {
     Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "[0] Video Trimmer (Length - Seconds - From Start/End/Both)" -ForegroundColor Yellow
-    Write-Host "[1] Video Cropper (Dimensions - Remove Black Bars/Zoom-in)" -ForegroundColor Yellow
-    Write-Host "[2] Video to GIF Converter (Create web-friendly loops)" -ForegroundColor Yellow
-    Write-Host "[3] Video Aspect Ratio Resizer (Adapt for different screens/Use cases)" -ForegroundColor Yellow
-    Write-Host "[4] FFmpeg Manager (Install/Uninstall)" -ForegroundColor Yellow
+    Write-Host "[0] Video Trimmer" -ForegroundColor Yellow
+    Write-Host "     Remove unwanted sections from beginning, end, or both (in seconds)" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-Host "[1] Video Cropper" -ForegroundColor Yellow
+    Write-Host "     Cut rectangular sections, remove black bars, or zoom in (in pixels)" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-Host "[2] Video to GIF Converter" -ForegroundColor Yellow
+    Write-Host "     Convert video clips into animated GIFs = GitHub/Web/Social Media-friendly loops" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Yellow
+    Write-Host "     Adapt videos for different use cases - screens/platforms (vertical/horizontal/square)" -ForegroundColor DarkGray
+    Write-Host ""
+    Write-Host "[4] FFmpeg Manager" -ForegroundColor Yellow
+    Write-Host "     Install or uninstall FFmpeg" -ForegroundColor DarkGray
+    Write-Host ""
     Write-Host "[5] Exit" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
