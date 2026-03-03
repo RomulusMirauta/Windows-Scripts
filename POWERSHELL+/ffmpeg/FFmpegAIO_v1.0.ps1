@@ -162,70 +162,73 @@ function Resolve-OutputFileOverwrite {
 # ============================================================================
 
 function Invoke-FFmpegManager {
-    Write-Host "`n"
-    Write-Host "FFmpeg Manager" -ForegroundColor Cyan
-    Write-Host ""
-    
-    # Check FFmpeg status
-    $ffmpegInstalled = Get-Command FFmpeg -ErrorAction SilentlyContinue
-    
-    if ($ffmpegInstalled) {
-        Write-Host "Status: " -ForegroundColor White -NoNewline
-        Write-Host "✓ INSTALLED" -ForegroundColor Green
+    while ($true) {
+        Write-Host "`n"
+        Write-Host "FFmpeg Manager" -ForegroundColor Cyan
+        Write-Host ""
         
-        # Get version
-        try {
-            $versionOutput = & ffmpeg -version 2>&1 | Select-Object -First 1
-            Write-Host "Version: " -ForegroundColor White -NoNewline
-            Write-Host $versionOutput -ForegroundColor Green
-        } catch {
-            Write-Host "Version: " -ForegroundColor White -NoNewline
-            Write-Host "(unable to retrieve)" -ForegroundColor Yellow
-        }
+        # Check FFmpeg status
+        $ffmpegInstalled = Get-Command FFmpeg -ErrorAction SilentlyContinue
         
-        # Get path
-        try {
-            $ffmpegPath = (Get-Command FFmpeg).Source
-            Write-Host "Path: " -ForegroundColor White -NoNewline
-            Write-Host $ffmpegPath -ForegroundColor Green
-        } catch {
-            Write-Host "Path: " -ForegroundColor White -NoNewline
-            Write-Host "(system PATH)" -ForegroundColor Yellow
-        }
-    } else {
-        Write-Host "Status: " -ForegroundColor White -NoNewline
-        Write-Host "✗ NOT INSTALLED" -ForegroundColor Red
-    }
-    
-    Write-Host ""
-    Write-Host "Options:" -ForegroundColor Cyan
-    Write-Host "[i] Install FFmpeg"
-    Write-Host "[u] Uninstall FFmpeg"
-    if ($ffmpegInstalled) {
-        Write-Host "[p] Update FFmpeg"
-    }
-    Write-Host "[q] Quit"
-    Write-Host ""
-    
-    $managerChoice = Read-Host -Prompt "Select option"
-    
-    switch ($managerChoice) {
-        'i' { Install-FFmpeg }
-        'u' { Uninstall-FFmpeg }
-        'p' {
-            if ($ffmpegInstalled) {
-                Update-FFmpeg
-            } else {
-                Write-Host ""
-                Write-Host "FFmpeg is not installed. Use option [i] to install first." -ForegroundColor Yellow
-                Write-Host ""
+        if ($ffmpegInstalled) {
+            Write-Host "Status: " -ForegroundColor White -NoNewline
+            Write-Host "✓ INSTALLED" -ForegroundColor Green
+            
+            # Get version
+            try {
+                $versionOutput = & ffmpeg -version 2>&1 | Select-Object -First 1
+                Write-Host "Version: " -ForegroundColor White -NoNewline
+                Write-Host $versionOutput -ForegroundColor Green
+            } catch {
+                Write-Host "Version: " -ForegroundColor White -NoNewline
+                Write-Host "(unable to retrieve)" -ForegroundColor Yellow
             }
+            
+            # Get path
+            try {
+                $ffmpegPath = (Get-Command FFmpeg).Source
+                Write-Host "Path: " -ForegroundColor White -NoNewline
+                Write-Host $ffmpegPath -ForegroundColor Green
+            } catch {
+                Write-Host "Path: " -ForegroundColor White -NoNewline
+                Write-Host "(system PATH)" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "Status: " -ForegroundColor White -NoNewline
+            Write-Host "✗ NOT INSTALLED" -ForegroundColor Red
         }
-        'q' { Write-Host "" }
-        default {
-            Write-Host ""
-            Write-Host "Invalid choice." -ForegroundColor Red
-            Write-Host ""
+        
+        Write-Host ""
+        Write-Host "Options:" -ForegroundColor Cyan
+        Write-Host "[i] Install FFmpeg"
+        Write-Host "[u] Uninstall FFmpeg"
+        if ($ffmpegInstalled) {
+            Write-Host "[p] Update FFmpeg"
+        }
+        Write-Host "[q] Quit"
+        Write-Host ""
+        
+        $managerChoice = Read-Host -Prompt "Select option"
+        
+        switch ($managerChoice) {
+            'i' { Install-FFmpeg }
+            'u' { Uninstall-FFmpeg }
+            'p' {
+                if ($ffmpegInstalled) {
+                    Update-FFmpeg
+                } else {
+                    Write-Host ""
+                    Write-Host "FFmpeg is not installed. Use option [i] to install first." -ForegroundColor Yellow
+                    Write-Host ""
+                }
+            }
+            'q' { return }
+            default {
+                Write-Host ""
+                Write-Host "Invalid choice. Please enter i, u, p, or q." -ForegroundColor Yellow
+                Write-Host ""
+                continue
+            }
         }
     }
 }
