@@ -385,7 +385,7 @@ function Invoke-VideoTrimmer {
     
     # Trim method
     Write-Host "Select trim method:" -ForegroundColor Cyan
-    Write-Host "[0] `e[3mthis is italicized`e[23m, ****`e[3mDefault`e[23m *Default* Re-encode (frame-accurate, best results)"
+    Write-Host "[0] `e[3mthis is italicized`e[23m, ***`e[3mDefault`e[23m *Default* Re-encode (frame-accurate, best results)"
     Write-Host "[1] Fast (stream copy, no re-encoding)"
     Write-Host ""
     
