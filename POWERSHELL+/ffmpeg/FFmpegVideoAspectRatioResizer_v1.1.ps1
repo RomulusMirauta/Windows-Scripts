@@ -328,6 +328,20 @@ Write-Host "`n" -NoNewline
 Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
 Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
 
+# File Extension display (all supported video formats)
+$videoExtensions = @('.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv', '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts', '.m2ts', '.ogv', '.vob')
+$currentExt = $inputFile.Extension.ToLower()
+$extDisplay = @()
+foreach ($ext in $videoExtensions) {
+    if ($ext -eq $currentExt) {
+        $extDisplay += $ext
+    } else {
+        $extDisplay += $ext
+    }
+}
+$extIdx = [array]::IndexOf($videoExtensions, $currentExt)
+Show-ParameterOptions "Format" $videoExtensions $extDisplay $extIdx
+
 Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
 
 # Resolution display with common standards (sorted low to high)
