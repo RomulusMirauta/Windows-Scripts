@@ -166,16 +166,67 @@ function Invoke-FFmpegManager {
     Write-Host "FFmpeg Manager" -ForegroundColor Cyan
     Write-Host ""
     
-    $managerChoice = Read-Host -Prompt "Install (i) or Uninstall (u) FFmpeg?"
+    # Check FFmpeg status
+    $ffmpegInstalled = Get-Command FFmpeg -ErrorAction SilentlyContinue
     
-    if ($managerChoice -match '^[Ii]$') {
-        Install-FFmpeg
-    } elseif ($managerChoice -match '^[Uu]$') {
-        Uninstall-FFmpeg
+    if ($ffmpegInstalled) {
+        Write-Host "Status: " -ForegroundColor White -NoNewline
+        Write-Host "✓ INSTALLED" -ForegroundColor Green
+        
+        # Get version
+        try {
+            $versionOutput = & ffmpeg -version 2>&1 | Select-Object -First 1
+            Write-Host "Version: " -ForegroundColor White -NoNewline
+            Write-Host $versionOutput -ForegroundColor Green
+        } catch {
+            Write-Host "Version: " -ForegroundColor White -NoNewline
+            Write-Host "(unable to retrieve)" -ForegroundColor Yellow
+        }
+        
+        # Get path
+        try {
+            $ffmpegPath = (Get-Command FFmpeg).Source
+            Write-Host "Path: " -ForegroundColor White -NoNewline
+            Write-Host $ffmpegPath -ForegroundColor Green
+        } catch {
+            Write-Host "Path: " -ForegroundColor White -NoNewline
+            Write-Host "(system PATH)" -ForegroundColor Yellow
+        }
     } else {
-        Write-Host ""
-        Write-Host "Invalid choice." -ForegroundColor Red
-        Write-Host ""
+        Write-Host "Status: " -ForegroundColor White -NoNewline
+        Write-Host "✗ NOT INSTALLED" -ForegroundColor Red
+    }
+    
+    Write-Host ""
+    Write-Host "Options:" -ForegroundColor Cyan
+    Write-Host "[i] Install FFmpeg"
+    Write-Host "[u] Uninstall FFmpeg"
+    if ($ffmpegInstalled) {
+        Write-Host "[p] Update FFmpeg"
+    }
+    Write-Host "[q] Quit"
+    Write-Host ""
+    
+    $managerChoice = Read-Host -Prompt "Select option"
+    
+    switch ($managerChoice) {
+        'i' { Install-FFmpeg }
+        'u' { Uninstall-FFmpeg }
+        'p' {
+            if ($ffmpegInstalled) {
+                Update-FFmpeg
+            } else {
+                Write-Host ""
+                Write-Host "FFmpeg is not installed. Use option [i] to install first." -ForegroundColor Yellow
+                Write-Host ""
+            }
+        }
+        'q' { Write-Host "" }
+        default {
+            Write-Host ""
+            Write-Host "Invalid choice." -ForegroundColor Red
+            Write-Host ""
+        }
     }
 }
 
@@ -235,6 +286,38 @@ function Uninstall-FFmpeg {
     winget uninstall --id Gyan.FFmpeg
     
     Write-Host ""
+    Wait-ForUser
+}
+
+function Update-FFmpeg {
+    Write-Host ""
+    Write-Host "Updating FFmpeg..." -ForegroundColor Cyan
+    Write-Host ""
+    
+    $updateExit = 1
+    
+    if (Get-Command winget -ErrorAction SilentlyContinue) {
+        $proc = Start-Process -FilePath 'winget' -ArgumentList 'upgrade --id Gyan.FFmpeg -e --accept-package-agreements' -Wait -NoNewWindow -PassThru
+        $updateExit = $proc.ExitCode
+    } elseif (Get-Command choco -ErrorAction SilentlyContinue) {
+        $proc = Start-Process -FilePath 'choco' -ArgumentList 'upgrade FFmpeg -y' -Wait -NoNewWindow -PassThru
+        $updateExit = $proc.ExitCode
+    } else {
+        Write-Host "No supported package manager found (winget or choco). Please update FFmpeg manually." -ForegroundColor Yellow
+        Wait-ForUser
+        return
+    }
+    
+    if ($updateExit -eq 0) {
+        Write-Host ""
+        Write-Host "FFmpeg updated successfully." -ForegroundColor Green
+        Write-Host ""
+    } else {
+        Write-Host ""
+        Write-Host "Update failed (exit code $updateExit). Please try again or update manually." -ForegroundColor Red
+        Write-Host ""
+    }
+    
     Wait-ForUser
 }
 
