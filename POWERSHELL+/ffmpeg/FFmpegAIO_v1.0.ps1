@@ -202,18 +202,12 @@ function Invoke-FFmpegManager {
         if ($ffmpegInstalled) {
             Write-Host "[p] Update FFmpeg"
         }
-        Write-Host "[q] Quit workflow and return to Main Menu (or press Escape)"
+        Write-Host "[q] Quit workflow and return to Main Menu"
         Write-Host ""
         
-        Write-Host "Select option (or press Escape): " -NoNewline -ForegroundColor Gray
+        Write-Host "Select option: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-        
-        # Check if Escape key was pressed
-        if ($key.VirtualKeyCode -eq 27) {
-            Write-Host ""
-            return
-        }
-        
+             
         $managerChoice = [char]$key.Character
         Write-Host $managerChoice
         Write-Host ""
