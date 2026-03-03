@@ -335,8 +335,23 @@ $fileSizeMB = [math]::Round($inputFile.Length / 1MB, 2)
 Write-Host "  Size: " -ForegroundColor White -NoNewline
 Write-Host "$fileSizeMB MB" -ForegroundColor Green
 
-# File Extension display (all supported video formats)
-$videoExtensions = @('.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv', '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts', '.m2ts', '.ogv', '.vob')
+# File Extension display (all supported video formats, sorted by visual fidelity/resolution: low → high)
+$videoExtensions = @('.3gp', '.flv', '.wmv', '.avi', '.mpeg', '.mpg', '.vob', '.ts', '.m2ts', '.mov', '.webm', '.m4v', '.mp4', '.mkv', '.ogv')
+
+# .3gp - Mobile format, very low quality
+# .flv - Flash, low quality
+# .wmv - Windows Media, moderate
+# .avi - Older format, moderate
+# .mpeg/.mpg - MPEG-1/2, standard def
+# .vob - DVD (MPEG-2), standard def
+# .ts/.m2ts - Transport Stream, broadcast
+# .mov - QuickTime, variable quality
+# .webm - VP8/VP9, modern, good
+# .m4v - H.264 in MP4, good
+# .mp4 - H.264/H.265, modern, high
+# .mkv - Matroska, most flexible
+# .ogv - Theora, variable quality
+
 $currentExt = $inputFile.Extension.ToLower()
 $extDisplay = @()
 foreach ($ext in $videoExtensions) {
