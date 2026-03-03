@@ -365,16 +365,25 @@ Show-ParameterOptions "Aspect ratio" $aspectOptions $aspectDisplay $aspectIdx
 # Frame rate display with common options
 $fpsOptions = @(23.976, 24, 25, 29.97, 30, 50, 59.94, 60)
 $fpsDisplay = @()
-foreach ($opt in $fpsOptions) {
-    if ([math]::Abs($fps - $opt) -lt 0.1) {
-        $fpsDisplay += "$opt fps (current)"
-    } else {
-        $fpsDisplay += "$opt fps"
+$fpsCurrentIdx = -1
+$minDiff = [double]::MaxValue
+
+# Find the closest FPS match
+for ($i = 0; $i -lt $fpsOptions.Count; $i++) {
+    $diff = [math]::Abs($fps - $fpsOptions[$i])
+    if ($diff -lt $minDiff) {
+        $minDiff = $diff
+        $fpsCurrentIdx = $i
     }
 }
-$fpsCurrentIdx = -1
-for ($i = 0; $i -lt $fpsOptions.Count; $i++) {
-    if ([math]::Abs($fps - $fpsOptions[$i]) -lt 0.1) { $fpsCurrentIdx = $i; break }
+
+# Build display array with only the closest match marked as current
+foreach ($i in 0..($fpsOptions.Count-1)) {
+    if ($i -eq $fpsCurrentIdx) {
+        $fpsDisplay += "$($fpsOptions[$i]) fps (current)"
+    } else {
+        $fpsDisplay += "$($fpsOptions[$i]) fps"
+    }
 }
 Show-ParameterOptions "Frame rate" $fpsOptions $fpsDisplay $fpsCurrentIdx
 
