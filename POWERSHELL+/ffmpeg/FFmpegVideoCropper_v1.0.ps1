@@ -243,6 +243,10 @@ if (Get-Command FFplay -ErrorAction SilentlyContinue) {
     $hasFFplay = $true
 }
 
+
+
+# BASE W/O INFO
+
 # # Supported video file extensions (case-insensitive)
 # $supportedExtensionsForVideo = @(
 #     '.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv',
@@ -251,19 +255,19 @@ if (Get-Command FFplay -ErrorAction SilentlyContinue) {
 # )
 
 # Supported video/image file extensions (case-insensitive)
-$videoExtensions = @(
+$supportedExtensionsForCropping = @(
     '.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv', '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts', '.m2ts', '.ogv', '.vob',
     '.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff', '.webp'
 )
 
 # Find video files in current directory
 $sourceMatches = Get-ChildItem -File -ErrorAction SilentlyContinue | Where-Object {
-    $videoExtensions -contains $_.Extension.ToLower()
+    $supportedExtensionsForCropping -contains $_.Extension.ToLower()
 }
 
 if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
     Write-Host "`nWARNING: No video files found in the current folder." -ForegroundColor Yellow
-    Write-Host "Supported file extensions: $($videoExtensions -join ', ')`n"
+    Write-Host "Supported file extensions: $($supportedExtensionsForCropping -join ', ')`n"
     Wait-ForUser
     exit 1
 }
