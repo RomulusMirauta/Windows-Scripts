@@ -76,6 +76,30 @@ function Get-AlternativesFromArray {
     return $alternatives
 }
 
+# Helper function to display parameter with current value and alternatives
+function Show-ParameterOptions {
+    param(
+        [string]$ParameterName,
+        [array]$OptionsArray,
+        [array]$DisplayArray,
+        [int]$CurrentIndex
+    )
+    
+    Write-Host "  $ParameterName`: " -ForegroundColor White -NoNewline
+    if ($CurrentIndex -ge 0) {
+        Write-Host $DisplayArray[$CurrentIndex] -ForegroundColor Green -NoNewline
+        if ($DisplayArray.Count -gt 1) {
+            Write-Host " | " -ForegroundColor DarkGray -NoNewline
+            $alternatives = Get-AlternativesFromArray $DisplayArray $CurrentIndex
+            Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
+        } else {
+            Write-Host ""
+        }
+    } else {
+        Write-Host $DisplayArray[0] -ForegroundColor White
+    }
+}
+
 # Replace or remove characters that are invalid in Windows filenames
 function SanitizeFileName {
     param(
@@ -307,7 +331,6 @@ Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
 Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
 
 # Resolution display with common standards
-Write-Host "  Resolution: " -ForegroundColor White -NoNewline
 $resolutionOptions = @("3840x2160", "2560x1440", "1920x1080", "1280x720", "854x480", "640x360")
 $resolutionLabels = @("4K", "2K", "1080p", "720p", "480p", "360p")
 $currentRes = "${width}x${height}"
@@ -320,19 +343,12 @@ for ($i = 0; $i -lt $resolutionOptions.Count; $i++) {
     }
 }
 $resIdx = [array]::IndexOf($resolutionOptions, $currentRes)
-if ($resIdx -ge 0) {
-    Write-Host $resDisplay[$resIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($resDisplay[0..($resIdx-1)] + $resDisplay[($resIdx+1)..($resDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host "$width x $height" -ForegroundColor White
-}
+Show-ParameterOptions "Resolution" $resolutionOptions $resDisplay $resIdx
 
 Write-Host "  Duration: " -ForegroundColor White -NoNewline
-Write-Host "$videoDuration ($shortDuration)" -ForegroundColor Cyan
+Write-Host "$videoDuration ($shortDuration)" -ForegroundColor Green
 
 # Aspect Ratio display with common options
-Write-Host "  Aspect ratio: " -ForegroundColor White -NoNewline
 $aspectOptions = @("16:9", "9:16", "1:1", "4:3", "4:5", "21:9", "2:3", "3:2")
 $currentAspect = "$ratioW`:$ratioH"
 $aspectDisplay = @()
@@ -344,17 +360,9 @@ foreach ($opt in $aspectOptions) {
     }
 }
 $aspectIdx = [array]::IndexOf($aspectOptions, $currentAspect)
-if ($aspectIdx -ge 0) {
-    Write-Host $aspectDisplay[$aspectIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    $alternatives = Get-AlternativesFromArray $aspectDisplay $aspectIdx
-    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host $currentAspect -ForegroundColor White
-}
+Show-ParameterOptions "Aspect ratio" $aspectOptions $aspectDisplay $aspectIdx
 
 # Frame rate display with common options
-Write-Host "  Frame rate: " -ForegroundColor White -NoNewline
 $fpsOptions = @(23.976, 24, 25, 29.97, 30, 50, 59.94, 60)
 $fpsDisplay = @()
 foreach ($opt in $fpsOptions) {
@@ -368,17 +376,9 @@ $fpsCurrentIdx = -1
 for ($i = 0; $i -lt $fpsOptions.Count; $i++) {
     if ([math]::Abs($fps - $fpsOptions[$i]) -lt 0.1) { $fpsCurrentIdx = $i; break }
 }
-if ($fpsCurrentIdx -ge 0) {
-    Write-Host $fpsDisplay[$fpsCurrentIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    $alternatives = Get-AlternativesFromArray $fpsDisplay $fpsCurrentIdx
-    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host "$fps fps" -ForegroundColor White
-}
+Show-ParameterOptions "Frame rate" $fpsOptions $fpsDisplay $fpsCurrentIdx
 
 # Video Codec display
-Write-Host "  Codec: " -ForegroundColor White -NoNewline
 $codecOptions = @("h264", "h265", "vp9", "av1", "mpeg2video", "mpeg4", "prores")
 $codecDisplay = @()
 foreach ($opt in $codecOptions) {
@@ -389,14 +389,7 @@ foreach ($opt in $codecOptions) {
     }
 }
 $codecCurrentIdx = [array]::IndexOf($codecOptions, $videoCodec)
-if ($codecCurrentIdx -ge 0) {
-    Write-Host $codecDisplay[$codecCurrentIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    $alternatives = Get-AlternativesFromArray $codecDisplay $codecCurrentIdx
-    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host $videoCodec -ForegroundColor White
-}
+Show-ParameterOptions "Codec" $codecOptions $codecDisplay $codecCurrentIdx
 
 # Video Bitrate display with examples
 Write-Host "  Bitrate: " -ForegroundColor White -NoNewline
@@ -426,7 +419,6 @@ Write-Host " | " -ForegroundColor DarkGray -NoNewline
 Write-Host ($bitrateDisplay[1..($bitrateDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
 
 # Pixel Format display
-Write-Host "  Pixel format: " -ForegroundColor White -NoNewline
 $pixOptions = @("yuv420p", "yuv422p", "yuv444p", "rgb24", "rgba", "yuvj420p")
 $pixDisplay = @()
 foreach ($opt in $pixOptions) {
@@ -437,17 +429,9 @@ foreach ($opt in $pixOptions) {
     }
 }
 $pixCurrentIdx = [array]::IndexOf($pixOptions, $pixFormat)
-if ($pixCurrentIdx -ge 0) {
-    Write-Host $pixDisplay[$pixCurrentIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    $alternatives = Get-AlternativesFromArray $pixDisplay $pixCurrentIdx
-    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host $pixFormat -ForegroundColor White
-}
+Show-ParameterOptions "Pixel format" $pixOptions $pixDisplay $pixCurrentIdx
 
 # Color Space display
-Write-Host "  Color space: " -ForegroundColor White -NoNewline
 $colorOptions = @("bt709", "bt601", "srgb", "bt2020-10", "bt2020-12")
 $colorDisplay = @()
 foreach ($opt in $colorOptions) {
@@ -458,17 +442,9 @@ foreach ($opt in $colorOptions) {
     }
 }
 $colorCurrentIdx = [array]::IndexOf($colorOptions, $colorSpace)
-if ($colorCurrentIdx -ge 0) {
-    Write-Host $colorDisplay[$colorCurrentIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    $alternatives = Get-AlternativesFromArray $colorDisplay $colorCurrentIdx
-    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host $colorSpace -ForegroundColor White
-}
+Show-ParameterOptions "Color space" $colorOptions $colorDisplay $colorCurrentIdx
 
 # Color Depth display
-Write-Host "  Color depth: " -ForegroundColor White -NoNewline
 $depthOptions = @("8-bit", "10-bit", "12-bit", "16-bit")
 $depthDisplay = @()
 foreach ($opt in $depthOptions) {
@@ -479,20 +455,12 @@ foreach ($opt in $depthOptions) {
     }
 }
 $currentIdx = $depthOptions.IndexOf($colorDepth)
-if ($currentIdx -ge 0) {
-    Write-Host $depthDisplay[$currentIdx] -ForegroundColor Green -NoNewline
-    Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    $alternatives = Get-AlternativesFromArray $depthDisplay $currentIdx
-    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-} else {
-    Write-Host $colorDepth -ForegroundColor White
-}
+Show-ParameterOptions "Color depth" $depthOptions $depthDisplay $currentIdx
 
 if ($audioCodec) {
     Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
     
     # Audio Codec display
-    Write-Host "  Codec: " -ForegroundColor White -NoNewline
     $audioCodecOptions = @("aac", "mp3", "flac", "opus", "vorbis", "ac3", "eac3")
     $audioCodecDisplay = @()
     foreach ($opt in $audioCodecOptions) {
@@ -503,17 +471,9 @@ if ($audioCodec) {
         }
     }
     $audioCodecIdx = [array]::IndexOf($audioCodecOptions, $audioCodec)
-    if ($audioCodecIdx -ge 0) {
-        Write-Host $audioCodecDisplay[$audioCodecIdx] -ForegroundColor Green -NoNewline
-        Write-Host " | " -ForegroundColor DarkGray -NoNewline
-        $alternatives = Get-AlternativesFromArray $audioCodecDisplay $audioCodecIdx
-        Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-    } else {
-        Write-Host $audioCodec -ForegroundColor White
-    }
+    Show-ParameterOptions "Codec" $audioCodecOptions $audioCodecDisplay $audioCodecIdx
     
     # Audio Channels display
-    Write-Host "  Channels: " -ForegroundColor White -NoNewline
     $channelOptions = @(1, 2, 2.1, 5.1, 7.1)
     $channelLabels = @("Mono", "Stereo", "2.1", "5.1 Surround", "7.1 Surround")
     $channelDisplay = @()
@@ -525,17 +485,9 @@ if ($audioCodec) {
         }
     }
     $channelIdx = [array]::IndexOf($channelOptions, $audioChannels)
-    if ($channelIdx -ge 0) {
-        Write-Host $channelDisplay[$channelIdx] -ForegroundColor Green -NoNewline
-        Write-Host " | " -ForegroundColor DarkGray -NoNewline
-        $alternatives = Get-AlternativesFromArray $channelDisplay $channelIdx
-        Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-    } else {
-        Write-Host "$audioChannels channels" -ForegroundColor White
-    }
+    Show-ParameterOptions "Channels" $channelOptions $channelDisplay $channelIdx
     
     # Audio Sample Rate display
-    Write-Host "  Sample rate: " -ForegroundColor White -NoNewline
     $sampleOptions = @(44100, 48000, 96000, 192000)
     $sampleLabels = @("44.1 kHz (Low)", "48 kHz (Medium)", "96 kHz (High)", "192 kHz (High)")
     $sampleDisplay = @()
@@ -547,14 +499,7 @@ if ($audioCodec) {
         }
     }
     $sampleIdx = [array]::IndexOf($sampleOptions, $audioSampleRateHz)
-    if ($sampleIdx -ge 0) {
-        Write-Host $sampleDisplay[$sampleIdx] -ForegroundColor Green -NoNewline
-        Write-Host " | " -ForegroundColor DarkGray -NoNewline
-        $alternatives = Get-AlternativesFromArray $sampleDisplay $sampleIdx
-        Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
-    } else {
-        Write-Host $audioSampleRate -ForegroundColor White
-    }
+    Show-ParameterOptions "Sample rate" $sampleOptions $sampleDisplay $sampleIdx
     
     # Audio Bitrate display with examples
     Write-Host "  Bitrate: " -ForegroundColor White -NoNewline
