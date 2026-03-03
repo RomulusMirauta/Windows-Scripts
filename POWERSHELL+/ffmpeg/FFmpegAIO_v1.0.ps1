@@ -5,7 +5,7 @@
 #=============================================================================
 
 Write-Host "`n`nFFmpeg All-In-One Script`n" -ForegroundColor Gray
-Write-Host "Integrated Features: FFmpeg Install/Uninstall, Trim, Crop, Video to GIF Converter, Aspect Ratio Resizer`n" -ForegroundColor Gray
+Write-Host "Integrated Features: FFmpeg Install/Uninstall, Trim, Crop, Aspect Ratio Resizer, Video to GIF Converter`n`n" -ForegroundColor Gray
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -169,8 +169,8 @@ while ($true) {
     Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "[0] Video Trimmer" -ForegroundColor Yellow
-    Write-Host "[1] Video Cropper" -ForegroundColor Yellow
+    Write-Host "[0] Video Trimmer (Length)" -ForegroundColor Yellow
+    Write-Host "[1] Video Cropper (Dimensions)" -ForegroundColor Yellow
     Write-Host "[2] Video to GIF Converter" -ForegroundColor Yellow
     Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Yellow
     Write-Host "[4] FFmpeg Manager (Install/Uninstall)" -ForegroundColor Yellow
@@ -179,7 +179,7 @@ while ($true) {
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     
-    $toolChoice = Read-Host -Prompt "`nSelect a workflow (0-5)"
+    $toolChoice = Read-Host -Prompt "`n`nSelect a workflow (0-5)"
     
     switch ($toolChoice) {
         "0" {
