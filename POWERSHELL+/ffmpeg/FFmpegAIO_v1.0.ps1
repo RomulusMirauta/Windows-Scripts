@@ -162,43 +162,44 @@ function Resolve-OutputFileOverwrite {
 # ============================================================================
 
 function Invoke-FFmpegManager {
-    while ($true) {
-        Write-Host "`n"
-        Write-Host "FFmpeg Manager" -ForegroundColor Cyan
-        Write-Host ""
+    Write-Host "`n"
+    Write-Host "FFmpeg Manager" -ForegroundColor Cyan
+    Write-Host ""
+    
+    # Check FFmpeg status
+    $ffmpegInstalled = Get-Command FFmpeg -ErrorAction SilentlyContinue
+    
+    if ($ffmpegInstalled) {
+        Write-Host "Status: " -ForegroundColor White -NoNewline
+        Write-Host "✓ INSTALLED" -ForegroundColor Green
         
-        # Check FFmpeg status
-        $ffmpegInstalled = Get-Command FFmpeg -ErrorAction SilentlyContinue
-        
-        if ($ffmpegInstalled) {
-            Write-Host "Status: " -ForegroundColor White -NoNewline
-            Write-Host "✓ INSTALLED" -ForegroundColor Green
-            
-            # Get version
-            try {
-                $versionOutput = & ffmpeg -version 2>&1 | Select-Object -First 1
-                Write-Host "Version: " -ForegroundColor White -NoNewline
-                Write-Host $versionOutput -ForegroundColor Green
-            } catch {
-                Write-Host "Version: " -ForegroundColor White -NoNewline
-                Write-Host "(unable to retrieve)" -ForegroundColor Yellow
-            }
-            
-            # Get path
-            try {
-                $ffmpegPath = (Get-Command FFmpeg).Source
-                Write-Host "Path: " -ForegroundColor White -NoNewline
-                Write-Host $ffmpegPath -ForegroundColor Green
-            } catch {
-                Write-Host "Path: " -ForegroundColor White -NoNewline
-                Write-Host "(system PATH)" -ForegroundColor Yellow
-            }
-        } else {
-            Write-Host "Status: " -ForegroundColor White -NoNewline
-            Write-Host "✗ NOT INSTALLED" -ForegroundColor Red
+        # Get version
+        try {
+            $versionOutput = & ffmpeg -version 2>&1 | Select-Object -First 1
+            Write-Host "Version: " -ForegroundColor White -NoNewline
+            Write-Host $versionOutput -ForegroundColor Green
+        } catch {
+            Write-Host "Version: " -ForegroundColor White -NoNewline
+            Write-Host "(unable to retrieve)" -ForegroundColor Yellow
         }
         
-        Write-Host ""
+        # Get path
+        try {
+            $ffmpegPath = (Get-Command FFmpeg).Source
+            Write-Host "Path: " -ForegroundColor White -NoNewline
+            Write-Host $ffmpegPath -ForegroundColor Green
+        } catch {
+            Write-Host "Path: " -ForegroundColor White -NoNewline
+            Write-Host "(system PATH)" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "Status: " -ForegroundColor White -NoNewline
+        Write-Host "✗ NOT INSTALLED" -ForegroundColor Red
+    }
+    
+    Write-Host ""
+    
+    while ($true) {
         Write-Host "Options:" -ForegroundColor Cyan
         Write-Host "[i] Install FFmpeg"
         Write-Host "[u] Uninstall FFmpeg"
