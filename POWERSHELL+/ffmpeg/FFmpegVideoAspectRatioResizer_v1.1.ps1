@@ -420,15 +420,15 @@ foreach ($i in 0..($fpsOptions.Count-1)) {
 Show-ParameterOptions "Frame rate" $fpsOptions $fpsDisplay $fpsCurrentIdx
 
 # Video Codec display (sorted alphabetically by codec key)
-$codecOptions = @("av1", "h264", "h265", "mpeg2video", "mpeg4", "prores", "vp9")
+$codecOptions = @("mpeg2video", "mpeg4", "h264", "vp9", "h265", "av1", "prores")
 $codecLabels = @{
-    "av1" = "AV1"
-    "h264" = "H.264 (AVC)"
-    "h265" = "H.265 (HEVC)"
     "mpeg2video" = "MPEG-2 Video"
     "mpeg4" = "MPEG-4 Part 2"
-    "prores" = "ProRes"
+    "h264" = "H.264 (AVC)"
     "vp9" = "VP9"
+    "h265" = "H.265 (HEVC)"
+    "av1" = "AV1"
+    "prores" = "ProRes"
 }
 $codecDisplay = @()
 foreach ($opt in $codecOptions) {
