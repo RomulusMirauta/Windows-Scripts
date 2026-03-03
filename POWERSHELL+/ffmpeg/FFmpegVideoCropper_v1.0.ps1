@@ -383,6 +383,10 @@ $h = $selectedCrop.Height
 $x = $selectedCrop.X
 $y = $selectedCrop.Y
 
+# Ensure X and Y have default values if empty
+if ([string]::IsNullOrWhiteSpace($x)) { $x = 0 }
+if ([string]::IsNullOrWhiteSpace($y)) { $y = 0 }
+
 if ($w -is [int] -and $h -is [int] -and $x -is [int] -and $y -is [int]) {
     $cropFilter = "crop=$w`:$h`:$x`:$y"
 } else {
