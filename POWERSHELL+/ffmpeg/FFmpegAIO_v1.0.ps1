@@ -335,8 +335,8 @@ function Update-FFmpeg {
 # ============================================================================
 
 function Invoke-VideoTrimmer {
-    Write-Host ""
-    Write-Host "Video Trimmer" -ForegroundColor Cyan
+    Write-Host "`n"
+    Write-Host "► Video Trimmer" -ForegroundColor Cyan
     Write-Host ""
     
     # Check FFmpeg
@@ -398,7 +398,7 @@ function Invoke-VideoTrimmer {
         if ($methodChoice -in @('0','1')) {
             $trimMethod = $methodChoice
         } else {
-            Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow
+            Write-Host "`nInvalid input. Please enter 0 or 1.`n" -ForegroundColor Yellow
         }
     }
     
@@ -557,7 +557,7 @@ function Invoke-VideoTrimmer {
 # ============================================================================
 
 function Invoke-VideoCropper {
-    Write-Host ""
+    Write-Host "`n"
     Write-Host "Video Cropper" -ForegroundColor Cyan
     Write-Host ""
     
