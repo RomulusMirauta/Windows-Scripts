@@ -648,7 +648,7 @@ $formats = @{
     '7' = @{ Label='Cinema 21:9'; W=21; H=9; Desc=$null }
 }
 
-Write-Host "Select target format:" -ForegroundColor Cyan
+Write-Host "Select target aspect ratio:" -ForegroundColor Cyan
 foreach ($k in $formats.Keys | Sort-Object) {
     $f = $formats[$k]
     if ($f.Desc) {
