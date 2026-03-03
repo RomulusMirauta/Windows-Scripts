@@ -393,19 +393,24 @@ function Invoke-VideoTrimmer {
     while (-not $trimMethod) {
         Write-Host "Enter choice (0-1) or press Enter for Default: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-        $methodChoice = [char]$key.Character
-        Write-Host $methodChoice
-        if ($methodChoice -in @('0','1')) {
-            $trimMethod = $methodChoice
-        } elseif ($methodChoice -eq '') {
+        
+        # Check if Enter key was pressed (VirtualKeyCode 13)
+        if ($key.VirtualKeyCode -eq 13) {
+            Write-Host ""
             $trimMethod = '0' # Default to re-encode
         } else {
-            Write-Host "`nInvalid input. Please enter 0 or 1.`n" -ForegroundColor Yellow
+            $methodChoice = [char]$key.Character
+            Write-Host $methodChoice
+            if ($methodChoice -in @('0','1')) {
+                $trimMethod = $methodChoice
+            } else {
+                Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow
+            }
         }
     }
     
     # Trim position
-    Write-Host ""
+    Write-Host "`n"
     Write-Host "Trim from where?" -ForegroundColor Cyan
     Write-Host "[0] Beginning"
     Write-Host "[1] End"
@@ -421,7 +426,7 @@ function Invoke-VideoTrimmer {
         if ($choice -in @('0','1','2')) {
             $trimChoice = $choice
         } else {
-            Write-Host "Invalid input. Please enter 0, 1, or 2." -ForegroundColor Yellow
+            Write-Host "`nInvalid input. Please enter 0, 1, or 2." -ForegroundColor Yellow
         }
     }
     
@@ -430,7 +435,7 @@ function Invoke-VideoTrimmer {
     $trimSecondsEnd = 0
     
     Write-Host ""
-    Write-Host "Current video duration: $([math]::Round($duration, 2)) seconds" -ForegroundColor Green
+    Write-Host "`nCurrent video duration: $([math]::Round($duration, 2)) seconds" -ForegroundColor Green
     Write-Host ""
     
     if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
@@ -443,7 +448,7 @@ function Invoke-VideoTrimmer {
         }
         
         while ($trimSeconds -ge $duration) {
-            Write-Host "ERROR: Trim seconds must be less than video duration." -ForegroundColor Red
+            Write-Host "`nERROR: Trim seconds must be less than video duration." -ForegroundColor Red
             $secondsInput = Read-Host -Prompt "Enter a valid number of seconds to trim"
             if ($secondsInput -match '^[1-9][0-9]*$') {
                 $trimSeconds = [int]$secondsInput
