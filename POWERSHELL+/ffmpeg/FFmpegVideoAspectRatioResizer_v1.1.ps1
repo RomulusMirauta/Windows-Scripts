@@ -19,57 +19,47 @@ function Get-Gcd {
 }
 
 function Maximize-ConsoleWindow {
-    # Maximize PowerShell window - aggressive approach for right-click "Run with PowerShell"
-    try {
-        $windowHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
-        
-        if ($windowHandle -ne 0) {
-            Add-Type -TypeDefinition @"
-                using System;
-                using System.Runtime.InteropServices;
-                public class WindowAPI {
-                    [DllImport("user32.dll", SetLastError = true)]
-                    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-                    
-                    [DllImport("user32.dll", SetLastError = true)]
-                    public static extern bool SetForegroundWindow(IntPtr hWnd);
-                    
-                    [DllImport("user32.dll", SetLastError = true)]
-                    public static extern bool IsIconic(IntPtr hWnd);
-                    
-                    [DllImport("user32.dll", SetLastError = true)]
-                    public static extern IntPtr GetForegroundWindow();
-                }
-"@ -ErrorAction SilentlyContinue
+    # Check if we should relaunch in a new maximized window
+    $scriptPath = $PSCommandPath
+    
+    # Only relaunch if running via context menu (detected by checking if launched from explorer context)
+    # and if this is the first invocation (use environment variable to track)
+    if (-not $env:FFmpeg_Maximized -and $scriptPath) {
+        try {
+            # Set environment variable to prevent infinite loops
+            $env:FFmpeg_Maximized = $true
             
-            # Bring window to foreground
-            [WindowAPI]::SetForegroundWindow($windowHandle) | Out-Null
-            Start-Sleep -Milliseconds 100
+            # Relaunch script in a new maximized PowerShell window
+            $processArgs = @{
+                FilePath = "powershell.exe"
+                ArgumentList = @(
+                    "-NoProfile",
+                    "-ExecutionPolicy", "Bypass",
+                    "-File", "`"$scriptPath`""
+                )
+                WindowStyle = "Maximized"
+            }
             
-            # Maximize window (ShowWindow command 3 = SW_MAXIMIZE)
-            [WindowAPI]::ShowWindow($windowHandle, 3) | Out-Null
-            Start-Sleep -Milliseconds 100
-            
-            # Ensure it's maximized by trying again
-            [WindowAPI]::ShowWindow($windowHandle, 3) | Out-Null
-            Start-Sleep -Milliseconds 100
+            Start-Process @processArgs
+            exit
+        } catch {
+            # If relaunch fails, continue with current window
         }
-    } catch { }
-
-    # Method 2: Try PowerShell host UI
+    }
+    
+    # If already in maximized window or relaunch failed, just try to expand current window
     try {
         $pshost = Get-Host
         $pswindow = $pshost.UI.RawUI
         
-        # Set to maximum available size
-        $maxWidth = $pswindow.BufferSize.Width
-        $maxHeight = $pswindow.BufferSize.Height
+        # Try to set to max available size
+        $maxWidth = $pswindow.MaxWindowSize.Width
+        $maxHeight = $pswindow.MaxWindowSize.Height
         
-        if ($maxWidth -lt 200) { $maxWidth = 200 }
-        if ($maxHeight -lt 50) { $maxHeight = 50 }
-        
-        $pswindow.BufferSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
-        $pswindow.WindowSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+        if ($maxWidth -gt 80 -and $maxHeight -gt 24) {
+            $pswindow.BufferSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+            $pswindow.WindowSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+        }
     } catch { }
 }
 
@@ -88,7 +78,7 @@ function SanitizeFileName {
 Write-Host "Video Aspect Ratio Resizer" -ForegroundColor Gray
 Write-Host ""
 
-# Maximize console window
+# Resize/maximize console window
 Maximize-ConsoleWindow
 
 # Ensure FFmpeg exists
