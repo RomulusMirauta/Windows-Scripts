@@ -4,7 +4,7 @@
 # Video to GIF Converter, and Video Trimmer
 #=============================================================================
 
-Write-Host "FFmpeg All-In-One Script`n" -ForegroundColor Gray
+Write-Host "`n`nFFmpeg All-In-One Script`n" -ForegroundColor Gray
 Write-Host "Integrated Features: FFmpeg Install/Uninstall, Trim, Crop, Video to GIF Converter, Aspect Ratio Resizer`n" -ForegroundColor Gray
 
 # ============================================================================
@@ -156,6 +156,14 @@ function Resolve-OutputFileOverwrite {
 ConsoleWindowMaximizer
 
 while ($true) {
+    # Check FFmpeg existence at startup
+    if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
+        Write-Host ""
+        Write-Host "WARNING: FFmpeg not found." -ForegroundColor Yellow
+        Write-Host "Please run option [4] to install FFmpeg first." -ForegroundColor Yellow
+        Write-Host ""
+    }
+    
     Write-Host ""
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
@@ -345,6 +353,8 @@ function Invoke-VideoTrimmer {
         $methodChoice = Read-Host -Prompt "Enter choice (0-1)"
         if ($methodChoice -in @('0','1')) {
             $trimMethod = $methodChoice
+        } else {
+            Write-Host "Invalid input. Please enter 0 or 1." -ForegroundColor Yellow
         }
     }
     
@@ -361,6 +371,8 @@ function Invoke-VideoTrimmer {
         $choice = Read-Host -Prompt "Enter choice (0-2)"
         if ($choice -in @('0','1','2')) {
             $trimChoice = $choice
+        } else {
+            Write-Host "Invalid input. Please enter 0, 1, or 2." -ForegroundColor Yellow
         }
     }
     
@@ -447,10 +459,11 @@ function Invoke-VideoTrimmer {
         if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
         Write-Host ""
         if ($trimMethod -eq '0') {
-            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c copy $output
+            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-c', 'copy', $output)
         } else {
-            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c:v libx264 -c:a aac $output
+            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-c:v', 'libx264', '-c:a', 'aac', $output)
         }
+        $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     } elseif ($trimChoice -eq '1') {
         $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}_${methodLabel}$($inputFile.Extension)"
         $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -459,10 +472,11 @@ function Invoke-VideoTrimmer {
         if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
         Write-Host ""
         if ($trimMethod -eq '0') {
-            & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c copy $output
+            $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-t', $targetDuration, '-c', 'copy', $output)
         } else {
-            & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
+            $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-t', $targetDuration, '-c:v', 'libx264', '-c:a', 'aac', $output)
         }
+        $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     } else {
         $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end_${methodLabel}$($inputFile.Extension)"
         $output = Join-Path -Path $outputDir -ChildPath $filename
@@ -471,10 +485,11 @@ function Invoke-VideoTrimmer {
         if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
         Write-Host ""
         if ($trimMethod -eq '0') {
-            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c copy $output
+            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-t', $targetDuration, '-c', 'copy', $output)
         } else {
-            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
+            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-t', $targetDuration, '-c:v', 'libx264', '-c:a', 'aac', $output)
         }
+        $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     }
     
     if ($LASTEXITCODE -eq 0) {
@@ -564,6 +579,8 @@ function Invoke-VideoCropper {
         $choice = Read-Host -Prompt "Enter crop choice (0-8)"
         if ($choice -in $crops.Keys) {
             $cropChoice = $choice
+        } else {
+            Write-Host "Invalid input. Please enter a number between 0 and 8." -ForegroundColor Yellow
         }
     }
     
@@ -596,6 +613,8 @@ function Invoke-VideoCropper {
         $choice = Read-Host -Prompt "Enter choice (0-3)"
         if ($choice -in @('0', '1', '2', '3')) {
             $codecChoice = $choice
+        } else {
+            Write-Host "Invalid input. Please enter 0, 1, 2, or 3." -ForegroundColor Yellow
         }
     }
     
@@ -629,7 +648,7 @@ function Invoke-VideoCropper {
         '3' { $ffArgs += @('-vf', $cropFilter, '-c', 'copy', $output) }
     }
     
-    & ffmpeg @ffArgs
+    $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host ""
@@ -690,7 +709,7 @@ function Invoke-VideoToGifConverter {
     $inputFile = $sourceMatches[0]
     $inputPath = [string]$inputFile.FullName
     
-    $outputFolder = "$($inputFile.BaseName)_VideoToGifConverter"
+    $outputFolder = Join-Path -Path $inputFile.DirectoryName -ChildPath "$($inputFile.BaseName)_VideoToGifConverter"
     
     # Scaling options
     $scaleOptions = @(
@@ -720,7 +739,11 @@ function Invoke-VideoToGifConverter {
             $index = [int]$choice
             if ($index -ge 0 -and $index -lt $scaleOptions.Count) {
                 $selectedScale = $scaleOptions[$index].Value
+            } else {
+                Write-Host "Invalid input. Please enter a number between 0 and $($scaleOptions.Count - 1)." -ForegroundColor Yellow
             }
+        } else {
+            Write-Host "Invalid input. Please enter a number or press Enter for default." -ForegroundColor Yellow
         }
     }
     
@@ -740,9 +763,10 @@ function Invoke-VideoToGifConverter {
     
     Write-Host ""
     Write-Host "Generating palette..." -ForegroundColor Cyan
-    & ffmpeg $overwriteSwitch -i $inputFile.FullName -vf "fps=15,scale=${selectedScale}:flags=lanczos,palettegen" $palette
+    $ffArgs = @($overwriteSwitch, '-i', $inputFile.FullName, '-vf', "fps=15,scale=${selectedScale}:flags=lanczos,palettegen", $palette)
+    $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     
-    if ($LASTEXITCODE -ne 0) {
+    if ($rc -ne 0) {
         Write-Host ""
         Write-Host "ERROR: Failed to generate palette." -ForegroundColor Red
         Wait-ForUser
@@ -751,9 +775,10 @@ function Invoke-VideoToGifConverter {
     
     Write-Host ""
     Write-Host "Generating GIF..." -ForegroundColor Cyan
-    & ffmpeg $overwriteSwitch -i $inputFile.FullName -i $palette -filter_complex "fps=15,scale=${selectedScale}:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
+    $ffArgs = @($overwriteSwitch, '-i', $inputFile.FullName, '-i', $palette, '-filter_complex', "fps=15,scale=${selectedScale}:flags=lanczos[x];[x][1:v]paletteuse", '-loop', '0', $output)
+    $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     
-    if ($LASTEXITCODE -eq 0) {
+    if ($rc -eq 0) {
         Write-Host ""
         Write-Host "Output created: $output" -ForegroundColor Green
         Write-Host ""
@@ -857,6 +882,8 @@ function Invoke-VideoAspectRatioResizer {
         $choice = Read-Host -Prompt "Enter choice (0-7)"
         if ($choice -in $formats.Keys) {
             $targetChoice = $choice
+        } else {
+            Write-Host "Invalid input. Please enter a number between 0 and 7." -ForegroundColor Yellow
         }
     }
     
@@ -913,9 +940,9 @@ function Invoke-VideoAspectRatioResizer {
     $vf = "scale='if(gt(a,{0}),{1},-2)':'if(gt(a,{0}),-2,{2})',pad={1}:{2}:(ow-iw)/2:(oh-ih)/2,setsar=1" -f $aspectExpr, $outW, $outH
     
     $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
-    & ffmpeg @ffArgs
+    $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     
-    if ($LASTEXITCODE -eq 0) {
+    if ($rc -eq 0) {
         Write-Host ""
         Write-Host "Output created: $output" -ForegroundColor Green
         Write-Host ""
