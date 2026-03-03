@@ -135,35 +135,35 @@ while ($true) {
     Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "[1] Video Trimmer" -ForegroundColor Yellow
-    Write-Host "[2] Video Cropper" -ForegroundColor Yellow
-    Write-Host "[3] Video to GIF Converter" -ForegroundColor Yellow
-    Write-Host "[4] Video Aspect Ratio Resizer" -ForegroundColor Yellow
-    Write-Host "[5] FFmpeg Manager (Install/Uninstall)" -ForegroundColor Yellow
-    Write-Host "[6] Exit" -ForegroundColor Yellow
+    Write-Host "[0] Video Trimmer" -ForegroundColor Yellow
+    Write-Host "[1] Video Cropper" -ForegroundColor Yellow
+    Write-Host "[2] Video to GIF Converter" -ForegroundColor Yellow
+    Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Yellow
+    Write-Host "[4] FFmpeg Manager (Install/Uninstall)" -ForegroundColor Yellow
+    Write-Host "[5] Exit" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     
-    $toolChoice = Read-Host -Prompt "`nSelect a workflow (1-6)"
+    $toolChoice = Read-Host -Prompt "`nSelect a workflow (0-5)"
     
     switch ($toolChoice) {
-        "1" {
+        "0" {
             Invoke-VideoTrimmer
         }
-        "2" {
+        "1" {
             Invoke-VideoCropper
         }
-        "3" {
+        "2" {
             Invoke-VideoToGifConverter
         }
-        "4" {
+        "3" {
             Invoke-VideoAspectRatioResizer
         }
-        "5" {
+        "4" {
             Invoke-FFmpegManager
         }
-        "6" {
+        "5" {
             Write-Host ""
             Write-Host "Exiting FFmpeg AIO Script..." -ForegroundColor Green
             Write-Host ""
@@ -171,7 +171,7 @@ while ($true) {
         }
         default {
             Write-Host ""
-            Write-Host "Invalid selection. Please enter a number between 1 and 6." -ForegroundColor Red
+            Write-Host "Invalid selection. Please enter a number between 0 and 5." -ForegroundColor Red
             Write-Host ""
         }
     }
