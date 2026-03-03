@@ -381,6 +381,16 @@ $aspectDescriptions = @(
     "Wide 16:9 (YouTube and streaming sites)",
     "Cinema 21:9"
 )
+
+# 9:16 (0.56) - Vertical portrait
+# 2:3 (0.67) - Portrait
+# 4:5 (0.8) - Social
+# 1:1 (1.0) - Square
+# 4:3 (1.33) - Classic
+# 3:2 (1.5) - Classic
+# 16:9 (1.78) - Wide
+# 21:9 (2.33) - Cinema (widest)
+
 $currentAspect = "$ratioW`:$ratioH"
 $aspectDisplay = @()
 for ($i = 0; $i -lt $aspectOptions.Count; $i++) {
@@ -471,6 +481,14 @@ Write-Host ($bitrateDisplay[1..($bitrateDisplay.Count-1)] -join " | ") -Foregrou
 
 # Pixel Format display (sorted by visual fidelity/resolution: low → high)
 $pixOptions = @("yuv420p", "yuvj420p", "yuv422p", "yuv444p", "rgb24", "rgba")
+
+# yuv420p - 4:2:0 chroma subsampling (lowest)
+# yuvj420p - 4:2:0 full-range
+# yuv422p - 4:2:2 chroma subsampling
+# yuv444p - 4:4:4 full chroma resolution
+# rgb24 - Full RGB (no subsampling)
+# rgba - Full RGB + Alpha channel (highest)
+
 $pixDisplay = @()
 foreach ($opt in $pixOptions) {
     if ($pixFormat -eq $opt) {
@@ -484,6 +502,13 @@ Show-ParameterOptions "Pixel format" $pixOptions $pixDisplay $pixCurrentIdx
 
 # Color Space display (sorted by visual fidelity/resolution: low → high)
 $colorOptions = @("bt601", "srgb", "bt709", "bt2020-10", "bt2020-12")
+
+# bt601 - Oldest broadcast standard (limited gamut)
+# srgb - Computer display standard
+# bt709 - HD broadcast standard
+# bt2020-10 - 10-bit UHD (wider gamut)
+# bt2020-12 - 12-bit UHD (widest gamut, highest fidelity)
+
 $colorDisplay = @()
 foreach ($opt in $colorOptions) {
     if ($colorSpace -eq $opt) {
@@ -512,7 +537,16 @@ if ($audioCodec) {
     Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
     
     # Audio Codec display (sorted alphabetically)
-    $audioCodecOptions = @("aac", "ac3", "eac3", "flac", "mp3", "opus", "vorbis")
+    $audioCodecOptions = @("mp3", "aac", "ac3", "vorbis", "eac3", "opus", "flac")
+
+    # mp3 - Lossy, older, lower quality
+    # aac - Lossy, moderate quality
+    # ac3 - Lossy, surround
+    # vorbis - Lossy, good quality
+    # eac3 - Lossy, improved (Dolby Digital Plus)
+    # opus - Lossy, modern, excellent quality
+    # flac - Lossless (highest fidelity)
+
     $audioCodecDisplay = @()
     foreach ($opt in $audioCodecOptions) {
         if ($audioCodec -eq $opt) {
