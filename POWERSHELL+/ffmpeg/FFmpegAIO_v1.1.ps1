@@ -159,7 +159,7 @@ function Resolve-OutputFileOverwrite {
 
 function Invoke-DisplayVideoFileInfo {
     Write-Host "`n"
-    Write-Host "► Display Video File Info" -ForegroundColor Yellow
+    Write-Host "► Display Video File Info" -ForegroundColor Cyan
     Write-Host ""
 
 # BASE W/O INFO
@@ -584,7 +584,7 @@ Wait-ForUser
 
 function Invoke-FFmpegManager {
     Write-Host "`n"
-    Write-Host "► FFmpeg Manager" -ForegroundColor Yellow
+    Write-Host "► FFmpeg Manager" -ForegroundColor Cyan
     Write-Host ""
     
     # Check FFmpeg status
@@ -761,7 +761,7 @@ function Update-FFmpeg {
 
 function Invoke-VideoTrimmer {
     Write-Host "`n"
-    Write-Host "► Video Trimmer" -ForegroundColor Yellow
+    Write-Host "► Video Trimmer" -ForegroundColor Cyan
     Write-Host ""
     
     # Check FFmpeg
@@ -1026,7 +1026,7 @@ function Invoke-VideoTrimmer {
 
 function Invoke-VideoCropper {
     Write-Host "`n"
-    Write-Host "► Video Cropper" -ForegroundColor Yellow
+    Write-Host "► Video Cropper" -ForegroundColor Cyan
     Write-Host ""
     
     # Check FFmpeg
@@ -1214,7 +1214,7 @@ function Invoke-VideoCropper {
 
 function Invoke-VideoToGifConverter {
     Write-Host ""
-    Write-Host "► Video to GIF Converter" -ForegroundColor Yellow
+    Write-Host "► Video to GIF Converter" -ForegroundColor Cyan
     Write-Host ""
     
     # Check FFmpeg
@@ -1358,7 +1358,7 @@ function Invoke-VideoToGifConverter {
 
 function Invoke-VideoAspectRatioResizer {
     Write-Host ""
-    Write-Host "► Video Aspect Ratio Resizer" -ForegroundColor Yellow
+    Write-Host "► Video Aspect Ratio Resizer" -ForegroundColor Cyan
     Write-Host ""
     
     # Check FFmpeg
@@ -1546,31 +1546,31 @@ while ($true) {
     }
     
     Write-Host "`n`n"
-    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host "                  FFmpeg All-In-One Script - Main Menu" -ForegroundColor Cyan
-    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor DarkCyan
+    Write-Host "                  FFmpeg All-In-One Script - Main Menu" -ForegroundColor DarkCyan
+    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor DarkCyan
     Write-Host ""
-    Write-Host "[0] Video Trimmer" -ForegroundColor Yellow
+    Write-Host "[0] Video Trimmer" -ForegroundColor Cyan
     Write-Host "     Remove unwanted sections from beginning, end, or both (in seconds)" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[1] Video Cropper" -ForegroundColor Yellow
+    Write-Host "[1] Video Cropper" -ForegroundColor Cyan
     Write-Host "     Cut rectangular sections, remove black bars, or zoom in (in pixels)" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[2] Video to GIF Converter" -ForegroundColor Yellow
+    Write-Host "[2] Video to GIF Converter" -ForegroundColor Cyan
     Write-Host "     Convert video clips into animated GIFs = GitHub/Web/Social Media-friendly loops" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Yellow
+    Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Cyan
     Write-Host "     Adapt videos for different use cases - screens/platforms (vertical/horizontal/square)" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[4] FFmpeg Manager" -ForegroundColor Yellow
+    Write-Host "[4] FFmpeg Manager" -ForegroundColor Cyan
     Write-Host "     Install, update, or uninstall FFmpeg" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[5] Display Video File Info" -ForegroundColor Yellow
+    Write-Host "[5] Display Video File Info" -ForegroundColor Cyan
     Write-Host "     General, video and audio information" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[6] Exit" -ForegroundColor Yellow
+    Write-Host "[6] Exit" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor DarkCyan
     Write-Host ""
     
     # Check for video files in current directory
