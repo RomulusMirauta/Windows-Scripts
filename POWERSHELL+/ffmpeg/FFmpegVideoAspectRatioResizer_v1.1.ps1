@@ -189,17 +189,28 @@ $inputPath = [string]$inputFile.FullName
 # Get comprehensive video information
 $probeJson = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate,codec_name,pix_fmt,color_space,bits_per_raw_sample,bit_rate -of json $inputPath
 $probeAudio = & ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,channels,sample_rate,bit_rate -of json $inputPath
-$probeDuration = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1:noesc=1 $inputPath
+$probeDuration = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputPath
 
 $videoInfo = $probeJson | ConvertFrom-Json
 $audioInfo = $probeAudio | ConvertFrom-Json
 
 # Parse video duration
 $durationSeconds = if ($probeDuration) { [int][double]$probeDuration } else { 0 }
+$durationSecondsDecimal = if ($probeDuration) { [double]$probeDuration } else { 0 }
 $durationHours = [math]::Floor($durationSeconds / 3600)
 $durationMinutes = [math]::Floor(($durationSeconds % 3600) / 60)
 $durationSecs = $durationSeconds % 60
-$videoDuration = "{0:D2}:{1:D2}:{2:D2}" -f $durationHours, $durationMinutes, $durationSecs
+$videoDuration = "{0:00}:{1:00}:{2:00}" -f $durationHours, $durationMinutes, $durationSecs
+
+# Format duration in short form
+$shortDuration = ""
+if ($durationHours -gt 0) {
+    $shortDuration = "{0}h {1}m {2}s" -f $durationHours, $durationMinutes, $durationSecs
+} elseif ($durationMinutes -gt 0) {
+    $shortDuration = "{0}m {1}s" -f $durationMinutes, $durationSecs
+} else {
+    $shortDuration = "{0:F1}s" -f $durationSecondsDecimal
+}
 
 # Extract video stream data
 if ($videoInfo.streams -and $videoInfo.streams.Count -gt 0) {
@@ -304,7 +315,8 @@ if ($resIdx -ge 0) {
     Write-Host "$width x $height" -ForegroundColor White
 }
 
-Write-Host "  Duration: $videoDuration" -ForegroundColor White
+Write-Host "  Duration: " -ForegroundColor White -NoNewline
+Write-Host "$videoDuration ($shortDuration)" -ForegroundColor Cyan
 
 # Aspect Ratio display with common options
 Write-Host "  Aspect ratio: " -ForegroundColor White -NoNewline
