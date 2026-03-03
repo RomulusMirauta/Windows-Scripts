@@ -193,8 +193,8 @@ Write-Host ""
 # ============================================================================
 $crops = @{
     '0' = @{ 
-        Label='Center Crop 640x480'; 
-        Desc='Fixed 640x480 centered';
+        Label='Centered Crop 640x480'; 
+        Desc='Fixed 640x480';
         Width=640; Height=480; X='(iw-640)/2'; Y='(ih-480)/2'
     }
     '1' = @{ 
@@ -229,7 +229,7 @@ $crops = @{
     }
     '7' = @{ 
         Label='Social 4:5'; 
-        Desc='Instagram Stories and mobile';
+        Desc='Instagram Stories and Mobile';
         Width='iw'; Height='iw*5/4'; X='0'; Y='(ih-iw*5/4)/2'
     }
     '8' = @{ 
@@ -255,7 +255,6 @@ $crops = @{
 }
 
 Write-Host "Select crop preset:" -ForegroundColor Cyan
-Write-Host ""
 foreach ($k in $crops.Keys | Sort-Object { [int]$_ }) {
     $c = $crops[$k]
     if ($c.Desc) {
