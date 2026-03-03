@@ -154,7 +154,7 @@ function Resolve-OutputFileOverwrite {
 
 
 # ============================================================================
-# TOOL: FFmpeg Manager (Install/Uninstall)
+# TOOL: FFmpeg Manager (Install/Uninstall) ***
 # ============================================================================
 
 function Invoke-FFmpegManager {
@@ -553,7 +553,7 @@ function Invoke-VideoTrimmer {
 }
 
 # ============================================================================
-# TOOL: Video Cropper
+# TOOL: Video Cropper ***
 # ============================================================================
 
 function Invoke-VideoCropper {
@@ -717,7 +717,7 @@ function Invoke-VideoCropper {
 }
 
 # ============================================================================
-# TOOL: Video to GIF Converter
+# TOOL: Video to GIF Converter ***
 # ============================================================================
 
 function Invoke-VideoToGifConverter {
@@ -851,7 +851,7 @@ function Invoke-VideoToGifConverter {
 
 
 # ============================================================================
-# TOOL: Video Aspect Ratio Resizer
+# TOOL: Video Aspect Ratio Resizer ***
 # ============================================================================
 
 function Invoke-VideoAspectRatioResizer {
@@ -1019,7 +1019,7 @@ function Invoke-VideoAspectRatioResizer {
 
 
 # ============================================================================
-# *** MAIN MENU ***
+# MAIN MENU ***
 # ============================================================================
 
 ConsoleWindowMaximizer
