@@ -336,7 +336,7 @@ function Update-FFmpeg {
 
 function Invoke-VideoTrimmer {
     Write-Host "`n"
-    Write-Host "► Video Trimmer" -ForegroundColor Cyan
+    Write-Host "► Video Trimmer" -ForegroundColor Yellow
     Write-Host ""
     
     # Check FFmpeg
@@ -385,18 +385,20 @@ function Invoke-VideoTrimmer {
     
     # Trim method
     Write-Host "Select trim method:" -ForegroundColor Cyan
-    Write-Host "[0] Re-encode (frame-accurate, best results)"
+    Write-Host "[0] *Default* Re-encode (frame-accurate, best results)"
     Write-Host "[1] Fast (stream copy, no re-encoding)"
     Write-Host ""
     
     $trimMethod = $null
     while (-not $trimMethod) {
-        Write-Host "Enter choice (0-1): " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-1) or press Enter for Default: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
         $methodChoice = [char]$key.Character
         Write-Host $methodChoice
         if ($methodChoice -in @('0','1')) {
             $trimMethod = $methodChoice
+        } elseif ($methodChoice -eq '') {
+            $trimMethod = '0' # Default to re-encode
         } else {
             Write-Host "`nInvalid input. Please enter 0 or 1.`n" -ForegroundColor Yellow
         }
