@@ -330,9 +330,9 @@ Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
 
 Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
 
-# Resolution display with common standards
-$resolutionOptions = @("3840x2160", "2560x1440", "1920x1080", "1280x720", "854x480", "640x360")
-$resolutionLabels = @("4K", "2K", "1080p", "720p", "480p", "360p")
+# Resolution display with common standards (sorted low to high)
+$resolutionOptions = @("640x360", "854x480", "1280x720", "1920x1080", "2560x1440", "3840x2160")
+$resolutionLabels = @("360p", "480p", "720p", "1080p", "2K", "4K")
 $currentRes = "${width}x${height}"
 $resDisplay = @()
 for ($i = 0; $i -lt $resolutionOptions.Count; $i++) {
@@ -348,8 +348,8 @@ Show-ParameterOptions "Resolution" $resolutionOptions $resDisplay $resIdx
 Write-Host "  Duration: " -ForegroundColor White -NoNewline
 Write-Host "$videoDuration ($shortDuration)" -ForegroundColor Green
 
-# Aspect Ratio display with common options
-$aspectOptions = @("16:9", "9:16", "1:1", "4:3", "4:5", "21:9", "2:3", "3:2")
+# Aspect Ratio display with common options (sorted)
+$aspectOptions = @("1:1", "2:3", "3:2", "4:3", "4:5", "9:16", "16:9", "21:9")
 $currentAspect = "$ratioW`:$ratioH"
 $aspectDisplay = @()
 foreach ($opt in $aspectOptions) {
@@ -387,8 +387,8 @@ foreach ($i in 0..($fpsOptions.Count-1)) {
 }
 Show-ParameterOptions "Frame rate" $fpsOptions $fpsDisplay $fpsCurrentIdx
 
-# Video Codec display
-$codecOptions = @("h264", "h265", "vp9", "av1", "mpeg2video", "mpeg4", "prores")
+# Video Codec display (sorted alphabetically)
+$codecOptions = @("av1", "h264", "h265", "mpeg2video", "mpeg4", "prores", "vp9")
 $codecDisplay = @()
 foreach ($opt in $codecOptions) {
     if ($videoCodec -eq $opt) {
@@ -403,12 +403,12 @@ Show-ParameterOptions "Codec" $codecOptions $codecDisplay $codecCurrentIdx
 # Video Bitrate display with examples
 Write-Host "  Bitrate: " -ForegroundColor White -NoNewline
 $bitrateExamples = @(
-    @{Kbps=15000; Label="15000 kbps (High - 4K)"},
-    @{Kbps=8000; Label="8000 kbps (High - 1080p)"},
-    @{Kbps=4000; Label="4000 kbps (Medium - 720p)"},
-    @{Kbps=2000; Label="2000 kbps (Medium - 480p)"},
+    @{Kbps=400; Label="400 kbps (Low)"},
     @{Kbps=800; Label="800 kbps (Low - 360p)"},
-    @{Kbps=400; Label="400 kbps (Low)"}
+    @{Kbps=2000; Label="2000 kbps (Medium - 480p)"},
+    @{Kbps=4000; Label="4000 kbps (Medium - 720p)"},
+    @{Kbps=8000; Label="8000 kbps (High - 1080p)"},
+    @{Kbps=15000; Label="15000 kbps (High - 4K)"}
 )
 $bitrateDisplay = @()
 foreach ($example in $bitrateExamples) {
@@ -427,8 +427,8 @@ Write-Host $bitrateDisplay[0] -ForegroundColor Green -NoNewline
 Write-Host " | " -ForegroundColor DarkGray -NoNewline
 Write-Host ($bitrateDisplay[1..($bitrateDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
 
-# Pixel Format display
-$pixOptions = @("yuv420p", "yuv422p", "yuv444p", "rgb24", "rgba", "yuvj420p")
+# Pixel Format display (sorted alphabetically)
+$pixOptions = @("rgb24", "rgba", "yuv420p", "yuv422p", "yuv444p", "yuvj420p")
 $pixDisplay = @()
 foreach ($opt in $pixOptions) {
     if ($pixFormat -eq $opt) {
@@ -440,8 +440,8 @@ foreach ($opt in $pixOptions) {
 $pixCurrentIdx = [array]::IndexOf($pixOptions, $pixFormat)
 Show-ParameterOptions "Pixel format" $pixOptions $pixDisplay $pixCurrentIdx
 
-# Color Space display
-$colorOptions = @("bt709", "bt601", "srgb", "bt2020-10", "bt2020-12")
+# Color Space display (sorted alphabetically)
+$colorOptions = @("bt601", "bt709", "bt2020-10", "bt2020-12", "srgb")
 $colorDisplay = @()
 foreach ($opt in $colorOptions) {
     if ($colorSpace -eq $opt) {
@@ -469,8 +469,8 @@ Show-ParameterOptions "Color depth" $depthOptions $depthDisplay $currentIdx
 if ($audioCodec) {
     Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
     
-    # Audio Codec display
-    $audioCodecOptions = @("aac", "mp3", "flac", "opus", "vorbis", "ac3", "eac3")
+    # Audio Codec display (sorted alphabetically)
+    $audioCodecOptions = @("aac", "ac3", "eac3", "flac", "mp3", "opus", "vorbis")
     $audioCodecDisplay = @()
     foreach ($opt in $audioCodecOptions) {
         if ($audioCodec -eq $opt) {
@@ -513,13 +513,13 @@ if ($audioCodec) {
     # Audio Bitrate display with examples
     Write-Host "  Bitrate: " -ForegroundColor White -NoNewline
     $audioBitrateExamples = @(
-        @{Kbps=320; Label="320 kbps (High)"},
-        @{Kbps=256; Label="256 kbps (High)"},
-        @{Kbps=192; Label="192 kbps (High)"},
-        @{Kbps=128; Label="128 kbps (Medium)"},
-        @{Kbps=96; Label="96 kbps (Medium)"},
+        @{Kbps=48; Label="48 kbps (Low)"},
         @{Kbps=64; Label="64 kbps (Low)"},
-        @{Kbps=48; Label="48 kbps (Low)"}
+        @{Kbps=96; Label="96 kbps (Medium)"},
+        @{Kbps=128; Label="128 kbps (Medium)"},
+        @{Kbps=192; Label="192 kbps (High)"},
+        @{Kbps=256; Label="256 kbps (High)"},
+        @{Kbps=320; Label="320 kbps (High)"}
     )
     $audioBitrateDisplay = @()
     foreach ($example in $audioBitrateExamples) {
