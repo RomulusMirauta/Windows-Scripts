@@ -4,8 +4,8 @@
 # Video to GIF Converter, and Video Trimmer
 #=============================================================================
 
-Write-Host "`n`nFFmpeg All-In-One Script`n" -ForegroundColor Gray
-Write-Host "Integrated Features: FFmpeg Install/Uninstall, Trim, Crop, Aspect Ratio Resizer, Video to GIF Converter`n`n" -ForegroundColor Gray
+# Write-Host "`n`nFFmpeg All-In-One Script`n" -ForegroundColor Gray
+# Write-Host "Integrated Features: FFmpeg Install/Uninstall, Trim, Crop, Aspect Ratio Resizer, Video to GIF Converter`n`n" -ForegroundColor Gray
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -162,7 +162,7 @@ function Resolve-OutputFileOverwrite {
 # ============================================================================
 
 function Invoke-FFmpegManager {
-    Write-Host ""
+    Write-Host "`n"
     Write-Host "FFmpeg Manager" -ForegroundColor Cyan
     Write-Host ""
     
@@ -920,10 +920,10 @@ while ($true) {
         Write-Host ""
     }
     
-    Write-Host ""
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "`n"
+    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "                  FFmpeg All-In-One Script - Main Menu" -ForegroundColor Cyan
+    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "[0] Video Trimmer" -ForegroundColor Yellow
     Write-Host "     Remove unwanted sections from beginning, end, or both (in seconds)" -ForegroundColor DarkGray
@@ -938,11 +938,11 @@ while ($true) {
     Write-Host "     Adapt videos for different use cases - screens/platforms (vertical/horizontal/square)" -ForegroundColor DarkGray
     Write-Host ""
     Write-Host "[4] FFmpeg Manager" -ForegroundColor Yellow
-    Write-Host "     Install or uninstall FFmpeg" -ForegroundColor DarkGray
+    Write-Host "     Install, update, or uninstall FFmpeg" -ForegroundColor DarkGray
     Write-Host ""
     Write-Host "[5] Exit" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     
     $toolChoice = Read-Host -Prompt "`n`nSelect a workflow (0-5)"
