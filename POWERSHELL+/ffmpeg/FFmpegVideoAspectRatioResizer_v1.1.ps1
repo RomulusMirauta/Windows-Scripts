@@ -206,7 +206,12 @@ if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
 }
 if ($sourceMatches.Count -gt 1) {
     Write-Host "`nWARNING: Multiple video files found in the current folder." -ForegroundColor Yellow
-    Write-Host "Please keep only one video file and run the script again.`n" -ForegroundColor Yellow
+    Write-Host "Please keep only one video file and run the script again." -ForegroundColor Yellow
+    Write-Host "`nFound files:" -ForegroundColor Cyan
+    foreach ($file in $sourceMatches) {
+        Write-Host "  - $($file.Name)" -ForegroundColor White
+    }
+    Write-Host ""
     Wait-ForUser
     exit 1
 }
