@@ -328,6 +328,13 @@ Write-Host "`n" -NoNewline
 Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
 Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
 
+Write-Host "`nFILE INFORMATION:" -ForegroundColor Yellow
+
+# File Size display
+$fileSizeMB = [math]::Round($inputFile.Length / 1MB, 2)
+Write-Host "  Size: " -ForegroundColor White -NoNewline
+Write-Host "$fileSizeMB MB" -ForegroundColor Green
+
 # File Extension display (all supported video formats)
 $videoExtensions = @('.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv', '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts', '.m2ts', '.ogv', '.vob')
 $currentExt = $inputFile.Extension.ToLower()
