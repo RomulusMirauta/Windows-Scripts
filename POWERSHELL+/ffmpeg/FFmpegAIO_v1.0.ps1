@@ -159,7 +159,7 @@ function Resolve-OutputFileOverwrite {
 
 function Invoke-FFmpegManager {
     Write-Host "`n"
-    Write-Host "FFmpeg Manager" -ForegroundColor Cyan
+    Write-Host "► FFmpeg Manager" -ForegroundColor Yellow
     Write-Host ""
     
     # Check FFmpeg status
@@ -565,7 +565,7 @@ function Invoke-VideoTrimmer {
 
 function Invoke-VideoCropper {
     Write-Host "`n"
-    Write-Host "Video Cropper" -ForegroundColor Cyan
+    Write-Host "► Video Cropper" -ForegroundColor Yellow
     Write-Host ""
     
     # Check FFmpeg
@@ -729,7 +729,7 @@ function Invoke-VideoCropper {
 
 function Invoke-VideoToGifConverter {
     Write-Host ""
-    Write-Host "Video to GIF Converter" -ForegroundColor Cyan
+    Write-Host "► Video to GIF Converter" -ForegroundColor Yellow
     Write-Host ""
     
     # Check FFmpeg
@@ -863,7 +863,7 @@ function Invoke-VideoToGifConverter {
 
 function Invoke-VideoAspectRatioResizer {
     Write-Host ""
-    Write-Host "Video Aspect Ratio Resizer" -ForegroundColor Cyan
+    Write-Host "► Video Aspect Ratio Resizer" -ForegroundColor Yellow
     Write-Host ""
     
     # Check FFmpeg
