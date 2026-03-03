@@ -153,6 +153,15 @@ function Resolve-OutputFileOverwrite {
 
 
 
+# ============================================================================
+# TOOL: Display Video File Info ***
+# ============================================================================
+
+function Invoke-DisplayVideoFileInfo {
+    Write-Host "`n"
+    Write-Host "► Display Video File Info" -ForegroundColor Yellow
+    Write-Host ""
+
 # BASE W/O INFO
 
 # # Supported video file extensions (case-insensitive)
@@ -177,7 +186,7 @@ if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
     Write-Host "`nWARNING: No video files found in the current folder." -ForegroundColor Yellow
     Write-Host "Supported file extensions: $($supportedExtensionsForCropping -join ', ')`n"
     Wait-ForUser
-    exit 1
+    return
 }
 if ($sourceMatches.Count -gt 1) {
     Write-Host "`nWARNING: Multiple video files found in the current folder." -ForegroundColor Yellow
@@ -188,7 +197,7 @@ if ($sourceMatches.Count -gt 1) {
     }
     Write-Host ""
     Wait-ForUser
-    exit 1
+    return
 }
 
 $inputFile = $sourceMatches[0]
@@ -295,9 +304,9 @@ $ratioW = [int]($width / $g)
 $ratioH = [int]($height / $g)
 
 # Display comprehensive video information
-Write-Host "`n" -NoNewline
-Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
-Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
+# Write-Host "`n" -NoNewline
+# Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
+Write-Host "`nInput file found: $($inputFile.Name)" -ForegroundColor Cyan
 
 Write-Host "`nFILE INFORMATION:" -ForegroundColor Yellow
 
@@ -560,7 +569,10 @@ if ($audioCodec) {
     Write-Host "  No audio stream detected" -ForegroundColor Yellow
 }
 Write-Host "`n" -NoNewline
-Write-Host "═════════════════════════════════════════════════════════════════`n" -ForegroundColor Gray
+# Write-Host "═════════════════════════════════════════════════════════════════`n" -ForegroundColor Gray
+
+Wait-ForUser
+}
 
 # BASE W/O INFO
 
@@ -1054,7 +1066,7 @@ function Invoke-VideoCropper {
     $inputFile = $sourceMatches[0]
     $inputPath = [string]$inputFile.FullName
     
-    Write-Host "Input file: $($inputFile.Name)" -ForegroundColor Cyan
+    Write-Host "Input file found: $($inputFile.Name)" -ForegroundColor Cyan
     Write-Host ""
     
     # Predefined crops
@@ -1584,6 +1596,9 @@ while ($true) {
             Invoke-FFmpegManager
         }
         "5" {
+            Invoke-DisplayVideoFileInfo
+        }
+        "6" {
             Write-Host ""
             Write-Host "Exiting FFmpeg AIO Script..." -ForegroundColor Green
             Write-Host ""
