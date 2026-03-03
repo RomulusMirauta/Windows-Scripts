@@ -348,15 +348,26 @@ Show-ParameterOptions "Resolution" $resolutionOptions $resDisplay $resIdx
 Write-Host "  Duration: " -ForegroundColor White -NoNewline
 Write-Host "$videoDuration ($shortDuration)" -ForegroundColor Green
 
-# Aspect Ratio display with common options (sorted)
-$aspectOptions = @("1:1", "2:3", "3:2", "4:3", "4:5", "9:16", "16:9", "21:9")
+# Aspect Ratio display with common options and descriptions (sorted)
+$aspectOptions = @("16:9", "9:16", "1:1", "4:3", "4:5", "21:9", "2:3", "3:2")
+$aspectDescriptions = @(
+    "Wide 16:9 (YouTube and streaming sites)",
+    "Vertical 9:16 (Instagram Reels and TikTok)",
+    "Square 1:1 (Instagram posts)",
+    "Classic 4:3",
+    "Social 4:5",
+    "Cinema 21:9",
+    "Portrait 2:3",
+    "Classic 3:2"
+)
 $currentAspect = "$ratioW`:$ratioH"
 $aspectDisplay = @()
-foreach ($opt in $aspectOptions) {
-    if ($opt -eq $currentAspect) {
-        $aspectDisplay += "$opt (current)"
+for ($i = 0; $i -lt $aspectOptions.Count; $i++) {
+    $label = "$($aspectDescriptions[$i])"
+    if ($aspectOptions[$i] -eq $currentAspect) {
+        $aspectDisplay += "$label (current)"
     } else {
-        $aspectDisplay += $opt
+        $aspectDisplay += $label
     }
 }
 $aspectIdx = [array]::IndexOf($aspectOptions, $currentAspect)
