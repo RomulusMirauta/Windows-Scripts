@@ -7,6 +7,8 @@
 # Write-Host "`n`nFFmpeg All-In-One Script`n" -ForegroundColor Gray
 # Write-Host "Integrated Features: FFmpeg Install/Uninstall, Trim, Crop, Aspect Ratio Resizer, Video to GIF Converter`n`n" -ForegroundColor Gray
 
+
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
@@ -148,12 +150,6 @@ function Resolve-OutputFileOverwrite {
         return '-n'
     }
 }
-
-
-
-
-
-
 
 
 
@@ -330,7 +326,7 @@ function Update-FFmpeg {
 }
 
 # ============================================================================
-# TOOL: Video Trimmer
+# TOOL: Video Trimmer ***
 # ============================================================================
 
 function Invoke-VideoTrimmer {
