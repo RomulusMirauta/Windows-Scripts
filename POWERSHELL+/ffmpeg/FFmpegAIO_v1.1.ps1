@@ -1553,13 +1553,16 @@ while ($true) {
     Write-Host "[4] FFmpeg Manager" -ForegroundColor Yellow
     Write-Host "     Install, update, or uninstall FFmpeg" -ForegroundColor Gray
     Write-Host ""
-    Write-Host "[5] Exit" -ForegroundColor Yellow
+    Write-Host "[5] Display Video File Info" -ForegroundColor Yellow
+    Write-Host "     General, video and audio information" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "[6] Exit" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     
     Write-Host "`n"
-    Write-Host "Select a workflow (0-5): " -NoNewline -ForegroundColor Gray
+    Write-Host "Select a workflow (0-6): " -NoNewline -ForegroundColor Gray
     $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     $toolChoice = [char]$key.Character
     Write-Host $toolChoice
@@ -1588,7 +1591,7 @@ while ($true) {
         }
         default {
             Write-Host ""
-            Write-Host "Invalid selection. Please enter a number between 0 and 5." -ForegroundColor Red
+            Write-Host "Invalid selection. Please enter a number between 0 and 6." -ForegroundColor Red
             Write-Host ""
         }
     }
