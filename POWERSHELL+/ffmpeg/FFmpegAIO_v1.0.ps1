@@ -202,7 +202,7 @@ function Invoke-FFmpegManager {
         if ($ffmpegInstalled) {
             Write-Host "[p] Update FFmpeg"
         }
-        Write-Host "[q] Quit"
+        Write-Host "[q] Quit workflow and return to Main Menu"
         Write-Host ""
         
         $managerChoice = Read-Host -Prompt "Select option"
