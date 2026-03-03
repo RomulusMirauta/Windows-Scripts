@@ -342,8 +342,18 @@ function Invoke-VideoTrimmer {
     # Check FFmpeg
     if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
         Write-Host "ERROR: FFmpeg was not found." -ForegroundColor Red
-        Write-Host "Install FFmpeg now? (y/n): " -NoNewline -ForegroundColor Gray
+        Write-Host "Install FFmpeg now? (y/n/Escape): " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        
+        # Check if Escape key was pressed
+        if ($key.VirtualKeyCode -eq 27) {
+            Write-Host ""
+            Write-Host ""
+            Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+            Write-Host ""
+            return
+        }
+        
         $install = [char]$key.Character
         Write-Host $install
         if ($install -match '^[Yy]$') {
@@ -460,15 +470,22 @@ function Invoke-VideoTrimmer {
     if ($trimChoice -eq '0' -or $trimChoice -eq '1') {
         $trimSeconds = $null
         while (-not $trimSeconds) {
-            $secondsInput = Read-Host -Prompt "Enter number of seconds to trim (e.g., 5)"
-            if ($secondsInput -match '^[1-9][0-9]*$') {
-                $trimSeconds = [int]$secondsInput
+            Write-Host "Enter number of seconds to trim (e.g., 5). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
+            $input = Read-Host
+            if ($input -match "^\x1b") {
+                Write-Host ""
+                Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow
+                Write-Host ""
+                return
+            }
+            if ($input -match '^[1-9][0-9]*$') {
+                $trimSeconds = [int]$input
             }
         }
         
         while ($trimSeconds -ge $duration) {
             Write-Host "`nERROR: Trim seconds must be less than video duration." -ForegroundColor Red
-            $secondsInput = Read-Host -Prompt "Enter a valid number of seconds to trim"
+            $secondsInput = Read-Host -Prompt "Enter a valid number of seconds to trim. Press Escape to cancel workflow "
             if ($secondsInput -match '^[1-9][0-9]*$') {
                 $trimSeconds = [int]$secondsInput
             }
@@ -674,11 +691,15 @@ function Invoke-VideoCropper {
     
     if ($selectedCrop.Custom) {
         Write-Host ""
-        Write-Host "Enter custom crop parameters:" -ForegroundColor Cyan
+        Write-Host "Enter custom crop parameters. Press Escape to cancel workflow: " -ForegroundColor Cyan
         $w = Read-Host -Prompt "Width (e.g., 640 or iw)"
+        if ($w -eq $null -or $w -match "^\x1b") { Write-Host ""; Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow; Write-Host ""; return }
         $h = Read-Host -Prompt "Height (e.g., 480 or ih)"
+        if ($h -eq $null -or $h -match "^\x1b") { Write-Host ""; Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow; Write-Host ""; return }
         $x = Read-Host -Prompt "X offset (e.g., 0 or (iw-w)/2)"
+        if ($x -eq $null -or $x -match "^\x1b") { Write-Host ""; Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow; Write-Host ""; return }
         $y = Read-Host -Prompt "Y offset (e.g., 0 or (ih-h)/2)"
+        if ($y -eq $null -or $y -match "^\x1b") { Write-Host ""; Write-Host "Cancelled. Returning to Main Menu." -ForegroundColor Yellow; Write-Host ""; return }
         $selectedCrop = @{ Label='Custom'; Width=$w; Height=$h; X=$x; Y=$y }
     }
     
