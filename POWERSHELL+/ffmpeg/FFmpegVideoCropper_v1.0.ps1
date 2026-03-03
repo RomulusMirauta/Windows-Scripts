@@ -27,88 +27,6 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
-# ============================================================================
-# PREPARE OUTPUT AND EXECUTE
-# ============================================================================
-$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_VideoCropper")
-if (-not (Test-Path -Path $outputDir)) { 
-    New-Item -Path $outputDir -ItemType Directory | Out-Null 
-}
-
-$label = if ($useAutoDetect) { "auto-detect" } else { SanitizeFileName -Name $selectedCrop.Label }
-$filename = "$($inputFile.BaseName)_cropped_$label$($inputFile.Extension)"
-$output = Join-Path -Path $outputDir -ChildPath $filename
-
-# Display file information
-Write-Host "FILE INFORMATION:" -ForegroundColor Cyan
-Write-Host "Input File: $($inputFile.FullName)" -ForegroundColor White
-
-# Get video information
-$videoInfo = ffprobe -v error -select_streams v:0 -show_entries stream=width,height,codec_name,bit_rate -of default=noprint_wrappers=1:nokey=1 "$inputPath"
-$videoInfoArray = $videoInfo -split "`n"
-Write-Host "VIDEO INFORMATION:" -ForegroundColor Cyan
-Write-Host "Width: $($videoInfoArray[0])" -ForegroundColor White
-Write-Host "Height: $($videoInfoArray[1])" -ForegroundColor White
-Write-Host "Codec: $($videoInfoArray[2])" -ForegroundColor White
-Write-Host "Bit Rate: $($videoInfoArray[3])" -ForegroundColor White
-
-# Get audio information
-$audioInfo = ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,bit_rate -of default=noprint_wrappers=1:nokey=1 "$inputPath"
-$audioInfoArray = $audioInfo -split "`n"
-Write-Host "AUDIO INFORMATION:" -ForegroundColor Cyan
-Write-Host "Codec: $($audioInfoArray[0])" -ForegroundColor White
-Write-Host "Bit Rate: $($audioInfoArray[1])" -ForegroundColor White
-
-# Handle existing output file
-if (Test-Path -Path $output) {
-    while ($true) {
-        Write-Host "WARNING: Output already exists:`n$output" -ForegroundColor Yellow
-        Write-Host ""
-        $ans = Read-Host -Prompt "Overwrite? (y/n)"
-        if ($ans -match '^[Yy]$') {
-            $overwriteSwitch = '-y'
-            break
-        } elseif ($ans -match '^[Nn]$') {
-            Write-Host ""
-            Write-Host "Operation canceled by user. Exiting script..." -ForegroundColor Yellow
-            Wait-ForUser
-            exit 0
-        } else {
-            Write-Host "Invalid input. Please enter 'y' or 'n'." -ForegroundColor Yellow
-        }
-    }
-} else {
-    $overwriteSwitch = '-n'
-}
-param(
-    [switch]$AutoDetect,
-    [switch]$Preview,
-    [string]$CustomWidth,
-    [string]$CustomHeight,
-    [string]$CustomX,
-    [string]$CustomY
-)
-
-function Wait-ForUser {
-    param(
-        [string]$Message = 'Press Enter to continue'
-    )
-    Read-Host -Prompt $Message | Out-Null
-}
-
-function Get-Gcd {
-    param(
-        [int]$a,
-        [int]$b
-    )
-    while ($b -ne 0) {
-        $t = $b
-        $b = $a % $b
-        $a = $t
-    }
-    return [math]::Abs($a)
-}
-
 # Replace or remove characters that are invalid in Windows filenames
 function SanitizeFileName {
     param(
@@ -268,6 +186,83 @@ $height = [int]$parts[1]
 
 Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
 Write-Host "Resolution: $width x $height" -ForegroundColor Cyan
+Write-Host ""
+
+# Show file/video/audio information (similar to AspectRatioResizer)
+$probeJsonInfo = & ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,r_frame_rate,pix_fmt,bit_rate -of json $inputPath
+$probeAudioInfo = & ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,channels,sample_rate,bit_rate -of json $inputPath
+$probeDurationInfo = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $inputPath
+
+$videoInfoObj = $null
+$audioInfoObj = $null
+try { if ($probeJsonInfo) { $videoInfoObj = $probeJsonInfo | ConvertFrom-Json } } catch {}
+try { if ($probeAudioInfo) { $audioInfoObj = $probeAudioInfo | ConvertFrom-Json } } catch {}
+
+$durationSeconds = 0
+if ($probeDurationInfo) {
+    try { $durationSeconds = [int][double]$probeDurationInfo } catch {}
+}
+$durationHours = [math]::Floor($durationSeconds / 3600)
+$durationMinutes = [math]::Floor(($durationSeconds % 3600) / 60)
+$durationSecs = $durationSeconds % 60
+$videoDuration = "{0:00}:{1:00}:{2:00}" -f $durationHours, $durationMinutes, $durationSecs
+
+$videoCodec = 'Unknown'
+$videoFps = 'Unknown'
+$pixelFormat = 'Unknown'
+$videoBitrate = 'Unknown'
+
+if ($videoInfoObj -and $videoInfoObj.streams -and $videoInfoObj.streams.Count -gt 0) {
+    $vs = $videoInfoObj.streams[0]
+    if ($vs.codec_name) { $videoCodec = $vs.codec_name }
+    if ($vs.pix_fmt) { $pixelFormat = $vs.pix_fmt }
+    if ($vs.bit_rate) {
+        $videoBitrate = "{0} kbps" -f ([int]$vs.bit_rate / 1000)
+    }
+    if ($vs.r_frame_rate) {
+        $fr = $vs.r_frame_rate -split '/'
+        if ($fr.Count -eq 2 -and [double]$fr[1] -ne 0) {
+            $videoFps = "{0}" -f ([math]::Round(([double]$fr[0] / [double]$fr[1]), 3))
+        }
+    }
+}
+
+$audioCodec = 'None'
+$audioChannels = 'N/A'
+$audioSampleRate = 'N/A'
+$audioBitrate = 'N/A'
+
+if ($audioInfoObj -and $audioInfoObj.streams -and $audioInfoObj.streams.Count -gt 0) {
+    $as = $audioInfoObj.streams[0]
+    if ($as.codec_name) { $audioCodec = $as.codec_name }
+    if ($as.channels) { $audioChannels = [string]$as.channels }
+    if ($as.sample_rate) { $audioSampleRate = "{0} Hz" -f $as.sample_rate }
+    if ($as.bit_rate) { $audioBitrate = "{0} kbps" -f ([int]$as.bit_rate / 1000) }
+}
+
+$fileSizeMB = [math]::Round($inputFile.Length / 1MB, 2)
+
+Write-Host "FILE INFORMATION:" -ForegroundColor Yellow
+Write-Host "  Name: $($inputFile.Name)" -ForegroundColor White
+Write-Host "  Size: $fileSizeMB MB" -ForegroundColor White
+Write-Host "  Duration: $videoDuration" -ForegroundColor White
+
+Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
+Write-Host "  Resolution: ${width}x${height}" -ForegroundColor White
+Write-Host "  Codec: $videoCodec" -ForegroundColor White
+Write-Host "  FPS: $videoFps" -ForegroundColor White
+Write-Host "  Pixel format: $pixelFormat" -ForegroundColor White
+Write-Host "  Bitrate: $videoBitrate" -ForegroundColor White
+
+Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
+if ($audioCodec -eq 'None') {
+    Write-Host "  No audio stream detected" -ForegroundColor Yellow
+} else {
+    Write-Host "  Codec: $audioCodec" -ForegroundColor White
+    Write-Host "  Channels: $audioChannels" -ForegroundColor White
+    Write-Host "  Sample rate: $audioSampleRate" -ForegroundColor White
+    Write-Host "  Bitrate: $audioBitrate" -ForegroundColor White
+}
 Write-Host ""
 
 # ============================================================================
