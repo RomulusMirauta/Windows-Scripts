@@ -123,6 +123,32 @@ function Invoke-FFplay {
     & FFplay @FfplayArgs
 }
 
+function Resolve-OutputFileOverwrite {
+    param(
+        [string]$OutputPath
+    )
+    if (Test-Path -Path $OutputPath) {
+        while ($true) {
+            Write-Host ""
+            Write-Host "WARNING: Output file already exists:" -ForegroundColor Yellow
+            Write-Host "$OutputPath" -ForegroundColor Yellow
+            Write-Host ""
+            $ans = Read-Host -Prompt "Overwrite? (y/n)"
+            if ($ans -match '^[Yy]$') {
+                return '-y'
+            } elseif ($ans -match '^[Nn]$') {
+                Write-Host ""
+                Write-Host "Operation canceled by user." -ForegroundColor Yellow
+                return $null
+            } else {
+                Write-Host "Invalid input. Please enter 'y' or 'n'." -ForegroundColor Yellow
+            }
+        }
+    } else {
+        return '-n'
+    }
+}
+
 # ============================================================================
 # MAIN MENU
 # ============================================================================
@@ -413,33 +439,41 @@ function Invoke-VideoTrimmer {
     
     Write-Host ""
     Write-Host "Trimming video..." -ForegroundColor Cyan
-    Write-Host ""
     
     if ($trimChoice -eq '0') {
         $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}_${methodLabel}$($inputFile.Extension)"
         $output = Join-Path -Path $outputDir -ChildPath $filename
+        $overwriteSwitch = Resolve-OutputFileOverwrite -OutputPath $output
+        if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
+        Write-Host ""
         if ($trimMethod -eq '0') {
-            & ffmpeg -n -ss $trimSecondsStart -i $inputPath -c copy $output
+            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c copy $output
         } else {
-            & ffmpeg -n -ss $trimSecondsStart -i $inputPath -c:v libx264 -c:a aac $output
+            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -c:v libx264 -c:a aac $output
         }
     } elseif ($trimChoice -eq '1') {
         $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsEnd}_${methodLabel}$($inputFile.Extension)"
         $output = Join-Path -Path $outputDir -ChildPath $filename
         $targetDuration = $duration - $trimSecondsEnd
+        $overwriteSwitch = Resolve-OutputFileOverwrite -OutputPath $output
+        if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
+        Write-Host ""
         if ($trimMethod -eq '0') {
-            & ffmpeg -n -i $inputPath -t $targetDuration -c copy $output
+            & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c copy $output
         } else {
-            & ffmpeg -n -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
+            & ffmpeg $overwriteSwitch -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
         }
     } else {
         $filename = "$($inputFile.BaseName)_trimmed_${trimLabel}_${trimSecondsStart}start_${trimSecondsEnd}end_${methodLabel}$($inputFile.Extension)"
         $output = Join-Path -Path $outputDir -ChildPath $filename
         $targetDuration = $duration - $trimSecondsStart - $trimSecondsEnd
+        $overwriteSwitch = Resolve-OutputFileOverwrite -OutputPath $output
+        if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
+        Write-Host ""
         if ($trimMethod -eq '0') {
-            & ffmpeg -n -ss $trimSecondsStart -i $inputPath -t $targetDuration -c copy $output
+            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c copy $output
         } else {
-            & ffmpeg -n -ss $trimSecondsStart -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
+            & ffmpeg $overwriteSwitch -ss $trimSecondsStart -i $inputPath -t $targetDuration -c:v libx264 -c:a aac $output
         }
     }
     
@@ -574,6 +608,9 @@ function Invoke-VideoCropper {
     $filename = "$($inputFile.BaseName)_cropped_$label$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     
+    $overwriteSwitch = Resolve-OutputFileOverwrite -OutputPath $output
+    if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
+    
     Write-Host ""
     Write-Host "Cropping..." -ForegroundColor Cyan
     Write-Host ""
@@ -584,7 +621,7 @@ function Invoke-VideoCropper {
     $y = if ([string]::IsNullOrWhiteSpace($selectedCrop.Y)) { 0 } else { $selectedCrop.Y }
     $cropFilter = "crop=$w`:$h`:$x`:$y"
     
-    $ffArgs = @('-n', '-i', $inputPath)
+    $ffArgs = @($overwriteSwitch, '-i', $inputPath)
     switch ($codecChoice) {
         '0' { $ffArgs += @('-vf', $cropFilter, '-c:v', 'libx264', '-crf', '23', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output) }
         '1' { $ffArgs += @('-vf', $cropFilter, '-c:v', 'libx265', '-crf', '23', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output) }
@@ -698,9 +735,12 @@ function Invoke-VideoToGifConverter {
         Write-Host "Created output folder: $outputFolder" -ForegroundColor Green
     }
     
+    $overwriteSwitch = Resolve-OutputFileOverwrite -OutputPath $output
+    if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
+    
     Write-Host ""
     Write-Host "Generating palette..." -ForegroundColor Cyan
-    & ffmpeg -n -i $inputFile.FullName -vf "fps=15,scale=${selectedScale}:flags=lanczos,palettegen" $palette
+    & ffmpeg $overwriteSwitch -i $inputFile.FullName -vf "fps=15,scale=${selectedScale}:flags=lanczos,palettegen" $palette
     
     if ($LASTEXITCODE -ne 0) {
         Write-Host ""
@@ -711,7 +751,7 @@ function Invoke-VideoToGifConverter {
     
     Write-Host ""
     Write-Host "Generating GIF..." -ForegroundColor Cyan
-    & ffmpeg -n -i $inputFile.FullName -i $palette -filter_complex "fps=15,scale=${selectedScale}:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
+    & ffmpeg $overwriteSwitch -i $inputFile.FullName -i $palette -filter_complex "fps=15,scale=${selectedScale}:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 $output
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host ""
@@ -866,10 +906,13 @@ function Invoke-VideoAspectRatioResizer {
     $filename = "$($inputFile.BaseName)_$label$($inputFile.Extension)"
     $output = Join-Path -Path $outputDir -ChildPath $filename
     
+    $overwriteSwitch = Resolve-OutputFileOverwrite -OutputPath $output
+    if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
+    
     $aspectExpr = "{0}/{1}" -f $tw, $th
     $vf = "scale='if(gt(a,{0}),{1},-2)':'if(gt(a,{0}),-2,{2})',pad={1}:{2}:(ow-iw)/2:(oh-ih)/2,setsar=1" -f $aspectExpr, $outW, $outH
     
-    $ffArgs = @('-n', '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
+    $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-vf', $vf, '-c:v', 'libx264', '-crf', '18', '-preset', 'medium', '-c:a', 'aac', '-b:a', '128k', $output)
     & ffmpeg @ffArgs
     
     if ($LASTEXITCODE -eq 0) {
