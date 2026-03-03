@@ -352,8 +352,8 @@ Show-ParameterOptions "Format" $videoExtensions $extDisplay $extIdx
 Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
 
 # Resolution display with common standards (sorted low to high)
-$resolutionOptions = @("640x360", "854x480", "1280x720", "1920x1080", "2048x1080", "2560x1440", "3840x2160")
-$resolutionLabels = @("360p", "480p", "720p", "1080p", "2K", "1440p", "4K")
+$resolutionOptions = @("256x144", "426x240", "640x360", "854x480", "960x540", "1280x720", "1366x768", "1600x900", "1920x1080", "2048x1080", "2560x1440", "3840x2160", "7680x4320")
+$resolutionLabels = @("144p", "240p", "360p", "480p", "qHD / 540p", "720p", "768p", "900p", "1080p", "2K", "1440p", "4K", "8K")
 $currentRes = "${width}x${height}"
 $resDisplay = @()
 for ($i = 0; $i -lt $resolutionOptions.Count; $i++) {
