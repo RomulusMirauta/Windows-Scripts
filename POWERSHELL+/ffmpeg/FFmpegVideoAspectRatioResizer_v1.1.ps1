@@ -1,3 +1,5 @@
+Write-Host "Video Aspect Ratio Resizer`n" -ForegroundColor Gray
+
 # Helper function to wait for user input before continuing
 function Wait-ForUser {
     param(
@@ -69,6 +71,10 @@ function ConsoleWindowMaximizer {
 }
 
 
+# Resize/maximize console window
+ConsoleWindowMaximizer
+
+
 # Helper function to safely build alternatives array
 function Get-AlternativesFromArray {
     param([array]$DisplayArray, [int]$CurrentIndex)
@@ -120,11 +126,6 @@ function SanitizeFileName {
     return $out
 }
 
-Write-Host "Video Aspect Ratio Resizer`n" -ForegroundColor Gray
-
-
-# Resize/maximize console window
-ConsoleWindowMaximizer
 
 
 # Ensure FFmpeg exists

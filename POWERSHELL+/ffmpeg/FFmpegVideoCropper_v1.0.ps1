@@ -1,3 +1,5 @@
+Write-Host "Video Cropper (with auto-detect and preview)`n" -ForegroundColor Gray
+
 # Helper function to wait for user input before continuing
 param(
     [switch]$AutoDetect,
@@ -158,8 +160,6 @@ function Invoke-FFplay {
     & FFplay @FfplayArgs
 }
 
-
-Write-Host "Video Cropper (with auto-detect and preview)`n" -ForegroundColor Gray
 
 
 # Ensure FFmpeg exists

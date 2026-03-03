@@ -1,3 +1,5 @@
+Write-Host "Video Trimmer (seconds)`n" -ForegroundColor Gray
+
 function Wait-ForUser {
 	param(
 		[string]$Message = 'Press Enter to continue'
@@ -18,8 +20,7 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
-Write-Host "Video Trimmer (seconds)" -ForegroundColor Gray
-Write-Host ""
+
 
 # Ensure FFmpeg exists
 if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
