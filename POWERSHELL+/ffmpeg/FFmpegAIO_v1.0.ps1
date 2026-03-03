@@ -200,7 +200,7 @@ function Invoke-FFmpegManager {
     Write-Host ""
     
     while ($true) {
-        Write-Host "Options:" -ForegroundColor Cyan
+        Write-Host "`nOptions:" -ForegroundColor Cyan
         Write-Host "[i] Install FFmpeg"
         Write-Host "[u] Uninstall FFmpeg"
         if ($ffmpegInstalled) {
@@ -226,7 +226,7 @@ function Invoke-FFmpegManager {
             'q' { return }
             default {
                 Write-Host ""
-                Write-Host "Invalid choice. Please enter i, u, p, or q." -ForegroundColor Yellow
+                Write-Host "Invalid choice. Please enter i, u, p, or q." -ForegroundColor Red
                 Write-Host ""
                 continue
             }
@@ -993,7 +993,7 @@ function Invoke-VideoAspectRatioResizer {
 
 
 # ============================================================================
-# MAIN MENU
+# MAIN MENU ***
 # ============================================================================
 
 ConsoleWindowMaximizer
@@ -1007,7 +1007,7 @@ while ($true) {
         Write-Host ""
     }
     
-    Write-Host "`n"
+    Write-Host "`n`n"
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host "                  FFmpeg All-In-One Script - Main Menu" -ForegroundColor Cyan
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
