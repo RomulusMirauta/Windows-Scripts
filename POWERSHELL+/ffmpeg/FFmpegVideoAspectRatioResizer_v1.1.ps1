@@ -636,15 +636,16 @@ Write-Host "`n" -NoNewline
 Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
 Write-Host ""
 
-# Define target formats (Label, ratio and optional short Description)
+# Define target formats (Label, ratio and optional short Description, ordered by visual fidelity/resolution)
 $formats = @{
-    '0' = @{ Label='Wide 16:9'; W=16; H=9; Desc='YouTube and streaming sites' }
-    '1' = @{ Label='Vertical 9:16'; W=9; H=16; Desc='Instagram Reels and TikTok' }
-    '2' = @{ Label='Square 1:1'; W=1; H=1; Desc='Instagram posts' }
-    '3' = @{ Label='Classic 4:3'; W=4; H=3; Desc=$null }
-    '4' = @{ Label='Social 4:5'; W=4; H=5; Desc=$null }
-    '5' = @{ Label='Cinema 21:9'; W=21; H=9; Desc=$null }
-    '6' = @{ Label='Portrait 2:3'; W=2; H=3; Desc=$null }
+    '0' = @{ Label='Vertical 9:16'; W=9; H=16; Desc='Instagram Reels and TikTok' }
+    '1' = @{ Label='Portrait 2:3'; W=2; H=3; Desc=$null }
+    '2' = @{ Label='Social 4:5'; W=4; H=5; Desc=$null }
+    '3' = @{ Label='Square 1:1'; W=1; H=1; Desc='Instagram posts' }
+    '4' = @{ Label='Classic 4:3'; W=4; H=3; Desc=$null }
+    '5' = @{ Label='Classic 3:2'; W=3; H=2; Desc=$null }
+    '6' = @{ Label='Wide 16:9'; W=16; H=9; Desc='YouTube and streaming sites' }
+    '7' = @{ Label='Cinema 21:9'; W=21; H=9; Desc=$null }
 }
 
 Write-Host "Select target format:" -ForegroundColor Cyan
@@ -660,7 +661,7 @@ foreach ($k in $formats.Keys | Sort-Object) {
 
 $targetChoice = $null
 while (-not $targetChoice) {
-    $choice = Read-Host -Prompt "`nEnter choice (0-6)"
+    $choice = Read-Host -Prompt "`nEnter choice (0-7)"
     if ($choice -in $formats.Keys) {
         # Check if this aspect ratio matches the current video
         $testTarget = $formats[$choice]
@@ -675,7 +676,7 @@ while (-not $targetChoice) {
             $targetChoice = $choice
         }
     } else {
-        Write-Host "Invalid input. Please enter a number between 0 and 6." -ForegroundColor Yellow
+        Write-Host "Invalid input. Please enter a number between 0 and 7." -ForegroundColor Yellow
     }
 }
 
