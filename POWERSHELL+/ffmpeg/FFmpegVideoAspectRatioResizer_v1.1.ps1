@@ -337,7 +337,7 @@ $currentRes = "${width}x${height}"
 $resDisplay = @()
 for ($i = 0; $i -lt $resolutionOptions.Count; $i++) {
     if ($resolutionOptions[$i] -eq $currentRes) {
-        $resDisplay += "$($resolutionLabels[$i]) - $($resolutionOptions[$i]) (current)"
+        $resDisplay += "$($resolutionLabels[$i]) - $($resolutionOptions[$i])"
     } else {
         $resDisplay += "$($resolutionLabels[$i]) - $($resolutionOptions[$i])"
     }
@@ -365,7 +365,7 @@ $aspectDisplay = @()
 for ($i = 0; $i -lt $aspectOptions.Count; $i++) {
     $label = "$($aspectDescriptions[$i])"
     if ($aspectOptions[$i] -eq $currentAspect) {
-        $aspectDisplay += "$label (current)"
+        $aspectDisplay += "$label"
     } else {
         $aspectDisplay += $label
     }
@@ -391,7 +391,7 @@ for ($i = 0; $i -lt $fpsOptions.Count; $i++) {
 # Build display array with only the closest match marked as current
 foreach ($i in 0..($fpsOptions.Count-1)) {
     if ($i -eq $fpsCurrentIdx) {
-        $fpsDisplay += "$($fpsOptions[$i]) fps (current)"
+        $fpsDisplay += "$($fpsOptions[$i]) fps"
     } else {
         $fpsDisplay += "$($fpsOptions[$i]) fps"
     }
@@ -403,7 +403,7 @@ $codecOptions = @("av1", "h264", "h265", "mpeg2video", "mpeg4", "prores", "vp9")
 $codecDisplay = @()
 foreach ($opt in $codecOptions) {
     if ($videoCodec -eq $opt) {
-        $codecDisplay += "$opt (current)"
+        $codecDisplay += "$opt"
     } else {
         $codecDisplay += $opt
     }
@@ -424,12 +424,12 @@ $bitrateExamples = @(
 $bitrateDisplay = @()
 foreach ($example in $bitrateExamples) {
     if ($videoBitrateKbps -ge ($example.Kbps - 500) -and $videoBitrateKbps -le ($example.Kbps + 500)) {
-        $bitrateDisplay += "$videoBitrateKbps kbps ($videoBitrateCategory) (current)"
+        $bitrateDisplay += "$videoBitrateKbps kbps ($videoBitrateCategory)"
         break
     }
 }
 if ($bitrateDisplay.Count -eq 0) {
-    $bitrateDisplay = @("$videoBitrateKbps kbps ($videoBitrateCategory) (current)")
+    $bitrateDisplay = @("$videoBitrateKbps kbps ($videoBitrateCategory)")
 }
 foreach ($example in $bitrateExamples) {
     $bitrateDisplay += $example.Label
@@ -443,7 +443,7 @@ $pixOptions = @("rgb24", "rgba", "yuv420p", "yuv422p", "yuv444p", "yuvj420p")
 $pixDisplay = @()
 foreach ($opt in $pixOptions) {
     if ($pixFormat -eq $opt) {
-        $pixDisplay += "$opt (current)"
+        $pixDisplay += "$opt"
     } else {
         $pixDisplay += $opt
     }
@@ -456,7 +456,7 @@ $colorOptions = @("bt601", "bt709", "bt2020-10", "bt2020-12", "srgb")
 $colorDisplay = @()
 foreach ($opt in $colorOptions) {
     if ($colorSpace -eq $opt) {
-        $colorDisplay += "$opt (current)"
+        $colorDisplay += "$opt"
     } else {
         $colorDisplay += $opt
     }
@@ -469,7 +469,7 @@ $depthOptions = @("8-bit", "10-bit", "12-bit", "16-bit")
 $depthDisplay = @()
 foreach ($opt in $depthOptions) {
     if ($opt -eq $colorDepth) {
-        $depthDisplay += "$opt (current)"
+        $depthDisplay += "$opt"
     } else {
         $depthDisplay += $opt
     }
@@ -485,7 +485,7 @@ if ($audioCodec) {
     $audioCodecDisplay = @()
     foreach ($opt in $audioCodecOptions) {
         if ($audioCodec -eq $opt) {
-            $audioCodecDisplay += "$opt (current)"
+            $audioCodecDisplay += "$opt"
         } else {
             $audioCodecDisplay += $opt
         }
@@ -499,7 +499,7 @@ if ($audioCodec) {
     $channelDisplay = @()
     for ($i = 0; $i -lt $channelOptions.Count; $i++) {
         if ($audioChannels -eq $channelOptions[$i]) {
-            $channelDisplay += "$($channelLabels[$i]) (current)"
+            $channelDisplay += "$($channelLabels[$i])"
         } else {
             $channelDisplay += $channelLabels[$i]
         }
@@ -513,7 +513,7 @@ if ($audioCodec) {
     $sampleDisplay = @()
     for ($i = 0; $i -lt $sampleOptions.Count; $i++) {
         if ($audioSampleRateHz -eq $sampleOptions[$i]) {
-            $sampleDisplay += "$($sampleLabels[$i]) (current)"
+            $sampleDisplay += "$($sampleLabels[$i])"
         } else {
             $sampleDisplay += $sampleLabels[$i]
         }
@@ -535,12 +535,12 @@ if ($audioCodec) {
     $audioBitrateDisplay = @()
     foreach ($example in $audioBitrateExamples) {
         if ($audioBitrateKbps -ge ($example.Kbps - 20) -and $audioBitrateKbps -le ($example.Kbps + 20)) {
-            $audioBitrateDisplay += "$audioBitrateKbps kbps ($audioBitrateCategory) (current)"
+            $audioBitrateDisplay += "$audioBitrateKbps kbps ($audioBitrateCategory)"
             break
         }
     }
     if ($audioBitrateDisplay.Count -eq 0) {
-        $audioBitrateDisplay = @("$audioBitrateKbps kbps ($audioBitrateCategory) (current)")
+        $audioBitrateDisplay = @("$audioBitrateKbps kbps ($audioBitrateCategory)")
     }
     foreach ($example in $audioBitrateExamples) {
         $audioBitrateDisplay += $example.Label
