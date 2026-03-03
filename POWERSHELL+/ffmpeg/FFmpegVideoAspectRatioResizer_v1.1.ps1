@@ -189,9 +189,17 @@ $inputPath = [string]$inputFile.FullName
 # Get comprehensive video information
 $probeJson = & ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate,codec_name,pix_fmt,color_space,bits_per_raw_sample,bit_rate -of json $inputPath
 $probeAudio = & ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,channels,sample_rate,bit_rate -of json $inputPath
+$probeDuration = & ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1:noesc=1 $inputPath
 
 $videoInfo = $probeJson | ConvertFrom-Json
 $audioInfo = $probeAudio | ConvertFrom-Json
+
+# Parse video duration
+$durationSeconds = if ($probeDuration) { [int][double]$probeDuration } else { 0 }
+$durationHours = [math]::Floor($durationSeconds / 3600)
+$durationMinutes = [math]::Floor(($durationSeconds % 3600) / 60)
+$durationSecs = $durationSeconds % 60
+$videoDuration = "{0:D2}:{1:D2}:{2:D2}" -f $durationHours, $durationMinutes, $durationSecs
 
 # Extract video stream data
 if ($videoInfo.streams -and $videoInfo.streams.Count -gt 0) {
@@ -212,10 +220,19 @@ if ($videoInfo.streams -and $videoInfo.streams.Count -gt 0) {
     $colorSpace = $vstream.color_space
     $colorDepthBits = $vstream.bits_per_raw_sample
     $colorDepth = if ($colorDepthBits) { "$colorDepthBits-bit" } else { "8-bit" }
-    $videoBitrate = if ($vstream.bit_rate) { 
-        $br = [int]$vstream.bit_rate / 1000
-        "$br kbps"
-    } else { "Unknown" }
+    $videoBitrateKbps = if ($vstream.bit_rate) { 
+        [int]$vstream.bit_rate / 1000
+    } else { 0 }
+    
+    # Categorize video bitrate
+    if ($videoBitrateKbps -ge 5000) {
+        $videoBitrateCategory = "High"
+    } elseif ($videoBitrateKbps -ge 1500) {
+        $videoBitrateCategory = "Medium"
+    } else {
+        $videoBitrateCategory = "Low"
+    }
+    $videoBitrate = if ($videoBitrateKbps) { "$videoBitrateKbps kbps ($videoBitrateCategory)" } else { "Unknown" }
 }
 
 # Extract audio stream data
@@ -223,11 +240,31 @@ if ($audioInfo.streams -and $audioInfo.streams.Count -gt 0) {
     $astream = $audioInfo.streams[0]
     $audioCodec = $astream.codec_name
     $audioChannels = $astream.channels
-    $audioSampleRate = if ($astream.sample_rate) { "$($astream.sample_rate) Hz" } else { "Unknown" }
-    $audioBitrate = if ($astream.bit_rate) { 
-        $br = [int]$astream.bit_rate / 1000
-        "$br kbps"
-    } else { "Unknown" }
+    $audioSampleRateHz = if ($astream.sample_rate) { [int]$astream.sample_rate } else { 0 }
+    
+    # Categorize sample rate
+    if ($audioSampleRateHz -ge 96000) {
+        $audioSampleRateCategory = "High"
+    } elseif ($audioSampleRateHz -ge 48000) {
+        $audioSampleRateCategory = "Medium"
+    } else {
+        $audioSampleRateCategory = "Low"
+    }
+    $audioSampleRate = if ($audioSampleRateHz) { "$audioSampleRateHz Hz ($audioSampleRateCategory)" } else { "Unknown" }
+    
+    $audioBitrateKbps = if ($astream.bit_rate) { 
+        [int]$astream.bit_rate / 1000
+    } else { 0 }
+    
+    # Categorize audio bitrate
+    if ($audioBitrateKbps -ge 320) {
+        $audioBitrateCategory = "High"
+    } elseif ($audioBitrateKbps -ge 128) {
+        $audioBitrateCategory = "Medium"
+    } else {
+        $audioBitrateCategory = "Low"
+    }
+    $audioBitrate = if ($audioBitrateKbps) { "$audioBitrateKbps kbps ($audioBitrateCategory)" } else { "Unknown" }
 }
 
 # Get file size
@@ -244,8 +281,51 @@ Write-Host "══════════════════════�
 Write-Host "`nInput file: $($inputFile.Name)" -ForegroundColor Cyan
 
 Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
-Write-Host "  Resolution: $width x $height" -ForegroundColor White
-Write-Host "  Aspect ratio: $ratioW`:$ratioH" -ForegroundColor White
+
+# Resolution display with common standards
+Write-Host "  Resolution: " -ForegroundColor White -NoNewline
+$resolutionOptions = @("3840x2160", "2560x1440", "1920x1080", "1280x720", "854x480", "640x360")
+$resolutionLabels = @("4K", "2K", "1080p", "720p", "480p", "360p")
+$currentRes = "$width`x$height"
+$resDisplay = @()
+for ($i = 0; $i -lt $resolutionOptions.Count; $i++) {
+    if ($resolutionOptions[$i] -eq $currentRes) {
+        $resDisplay += "$($resolutionLabels[$i]) - $($resolutionOptions[$i]) (current)"
+    } else {
+        $resDisplay += "$($resolutionLabels[$i]) - $($resolutionOptions[$i])"
+    }
+}
+$resIdx = [array]::IndexOf($resolutionOptions, $currentRes)
+if ($resIdx -ge 0) {
+    Write-Host $resDisplay[$resIdx] -ForegroundColor Green -NoNewline
+    Write-Host " | " -ForegroundColor DarkGray -NoNewline
+    Write-Host (($resDisplay[0..($resIdx-1)] + $resDisplay[($resIdx+1)..($resDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+} else {
+    Write-Host "$width x $height" -ForegroundColor White
+}
+
+Write-Host "  Duration: $videoDuration" -ForegroundColor White
+
+# Aspect Ratio display with common options
+Write-Host "  Aspect ratio: " -ForegroundColor White -NoNewline
+$aspectOptions = @("16:9", "9:16", "1:1", "4:3", "4:5", "21:9", "2:3", "3:2")
+$currentAspect = "$ratioW`:$ratioH"
+$aspectDisplay = @()
+foreach ($opt in $aspectOptions) {
+    if ($opt -eq $currentAspect) {
+        $aspectDisplay += "$opt (current)"
+    } else {
+        $aspectDisplay += $opt
+    }
+}
+$aspectIdx = [array]::IndexOf($aspectOptions, $currentAspect)
+if ($aspectIdx -ge 0) {
+    Write-Host $aspectDisplay[$aspectIdx] -ForegroundColor Green -NoNewline
+    Write-Host " | " -ForegroundColor DarkGray -NoNewline
+    Write-Host (($aspectDisplay[0..($aspectIdx-1)] + $aspectDisplay[($aspectIdx+1)..($aspectDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+} else {
+    Write-Host $currentAspect -ForegroundColor White
+}
 
 # Frame rate display with common options
 Write-Host "  Frame rate: " -ForegroundColor White -NoNewline
@@ -290,7 +370,32 @@ if ($codecCurrentIdx -ge 0) {
     Write-Host $videoCodec -ForegroundColor White
 }
 
-Write-Host "  Bitrate: $videoBitrate" -ForegroundColor White
+# Video Bitrate display with examples
+Write-Host "  Bitrate: " -ForegroundColor White -NoNewline
+$bitrateExamples = @(
+    @{Kbps=15000; Label="15000 kbps (High - 4K)"},
+    @{Kbps=8000; Label="8000 kbps (High - 1080p)"},
+    @{Kbps=4000; Label="4000 kbps (Medium - 720p)"},
+    @{Kbps=2000; Label="2000 kbps (Medium - 480p)"},
+    @{Kbps=800; Label="800 kbps (Low - 360p)"},
+    @{Kbps=400; Label="400 kbps (Low)"}
+)
+$bitrateDisplay = @()
+foreach ($example in $bitrateExamples) {
+    if ($videoBitrateKbps -ge ($example.Kbps - 500) -and $videoBitrateKbps -le ($example.Kbps + 500)) {
+        $bitrateDisplay += "$videoBitrateKbps kbps ($videoBitrateCategory) (current)"
+        break
+    }
+}
+if ($bitrateDisplay.Count -eq 0) {
+    $bitrateDisplay = @("$videoBitrateKbps kbps ($videoBitrateCategory) (current)")
+}
+foreach ($example in $bitrateExamples) {
+    $bitrateDisplay += $example.Label
+}
+Write-Host $bitrateDisplay[0] -ForegroundColor Green -NoNewline
+Write-Host " | " -ForegroundColor DarkGray -NoNewline
+Write-Host ($bitrateDisplay[1..($bitrateDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
 
 # Pixel Format display
 Write-Host "  Pixel format: " -ForegroundColor White -NoNewline
@@ -399,16 +504,16 @@ if ($audioCodec) {
     # Audio Sample Rate display
     Write-Host "  Sample rate: " -ForegroundColor White -NoNewline
     $sampleOptions = @(44100, 48000, 96000, 192000)
-    $sampleLabels = @("44.1 kHz", "48 kHz", "96 kHz", "192 kHz")
+    $sampleLabels = @("44.1 kHz (Low)", "48 kHz (Medium)", "96 kHz (High)", "192 kHz (High)")
     $sampleDisplay = @()
     for ($i = 0; $i -lt $sampleOptions.Count; $i++) {
-        if ($audioSampleRate -match $sampleOptions[$i]) {
+        if ($audioSampleRateHz -eq $sampleOptions[$i]) {
             $sampleDisplay += "$($sampleLabels[$i]) (current)"
         } else {
             $sampleDisplay += $sampleLabels[$i]
         }
     }
-    $sampleIdx = [array]::IndexOf($sampleOptions, $audioSampleRate -replace " Hz", "")
+    $sampleIdx = [array]::IndexOf($sampleOptions, $audioSampleRateHz)
     if ($sampleIdx -ge 0) {
         Write-Host $sampleDisplay[$sampleIdx] -ForegroundColor Green -NoNewline
         Write-Host " | " -ForegroundColor DarkGray -NoNewline
@@ -417,7 +522,36 @@ if ($audioCodec) {
         Write-Host $audioSampleRate -ForegroundColor White
     }
     
-    Write-Host "  Bitrate: $audioBitrate" -ForegroundColor White
+    # Audio Bitrate display with examples
+    Write-Host "  Bitrate: " -ForegroundColor White -NoNewline
+    $audioBitrateExamples = @(
+        @{Kbps=320; Label="320 kbps (High)"},
+        @{Kbps=256; Label="256 kbps (High)"},
+        @{Kbps=192; Label="192 kbps (High)"},
+        @{Kbps=128; Label="128 kbps (Medium)"},
+        @{Kbps=96; Label="96 kbps (Medium)"},
+        @{Kbps=64; Label="64 kbps (Low)"},
+        @{Kbps=48; Label="48 kbps (Low)"}
+    )
+    $audioBitrateDisplay = @()
+    foreach ($example in $audioBitrateExamples) {
+        if ($audioBitrateKbps -ge ($example.Kbps - 20) -and $audioBitrateKbps -le ($example.Kbps + 20)) {
+            $audioBitrateDisplay += "$audioBitrateKbps kbps ($audioBitrateCategory) (current)"
+            break
+        }
+    }
+    if ($audioBitrateDisplay.Count -eq 0) {
+        $audioBitrateDisplay = @("$audioBitrateKbps kbps ($audioBitrateCategory) (current)")
+    }
+    foreach ($example in $audioBitrateExamples) {
+        $audioBitrateDisplay += $example.Label
+    }
+    Write-Host $audioBitrateDisplay[0] -ForegroundColor Green -NoNewline
+    Write-Host " | " -ForegroundColor DarkGray -NoNewline
+    Write-Host ($audioBitrateDisplay[1..($audioBitrateDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
+} else {
+    Write-Host "`nAUDIO INFORMATION:" -ForegroundColor Yellow
+    Write-Host "  No audio stream detected" -ForegroundColor Yellow
 }
 
 Write-Host "`nFILE INFORMATION:" -ForegroundColor Yellow
