@@ -457,7 +457,12 @@ if (-not (Test-Path -Path $outputDir)) {
     New-Item -Path $outputDir -ItemType Directory | Out-Null 
 }
 
-$label = if ($useAutoDetect) { "auto-detect" } else { SanitizeFileName -Name $selectedCrop.Label }
+$methodLabel = if ($useAutoDetect) {
+    "crop$cropChoice-auto-detect"
+} else {
+    "crop$cropChoice-$($selectedCrop.Label)"
+}
+$label = SanitizeFileName -Name $methodLabel
 $filename = "$($inputFile.BaseName)_cropped_$label$($inputFile.Extension)"
 $output = Join-Path -Path $outputDir -ChildPath $filename
 
