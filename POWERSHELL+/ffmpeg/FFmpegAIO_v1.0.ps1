@@ -348,7 +348,10 @@ function Invoke-VideoTrimmer {
     # Check FFmpeg
     if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
         Write-Host "ERROR: FFmpeg was not found." -ForegroundColor Red
-        $install = Read-Host -Prompt "Install FFmpeg now? (y/n)"
+        Write-Host "Install FFmpeg now? (y/n): " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $install = [char]$key.Character
+        Write-Host $install
         if ($install -match '^[Yy]$') {
             Install-FFmpeg
             if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
@@ -394,7 +397,10 @@ function Invoke-VideoTrimmer {
     
     $trimMethod = $null
     while (-not $trimMethod) {
-        $methodChoice = Read-Host -Prompt "Enter choice (0-1)"
+        Write-Host "Enter choice (0-1): " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $methodChoice = [char]$key.Character
+        Write-Host $methodChoice
         if ($methodChoice -in @('0','1')) {
             $trimMethod = $methodChoice
         } else {
@@ -412,7 +418,10 @@ function Invoke-VideoTrimmer {
     
     $trimChoice = $null
     while (-not $trimChoice) {
-        $choice = Read-Host -Prompt "Enter choice (0-2)"
+        Write-Host "Enter choice (0-2): " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $choice = [char]$key.Character
+        Write-Host $choice
         if ($choice -in @('0','1','2')) {
             $trimChoice = $choice
         } else {
@@ -620,7 +629,10 @@ function Invoke-VideoCropper {
     Write-Host ""
     $cropChoice = $null
     while (-not $cropChoice) {
-        $choice = Read-Host -Prompt "Enter crop choice (0-8)"
+        Write-Host "Enter crop choice (0-8): " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $choice = [char]$key.Character
+        Write-Host $choice
         if ($choice -in $crops.Keys) {
             $cropChoice = $choice
         } else {
@@ -654,7 +666,10 @@ function Invoke-VideoCropper {
     
     $codecChoice = $null
     while (-not $codecChoice) {
-        $choice = Read-Host -Prompt "Enter choice (0-3)"
+        Write-Host "Enter choice (0-3): " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $choice = [char]$key.Character
+        Write-Host $choice
         if ($choice -in @('0', '1', '2', '3')) {
             $codecChoice = $choice
         } else {
@@ -776,7 +791,10 @@ function Invoke-VideoToGifConverter {
     Write-Host ""
     $selectedScale = $null
     while (-not $selectedScale) {
-        $choice = Read-Host -Prompt "Enter choice (0-$($scaleOptions.Count - 1)) [default: 3]"
+        Write-Host "Enter choice (0-$($scaleOptions.Count - 1)) [default: 3]: " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $choice = [char]$key.Character
+        Write-Host $choice
         if ([string]::IsNullOrWhiteSpace($choice)) {
             $selectedScale = $scaleOptions[3].Value
         } elseif ($choice -match '^[0-9]+$') {
@@ -925,7 +943,10 @@ function Invoke-VideoAspectRatioResizer {
     Write-Host ""
     $targetChoice = $null
     while (-not $targetChoice) {
-        $choice = Read-Host -Prompt "Enter choice (0-7)"
+        Write-Host "Enter choice (0-7): " -NoNewline -ForegroundColor Gray
+        $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        $choice = [char]$key.Character
+        Write-Host $choice
         if ($choice -in $formats.Keys) {
             $targetChoice = $choice
         } else {
@@ -1043,7 +1064,11 @@ while ($true) {
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     
-    $toolChoice = Read-Host -Prompt "`n`nSelect a workflow (0-5)"
+    Write-Host "`n"
+    Write-Host "Select a workflow (0-5): " -NoNewline -ForegroundColor Gray
+    $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    $toolChoice = [char]$key.Character
+    Write-Host $toolChoice
     
     switch ($toolChoice) {
         "0" {
