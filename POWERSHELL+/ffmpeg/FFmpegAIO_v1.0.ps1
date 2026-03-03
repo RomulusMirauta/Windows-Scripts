@@ -496,7 +496,7 @@ function Invoke-VideoTrimmer {
     }
     
     $trimLabel = if ($trimChoice -eq '0') { 'beginning' } elseif ($trimChoice -eq '1') { 'end' } else { 'both' }
-    $methodLabel = if ($trimMethod -eq '0') { 'fast' } else { 're-encode' }
+    $methodLabel = if ($trimMethod -eq '0') { 're-encode' } else { 'fast' }
     
     $outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_VideoTrimmer")
     if (-not (Test-Path -Path $outputDir)) {
@@ -513,9 +513,9 @@ function Invoke-VideoTrimmer {
         if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
         Write-Host ""
         if ($trimMethod -eq '0') {
-            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-c', 'copy', $output)
-        } else {
             $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-c:v', 'libx264', '-c:a', 'aac', $output)
+        } else {
+            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-c', 'copy', $output)
         }
         $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     } elseif ($trimChoice -eq '1') {
@@ -526,9 +526,9 @@ function Invoke-VideoTrimmer {
         if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
         Write-Host ""
         if ($trimMethod -eq '0') {
-            $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-t', $targetDuration, '-c', 'copy', $output)
-        } else {
             $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-t', $targetDuration, '-c:v', 'libx264', '-c:a', 'aac', $output)
+        } else {
+            $ffArgs = @($overwriteSwitch, '-i', $inputPath, '-t', $targetDuration, '-c', 'copy', $output)
         }
         $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     } else {
@@ -539,9 +539,9 @@ function Invoke-VideoTrimmer {
         if ($null -eq $overwriteSwitch) { Wait-ForUser; return }
         Write-Host ""
         if ($trimMethod -eq '0') {
-            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-t', $targetDuration, '-c', 'copy', $output)
-        } else {
             $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-t', $targetDuration, '-c:v', 'libx264', '-c:a', 'aac', $output)
+        } else {
+            $ffArgs = @($overwriteSwitch, '-ss', $trimSecondsStart, '-i', $inputPath, '-t', $targetDuration, '-c', 'copy', $output)
         }
         $rc = Invoke-FFmpeg -FfmpegArgs $ffArgs
     }
