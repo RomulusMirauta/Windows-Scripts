@@ -1,3 +1,4 @@
+# Helper function to wait for user input before continuing
 function Wait-ForUser {
     param(
         [string]$Message = 'Press Enter to continue'
@@ -5,6 +6,8 @@ function Wait-ForUser {
     Read-Host -Prompt $Message | Out-Null
 }
 
+
+# Helper function to calculate greatest common divisor (GCD) for aspect ratio simplification
 function Get-Gcd {
     param(
         [int]$a,
@@ -18,6 +21,8 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
+
+# Helper function to maximize console window or expand it to available size
 function ConsoleWindowMaximizer {
     # Check if we should relaunch in a new maximized window
     $scriptPath = $PSCommandPath
@@ -63,6 +68,7 @@ function ConsoleWindowMaximizer {
     } catch { }
 }
 
+
 # Helper function to safely build alternatives array
 function Get-AlternativesFromArray {
     param([array]$DisplayArray, [int]$CurrentIndex)
@@ -75,6 +81,7 @@ function Get-AlternativesFromArray {
     }
     return $alternatives
 }
+
 
 # Helper function to display parameter with current value and alternatives
 function Show-ParameterOptions {
@@ -100,6 +107,7 @@ function Show-ParameterOptions {
     }
 }
 
+
 # Replace or remove characters that are invalid in Windows filenames
 function SanitizeFileName {
     param(
@@ -114,8 +122,10 @@ function SanitizeFileName {
 
 Write-Host "Video Aspect Ratio Resizer`n" -ForegroundColor Gray
 
+
 # Resize/maximize console window
 ConsoleWindowMaximizer
+
 
 # Ensure FFmpeg exists
 if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
@@ -185,6 +195,10 @@ if (-not (Get-Command FFprobe -ErrorAction SilentlyContinue)) {
     Wait-ForUser
     exit 1
 }
+
+
+
+# BASE WITH INFO
 
 # Supported video file extensions (case-insensitive)
 $videoExtensions = @(
@@ -630,6 +644,10 @@ if ($audioCodec) {
 }
 Write-Host "`n" -NoNewline
 Write-Host "═════════════════════════════════════════════════════════════════`n" -ForegroundColor Gray
+
+# BASE WITH INFO
+
+
 
 # Define target formats (Label, ratio and optional short Description, ordered by visual fidelity/resolution)
 $formats = @{
