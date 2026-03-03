@@ -93,7 +93,7 @@ function Show-ParameterOptions {
             $alternatives = Get-AlternativesFromArray $DisplayArray $CurrentIndex
             Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
         } else {
-            Write-Host ""
+            Write-Host "`n"
         }
     } else {
         Write-Host $DisplayArray[0] -ForegroundColor White
@@ -112,17 +112,14 @@ function SanitizeFileName {
     return $out
 }
 
-Write-Host "Video Aspect Ratio Resizer" -ForegroundColor Gray
-Write-Host ""
+Write-Host "Video Aspect Ratio Resizer`n" -ForegroundColor Gray
 
 # Resize/maximize console window
 ConsoleWindowMaximizer
 
 # Ensure FFmpeg exists
 if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
-    Write-Host ""
-    Write-Host "ERROR: FFmpeg was not found." -ForegroundColor Red
-    Write-Host ""
+    Write-Host "`nERROR: FFmpeg was not found.`n" -ForegroundColor Red
 
     while ($true) {
         $choice = Read-Host -Prompt "Install FFmpeg now? (y/n)"
@@ -168,13 +165,11 @@ if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
                 Wait-ForUser
                 exit 1
             } else {
-                Write-Host ""
-                Write-Host "FFmpeg installed successfully." -ForegroundColor Green
+                Write-Host "`nFFmpeg installed successfully." -ForegroundColor Green
                 break
             }
         } elseif ($choice -match '^[Nn]$') {
-            Write-Host ""
-            Write-Host "FFmpeg installation is mandatory. Exiting the script..." -ForegroundColor Yellow
+            Write-Host "`nFFmpeg installation is mandatory. Exiting the script..." -ForegroundColor Yellow
             Wait-ForUser
             exit 1
         } else {
@@ -182,9 +177,7 @@ if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
         }
     }
 } else {
-    Write-Host ""
-    Write-Host "FFmpeg found, continuing script..." -ForegroundColor Green
-    Write-Host ""
+    Write-Host "`nFFmpeg found, continuing script...`n" -ForegroundColor Green
 }
 
 if (-not (Get-Command FFprobe -ErrorAction SilentlyContinue)) {
@@ -207,15 +200,13 @@ $sourceMatches = Get-ChildItem -File -ErrorAction SilentlyContinue | Where-Objec
 
 if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
     Write-Host "`nWARNING: No video files found in the current folder." -ForegroundColor Yellow
-    Write-Host "Supported file extensions: $($videoExtensions -join ', ')"
-    Write-Host ""
+    Write-Host "Supported file extensions: $($videoExtensions -join ', ')`n"
     Wait-ForUser
     exit 1
 }
 if ($sourceMatches.Count -gt 1) {
     Write-Host "`nWARNING: Multiple video files found in the current folder." -ForegroundColor Yellow
-    Write-Host "Please keep only one video file and run the script again." -ForegroundColor Yellow
-    Write-Host ""
+    Write-Host "Please keep only one video file and run the script again.`n" -ForegroundColor Yellow
     Wait-ForUser
     exit 1
 }
@@ -633,8 +624,7 @@ if ($audioCodec) {
     Write-Host "  No audio stream detected" -ForegroundColor Yellow
 }
 Write-Host "`n" -NoNewline
-Write-Host "═════════════════════════════════════════════════════════════════" -ForegroundColor Gray
-Write-Host ""
+Write-Host "═════════════════════════════════════════════════════════════════`n" -ForegroundColor Gray
 
 # Define target formats (Label, ratio and optional short Description, ordered by visual fidelity/resolution)
 $formats = @{
@@ -719,15 +709,12 @@ function Resolve-OutputPathAndSwitch {
     $out = Join-Path -Path $OutputDir -ChildPath $Filename
     if (Test-Path -Path $out) {
         while ($true) {
-            Write-Host ""
-            Write-Host "`nWARNING: Output already exists:`n$out" -ForegroundColor Yellow
-            Write-Host ""
+            Write-Host "`n`nWARNING: Output already exists:`n$out`n" -ForegroundColor Yellow
             $ans = Read-Host -Prompt  "Overwrite? (y/n)"
             if ($ans -match '^[Yy]$') {
                 return @{ Output = $out; Switch = '-y' }
             } elseif ($ans -match '^[Nn]$') {
-                Write-Host ""
-                Write-Host "Operation canceled by user. Exiting script..." -ForegroundColor Yellow
+                Write-Host "`nOperation canceled by user. Exiting script..." -ForegroundColor Yellow
                 Wait-ForUser
                 exit 0
             } else {
@@ -843,13 +830,9 @@ if ($method -eq '0' -and ($isRotationOnly -or $isSameAspect)) {
 }
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "" 
-    Write-Host "ERROR: Format conversion failed. Exiting the script..." -ForegroundColor Red
-    Write-Host ""
+    Write-Host "`nERROR: Format conversion failed. Exiting the script...`n" -ForegroundColor Red
     Wait-ForUser
     exit 1
 }
 
-Write-Host "" 
-Write-Host "Output created: $output" -ForegroundColor Green
-Write-Host ""
+Write-Host "`nOutput created: $output`n" -ForegroundColor Green
