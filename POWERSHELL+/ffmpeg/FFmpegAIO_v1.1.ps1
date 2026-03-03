@@ -1588,7 +1588,9 @@ while ($true) {
         foreach ($file in $videoFiles) {
             Write-Host "  - $($file.BaseName)$($file.Extension)" -ForegroundColor Yellow
         }
-        Write-Host "No video file was found in the current folder. " -ForegroundColor Yellow
+    } else {
+        Write-Host "No video files were found in the current folder." -ForegroundColor Yellow
+        Write-Host ""
     }
     
     Write-Host "`n"
