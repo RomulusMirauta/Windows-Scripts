@@ -316,6 +316,10 @@ function Update-FFmpeg {
         Write-Host ""
         Write-Host "FFmpeg updated successfully." -ForegroundColor Green
         Write-Host ""
+    } elseif ($updateExit -eq -1978335189) {
+        Write-Host ""
+        Write-Host "You already have the latest FFmpeg version." -ForegroundColor Green
+        Write-Host ""
     } else {
         Write-Host ""
         Write-Host "Update failed (exit code $updateExit). Please try again or update manually." -ForegroundColor Red
@@ -993,7 +997,7 @@ function Invoke-VideoAspectRatioResizer {
 
 
 # ============================================================================
-# MAIN MENU ***
+# *** MAIN MENU ***
 # ============================================================================
 
 ConsoleWindowMaximizer
@@ -1013,19 +1017,19 @@ while ($true) {
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "[0] Video Trimmer" -ForegroundColor Yellow
-    Write-Host "     Remove unwanted sections from beginning, end, or both (in seconds)" -ForegroundColor DarkGray
+    Write-Host "     Remove unwanted sections from beginning, end, or both (in seconds)" -ForegroundColor Gray
     Write-Host ""
     Write-Host "[1] Video Cropper" -ForegroundColor Yellow
-    Write-Host "     Cut rectangular sections, remove black bars, or zoom in (in pixels)" -ForegroundColor DarkGray
+    Write-Host "     Cut rectangular sections, remove black bars, or zoom in (in pixels)" -ForegroundColor Gray
     Write-Host ""
     Write-Host "[2] Video to GIF Converter" -ForegroundColor Yellow
-    Write-Host "     Convert video clips into animated GIFs = GitHub/Web/Social Media-friendly loops" -ForegroundColor DarkGray
+    Write-Host "     Convert video clips into animated GIFs = GitHub/Web/Social Media-friendly loops" -ForegroundColor Gray
     Write-Host ""
     Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Yellow
-    Write-Host "     Adapt videos for different use cases - screens/platforms (vertical/horizontal/square)" -ForegroundColor DarkGray
+    Write-Host "     Adapt videos for different use cases - screens/platforms (vertical/horizontal/square)" -ForegroundColor Gray
     Write-Host ""
     Write-Host "[4] FFmpeg Manager" -ForegroundColor Yellow
-    Write-Host "     Install, update, or uninstall FFmpeg" -ForegroundColor DarkGray
+    Write-Host "     Install, update, or uninstall FFmpeg" -ForegroundColor Gray
     Write-Host ""
     Write-Host "[5] Exit" -ForegroundColor Yellow
     Write-Host ""
