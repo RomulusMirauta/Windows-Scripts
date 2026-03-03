@@ -18,7 +18,7 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
-function Maximize-ConsoleWindow {
+function ConsoleWindowMaximizer {
     # Check if we should relaunch in a new maximized window
     $scriptPath = $PSCommandPath
     
@@ -116,7 +116,7 @@ Write-Host "Video Aspect Ratio Resizer" -ForegroundColor Gray
 Write-Host ""
 
 # Resize/maximize console window
-Maximize-ConsoleWindow
+ConsoleWindowMaximizer
 
 # Ensure FFmpeg exists
 if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
