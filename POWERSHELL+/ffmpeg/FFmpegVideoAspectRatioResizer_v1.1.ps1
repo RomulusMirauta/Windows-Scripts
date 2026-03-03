@@ -63,6 +63,19 @@ function Maximize-ConsoleWindow {
     } catch { }
 }
 
+# Helper function to safely build alternatives array
+function Get-AlternativesFromArray {
+    param([array]$DisplayArray, [int]$CurrentIndex)
+    
+    $alternatives = @()
+    for ($i = 0; $i -lt $DisplayArray.Count; $i++) {
+        if ($i -ne $CurrentIndex) {
+            $alternatives += $DisplayArray[$i]
+        }
+    }
+    return $alternatives
+}
+
 # Replace or remove characters that are invalid in Windows filenames
 function SanitizeFileName {
     param(
@@ -334,7 +347,8 @@ $aspectIdx = [array]::IndexOf($aspectOptions, $currentAspect)
 if ($aspectIdx -ge 0) {
     Write-Host $aspectDisplay[$aspectIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($aspectDisplay[0..($aspectIdx-1)] + $aspectDisplay[($aspectIdx+1)..($aspectDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+    $alternatives = Get-AlternativesFromArray $aspectDisplay $aspectIdx
+    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host $currentAspect -ForegroundColor White
 }
@@ -357,7 +371,8 @@ for ($i = 0; $i -lt $fpsOptions.Count; $i++) {
 if ($fpsCurrentIdx -ge 0) {
     Write-Host $fpsDisplay[$fpsCurrentIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($fpsDisplay[0..($fpsCurrentIdx-1)] + $fpsDisplay[($fpsCurrentIdx+1)..($fpsDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+    $alternatives = Get-AlternativesFromArray $fpsDisplay $fpsCurrentIdx
+    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host "$fps fps" -ForegroundColor White
 }
@@ -377,7 +392,8 @@ $codecCurrentIdx = [array]::IndexOf($codecOptions, $videoCodec)
 if ($codecCurrentIdx -ge 0) {
     Write-Host $codecDisplay[$codecCurrentIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($codecDisplay[0..($codecCurrentIdx-1)] + $codecDisplay[($codecCurrentIdx+1)..($codecDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+    $alternatives = Get-AlternativesFromArray $codecDisplay $codecCurrentIdx
+    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host $videoCodec -ForegroundColor White
 }
@@ -424,7 +440,8 @@ $pixCurrentIdx = [array]::IndexOf($pixOptions, $pixFormat)
 if ($pixCurrentIdx -ge 0) {
     Write-Host $pixDisplay[$pixCurrentIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($pixDisplay[0..($pixCurrentIdx-1)] + $pixDisplay[($pixCurrentIdx+1)..($pixDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+    $alternatives = Get-AlternativesFromArray $pixDisplay $pixCurrentIdx
+    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host $pixFormat -ForegroundColor White
 }
@@ -444,7 +461,8 @@ $colorCurrentIdx = [array]::IndexOf($colorOptions, $colorSpace)
 if ($colorCurrentIdx -ge 0) {
     Write-Host $colorDisplay[$colorCurrentIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($colorDisplay[0..($colorCurrentIdx-1)] + $colorDisplay[($colorCurrentIdx+1)..($colorDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+    $alternatives = Get-AlternativesFromArray $colorDisplay $colorCurrentIdx
+    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host $colorSpace -ForegroundColor White
 }
@@ -464,7 +482,8 @@ $currentIdx = $depthOptions.IndexOf($colorDepth)
 if ($currentIdx -ge 0) {
     Write-Host $depthDisplay[$currentIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host (($depthDisplay[0..($currentIdx-1)] + $depthDisplay[($currentIdx+1)..($depthDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+    $alternatives = Get-AlternativesFromArray $depthDisplay $currentIdx
+    Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host $colorDepth -ForegroundColor White
 }
@@ -487,7 +506,8 @@ if ($audioCodec) {
     if ($audioCodecIdx -ge 0) {
         Write-Host $audioCodecDisplay[$audioCodecIdx] -ForegroundColor Green -NoNewline
         Write-Host " | " -ForegroundColor DarkGray -NoNewline
-        Write-Host (($audioCodecDisplay[0..($audioCodecIdx-1)] + $audioCodecDisplay[($audioCodecIdx+1)..($audioCodecDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+        $alternatives = Get-AlternativesFromArray $audioCodecDisplay $audioCodecIdx
+        Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
     } else {
         Write-Host $audioCodec -ForegroundColor White
     }
@@ -508,7 +528,8 @@ if ($audioCodec) {
     if ($channelIdx -ge 0) {
         Write-Host $channelDisplay[$channelIdx] -ForegroundColor Green -NoNewline
         Write-Host " | " -ForegroundColor DarkGray -NoNewline
-        Write-Host (($channelDisplay[0..($channelIdx-1)] + $channelDisplay[($channelIdx+1)..($channelDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+        $alternatives = Get-AlternativesFromArray $channelDisplay $channelIdx
+        Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
     } else {
         Write-Host "$audioChannels channels" -ForegroundColor White
     }
@@ -529,7 +550,8 @@ if ($audioCodec) {
     if ($sampleIdx -ge 0) {
         Write-Host $sampleDisplay[$sampleIdx] -ForegroundColor Green -NoNewline
         Write-Host " | " -ForegroundColor DarkGray -NoNewline
-        Write-Host (($sampleDisplay[0..($sampleIdx-1)] + $sampleDisplay[($sampleIdx+1)..($sampleDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
+        $alternatives = Get-AlternativesFromArray $sampleDisplay $sampleIdx
+        Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
     } else {
         Write-Host $audioSampleRate -ForegroundColor White
     }
