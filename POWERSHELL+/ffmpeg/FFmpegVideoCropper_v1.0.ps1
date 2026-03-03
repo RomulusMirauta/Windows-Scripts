@@ -243,21 +243,17 @@ if (Get-Command FFplay -ErrorAction SilentlyContinue) {
     $hasFFplay = $true
 }
 
+# # Supported video file extensions (case-insensitive)
+# $supportedExtensionsForVideo = @(
+#     '.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv',
+#     '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts',
+#     '.m2ts', '.ogv', '.vob'
+# )
+
 # Supported video/image file extensions (case-insensitive)
-$supportedExtensions = @(
+$videoExtensions = @(
     '.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv', '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts', '.m2ts', '.ogv', '.vob',
     '.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff', '.webp'
-)
-
-
-
-# BASE W/O INFO
-
-# Supported video file extensions (case-insensitive)
-$videoExtensions = @(
-    '.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv',
-    '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts',
-    '.m2ts', '.ogv', '.vob'
 )
 
 # Find video files in current directory
