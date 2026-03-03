@@ -149,67 +149,13 @@ function Resolve-OutputFileOverwrite {
     }
 }
 
-# ============================================================================
-# MAIN MENU
-# ============================================================================
 
-ConsoleWindowMaximizer
 
-while ($true) {
-    # Check FFmpeg existence at startup
-    if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
-        Write-Host ""
-        Write-Host "WARNING: FFmpeg not found." -ForegroundColor Yellow
-        Write-Host "Please run option [4] to install FFmpeg first." -ForegroundColor Yellow
-        Write-Host ""
-    }
-    
-    Write-Host ""
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host ""
-    Write-Host "[0] Video Trimmer (Length)" -ForegroundColor Yellow
-    Write-Host "[1] Video Cropper (Dimensions)" -ForegroundColor Yellow
-    Write-Host "[2] Video to GIF Converter" -ForegroundColor Yellow
-    Write-Host "[3] Video Aspect Ratio Resizer" -ForegroundColor Yellow
-    Write-Host "[4] FFmpeg Manager (Install/Uninstall)" -ForegroundColor Yellow
-    Write-Host "[5] Exit" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
-    Write-Host ""
-    
-    $toolChoice = Read-Host -Prompt "`n`nSelect a workflow (0-5)"
-    
-    switch ($toolChoice) {
-        "0" {
-            Invoke-VideoTrimmer
-        }
-        "1" {
-            Invoke-VideoCropper
-        }
-        "2" {
-            Invoke-VideoToGifConverter
-        }
-        "3" {
-            Invoke-VideoAspectRatioResizer
-        }
-        "4" {
-            Invoke-FFmpegManager
-        }
-        "5" {
-            Write-Host ""
-            Write-Host "Exiting FFmpeg AIO Script..." -ForegroundColor Green
-            Write-Host ""
-            exit 0
-        }
-        default {
-            Write-Host ""
-            Write-Host "Invalid selection. Please enter a number between 0 and 5." -ForegroundColor Red
-            Write-Host ""
-        }
-    }
-}
+
+
+
+
+
 
 # ============================================================================
 # TOOL: FFmpeg Manager (Install/Uninstall)
@@ -792,6 +738,8 @@ function Invoke-VideoToGifConverter {
     Wait-ForUser
 }
 
+
+
 # ============================================================================
 # TOOL: Video Aspect Ratio Resizer
 # ============================================================================
@@ -954,3 +902,69 @@ function Invoke-VideoAspectRatioResizer {
     
     Wait-ForUser
 }
+
+
+
+# ============================================================================
+# MAIN MENU
+# ============================================================================
+
+ConsoleWindowMaximizer
+
+while ($true) {
+    # Check FFmpeg existence at startup
+    if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
+        Write-Host ""
+        Write-Host "WARNING: FFmpeg not found." -ForegroundColor Yellow
+        Write-Host "Please run option [4] to install FFmpeg first." -ForegroundColor Yellow
+        Write-Host ""
+    }
+    
+    Write-Host ""
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host "                  FFmpeg AIO - Main Menu" -ForegroundColor Cyan
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host ""
+    Write-Host "[0] Video Trimmer (Length - Seconds - From Start/End/Both)" -ForegroundColor Yellow
+    Write-Host "[1] Video Cropper (Dimensions - Remove Black Bars/Zoom-in)" -ForegroundColor Yellow
+    Write-Host "[2] Video to GIF Converter (Create web-friendly loops)" -ForegroundColor Yellow
+    Write-Host "[3] Video Aspect Ratio Resizer (Adapt for different screens/Use cases)" -ForegroundColor Yellow
+    Write-Host "[4] FFmpeg Manager (Install/Uninstall)" -ForegroundColor Yellow
+    Write-Host "[5] Exit" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Cyan
+    Write-Host ""
+    
+    $toolChoice = Read-Host -Prompt "`n`nSelect a workflow (0-5)"
+    
+    switch ($toolChoice) {
+        "0" {
+            Invoke-VideoTrimmer
+        }
+        "1" {
+            Invoke-VideoCropper
+        }
+        "2" {
+            Invoke-VideoToGifConverter
+        }
+        "3" {
+            Invoke-VideoAspectRatioResizer
+        }
+        "4" {
+            Invoke-FFmpegManager
+        }
+        "5" {
+            Write-Host ""
+            Write-Host "Exiting FFmpeg AIO Script..." -ForegroundColor Green
+            Write-Host ""
+            exit 0
+        }
+        default {
+            Write-Host ""
+            Write-Host "Invalid selection. Please enter a number between 0 and 5." -ForegroundColor Red
+            Write-Host ""
+        }
+    }
+}
+
+
