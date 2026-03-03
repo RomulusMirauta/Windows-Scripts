@@ -286,7 +286,7 @@ Write-Host "`nVIDEO INFORMATION:" -ForegroundColor Yellow
 Write-Host "  Resolution: " -ForegroundColor White -NoNewline
 $resolutionOptions = @("3840x2160", "2560x1440", "1920x1080", "1280x720", "854x480", "640x360")
 $resolutionLabels = @("4K", "2K", "1080p", "720p", "480p", "360p")
-$currentRes = "$width`x$height"
+$currentRes = "${width}x${height}"
 $resDisplay = @()
 for ($i = 0; $i -lt $resolutionOptions.Count; $i++) {
     if ($resolutionOptions[$i] -eq $currentRes) {
@@ -450,9 +450,9 @@ foreach ($opt in $depthOptions) {
 }
 $currentIdx = $depthOptions.IndexOf($colorDepth)
 if ($currentIdx -ge 0) {
-    Write-Host $depthDisplay[0] -ForegroundColor Green -NoNewline
+    Write-Host $depthDisplay[$currentIdx] -ForegroundColor Green -NoNewline
     Write-Host " | " -ForegroundColor DarkGray -NoNewline
-    Write-Host ($depthDisplay[1..($depthDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
+    Write-Host (($depthDisplay[0..($currentIdx-1)] + $depthDisplay[($currentIdx+1)..($depthDisplay.Count-1)]) -join " | ") -ForegroundColor DarkGray
 } else {
     Write-Host $colorDepth -ForegroundColor White
 }
