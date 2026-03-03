@@ -469,8 +469,8 @@ Write-Host $bitrateDisplay[0] -ForegroundColor Green -NoNewline
 Write-Host " | " -ForegroundColor DarkGray -NoNewline
 Write-Host ($bitrateDisplay[1..($bitrateDisplay.Count-1)] -join " | ") -ForegroundColor DarkGray
 
-# Pixel Format display (sorted alphabetically)
-$pixOptions = @("rgb24", "rgba", "yuv420p", "yuv422p", "yuv444p", "yuvj420p")
+# Pixel Format display (sorted by visual fidelity/resolution: low → high)
+$pixOptions = @("yuv420p", "yuvj420p", "yuv422p", "yuv444p", "rgb24", "rgba")
 $pixDisplay = @()
 foreach ($opt in $pixOptions) {
     if ($pixFormat -eq $opt) {
