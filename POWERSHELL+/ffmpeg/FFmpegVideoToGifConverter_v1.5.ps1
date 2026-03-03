@@ -5,6 +5,9 @@ function Wait-ForUser {
     Read-Host -Prompt $Message | Out-Null
 }
 
+
+
+# Helper function to calculate greatest common divisor (GCD) for aspect ratio simplification
 function Get-Gcd {
     param(
         [int]$a,
@@ -17,6 +20,127 @@ function Get-Gcd {
     }
     return [math]::Abs($a)
 }
+
+
+# Replace or remove characters that are invalid in Windows filenames
+function SanitizeFileName {
+    param(
+        [string]$Name
+    )
+    if (-not $Name) { return $Name }
+    # replace forbidden characters with hyphen, collapse whitespace to single underscore
+    $out = $Name -replace '[:\\/\?\*"<>\|]', '-'
+    $out = $out -replace '\s+', '_'
+    return $out
+}
+
+
+# Helper function to maximize console window or expand it to available size
+function ConsoleWindowMaximizer {
+    # Check if we should relaunch in a new maximized window
+    $scriptPath = $PSCommandPath
+    
+    # Only relaunch if running via context menu (detected by checking if launched from explorer context)
+    # and if this is the first invocation (use environment variable to track)
+    if (-not $env:FFmpeg_Maximized -and $scriptPath) {
+        try {
+            # Set environment variable to prevent infinite loops
+            $env:FFmpeg_Maximized = $true
+            
+            # Relaunch script in a new maximized PowerShell window
+            $processArgs = @{
+                FilePath = "powershell.exe"
+                ArgumentList = @(
+                    "-NoProfile",
+                    "-ExecutionPolicy", "Bypass",
+                    "-File", "`"$scriptPath`""
+                )
+                WindowStyle = "Maximized"
+            }
+            
+            Start-Process @processArgs
+            exit
+        } catch {
+            # If relaunch fails, continue with current window
+        }
+    }
+    
+    # If already in maximized window or relaunch failed, just try to expand current window
+    try {
+        $pshost = Get-Host
+        $pswindow = $pshost.UI.RawUI
+        
+        # Try to set to max available size
+        $maxWidth = $pswindow.MaxWindowSize.Width
+        $maxHeight = $pswindow.MaxWindowSize.Height
+        
+        if ($maxWidth -gt 80 -and $maxHeight -gt 24) {
+            $pswindow.BufferSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+            $pswindow.WindowSize = New-Object System.Management.Automation.Host.Size($maxWidth, $maxHeight)
+        }
+    } catch { }
+}
+
+
+# Resize/maximize console window
+ConsoleWindowMaximizer
+
+
+# Helper function to safely build alternatives array
+function Get-AlternativesFromArray {
+    param([array]$DisplayArray, [int]$CurrentIndex)
+    
+    $alternatives = @()
+    for ($i = 0; $i -lt $DisplayArray.Count; $i++) {
+        if ($i -ne $CurrentIndex) {
+            $alternatives += $DisplayArray[$i]
+        }
+    }
+    return $alternatives
+}
+
+
+# Helper function to display parameter with current value and alternatives
+function Show-ParameterOptions {
+    param(
+        [string]$ParameterName,
+        [array]$OptionsArray,
+        [array]$DisplayArray,
+        [int]$CurrentIndex
+    )
+    
+    Write-Host "  $ParameterName`: " -ForegroundColor White -NoNewline
+    if ($CurrentIndex -ge 0) {
+        Write-Host $DisplayArray[$CurrentIndex] -ForegroundColor Green -NoNewline
+        if ($DisplayArray.Count -gt 1) {
+            Write-Host " | " -ForegroundColor DarkGray -NoNewline
+            $alternatives = Get-AlternativesFromArray $DisplayArray $CurrentIndex
+            Write-Host ($alternatives -join " | ") -ForegroundColor DarkGray
+        } else {
+            Write-Host "`n"
+        }
+    } else {
+        Write-Host $DisplayArray[0] -ForegroundColor White
+    }
+}
+
+
+# Helper to run FFmpeg with an argument array and show the full command for debugging
+function Invoke-FFmpeg {
+    param(
+        [string[]]$FfmpegArgs
+    )
+    $cmdLine = 'FFmpeg ' + ($FfmpegArgs -join ' ')
+    Write-Host "Executing: $cmdLine" -ForegroundColor DarkGray
+    & FFmpeg @FfmpegArgs
+    return $LASTEXITCODE
+}
+
+
+
+
+
+
 
 Write-Host "Video to GIF conversion script, by @echo off" -ForegroundColor Gray
 Write-Host ""
