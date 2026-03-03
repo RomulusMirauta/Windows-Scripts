@@ -194,12 +194,12 @@ Write-Host ""
 $crops = @{
     '0' = @{ 
         Label='Centered Crop 640x480'; 
-        Desc='Fixed 640x480';
+        Desc='Fixed output';
         Width=640; Height=480; X='(iw-640)/2'; Y='(ih-480)/2'
     }
     '1' = @{ 
-        Label='Square (Middle)'; 
-        Desc='Square crop (uses smallest dimension)';
+        Label='Centered Square Crop'; 
+        Desc='Variable output, uses smallest dimension';
         Width='ih'; Height='ih'; X='(iw-ih)/2'; Y='0'
     }
     '2' = @{ 
