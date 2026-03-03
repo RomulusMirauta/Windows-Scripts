@@ -193,14 +193,14 @@ Write-Host ""
 # ============================================================================
 $crops = @{
     '0' = @{ 
+        Label='AUTO-CROPPER - Centered'; 
+        Desc='Variable output, uses smallest dimension';
+        Width='ih'; Height='ih'; X='(iw-ih)/2'; Y='0'
+    }
+    '1' = @{ 
         Label='Centered Crop 640x480'; 
         Desc='Fixed output';
         Width=640; Height=480; X='(iw-640)/2'; Y='(ih-480)/2'
-    }
-    '1' = @{ 
-        Label='AUTO-CROPPER - Centered Crop'; 
-        Desc='Variable output, uses smallest dimension';
-        Width='ih'; Height='ih'; X='(iw-ih)/2'; Y='0'
     }
     '2' = @{ 
         Label='Remove 100px Borders'; 
