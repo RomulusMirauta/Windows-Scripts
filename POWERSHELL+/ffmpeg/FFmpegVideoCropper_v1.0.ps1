@@ -27,6 +27,88 @@ function Get-Gcd {
     return [math]::Abs($a)
 }
 
+# ============================================================================
+# PREPARE OUTPUT AND EXECUTE
+# ============================================================================
+$outputDir = Join-Path -Path $inputFile.DirectoryName -ChildPath ("$($inputFile.BaseName)_VideoCropper")
+if (-not (Test-Path -Path $outputDir)) { 
+    New-Item -Path $outputDir -ItemType Directory | Out-Null 
+}
+
+$label = if ($useAutoDetect) { "auto-detect" } else { SanitizeFileName -Name $selectedCrop.Label }
+$filename = "$($inputFile.BaseName)_cropped_$label$($inputFile.Extension)"
+$output = Join-Path -Path $outputDir -ChildPath $filename
+
+# Display file information
+Write-Host "FILE INFORMATION:" -ForegroundColor Cyan
+Write-Host "Input File: $($inputFile.FullName)" -ForegroundColor White
+
+# Get video information
+$videoInfo = ffprobe -v error -select_streams v:0 -show_entries stream=width,height,codec_name,bit_rate -of default=noprint_wrappers=1:nokey=1 "$inputPath"
+$videoInfoArray = $videoInfo -split "`n"
+Write-Host "VIDEO INFORMATION:" -ForegroundColor Cyan
+Write-Host "Width: $($videoInfoArray[0])" -ForegroundColor White
+Write-Host "Height: $($videoInfoArray[1])" -ForegroundColor White
+Write-Host "Codec: $($videoInfoArray[2])" -ForegroundColor White
+Write-Host "Bit Rate: $($videoInfoArray[3])" -ForegroundColor White
+
+# Get audio information
+$audioInfo = ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,bit_rate -of default=noprint_wrappers=1:nokey=1 "$inputPath"
+$audioInfoArray = $audioInfo -split "`n"
+Write-Host "AUDIO INFORMATION:" -ForegroundColor Cyan
+Write-Host "Codec: $($audioInfoArray[0])" -ForegroundColor White
+Write-Host "Bit Rate: $($audioInfoArray[1])" -ForegroundColor White
+
+# Handle existing output file
+if (Test-Path -Path $output) {
+    while ($true) {
+        Write-Host "WARNING: Output already exists:`n$output" -ForegroundColor Yellow
+        Write-Host ""
+        $ans = Read-Host -Prompt "Overwrite? (y/n)"
+        if ($ans -match '^[Yy]$') {
+            $overwriteSwitch = '-y'
+            break
+        } elseif ($ans -match '^[Nn]$') {
+            Write-Host ""
+            Write-Host "Operation canceled by user. Exiting script..." -ForegroundColor Yellow
+            Wait-ForUser
+            exit 0
+        } else {
+            Write-Host "Invalid input. Please enter 'y' or 'n'." -ForegroundColor Yellow
+        }
+    }
+} else {
+    $overwriteSwitch = '-n'
+}
+param(
+    [switch]$AutoDetect,
+    [switch]$Preview,
+    [string]$CustomWidth,
+    [string]$CustomHeight,
+    [string]$CustomX,
+    [string]$CustomY
+)
+
+function Wait-ForUser {
+    param(
+        [string]$Message = 'Press Enter to continue'
+    )
+    Read-Host -Prompt $Message | Out-Null
+}
+
+function Get-Gcd {
+    param(
+        [int]$a,
+        [int]$b
+    )
+    while ($b -ne 0) {
+        $t = $b
+        $b = $a % $b
+        $a = $t
+    }
+    return [math]::Abs($a)
+}
+
 # Replace or remove characters that are invalid in Windows filenames
 function SanitizeFileName {
     param(
