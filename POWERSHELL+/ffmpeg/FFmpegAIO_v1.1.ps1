@@ -1398,20 +1398,23 @@ function Invoke-VideoAspectRatioResizer {
     
     # Format selection
     $formats = @{
-        '0' = @{ Label='Vertical 9:16 (Instagram Reels and TikTok****)'; W=9; H=16 }
-        '1' = @{ Label='Portrait 2:3'; W=2; H=3 }
-        '2' = @{ Label='Social 4:5 (Tall format, Instagram Feed)'; W=4; H=5 }
-        '3' = @{ Label='Square 1:1 (Instagram posts)'; W=1; H=1 }
-        '4' = @{ Label='Classic 4:3 (Retro aesthetic)'; W=4; H=3 }
-        '5' = @{ Label='Classic 3:2 (Standard for DSLR and mirrorless photography, inherited from 35mm film)'; W=3; H=2 }
-        '6' = @{ Label='Wide 16:9 (YouTube and streaming sites;  The global standard for HD/4K widescreen used by YouTube, television, and most modern monitors.)'; W=16; H=9 }
-        '7' = @{ Label='Cinema 21:9 (Ultrawide, or 2.35:1/2.39:1, this is used for anamorphic cinematic films to provide a wide, immersive field of view.)'; W=21; H=9 }
+        '0' = @{ Label='Vertical 9:16'; Description='Instagram Reels and TikTok'; W=9; H=16 }
+        '1' = @{ Label='Portrait 2:3'; Description=''; W=2; H=3 }
+        '2' = @{ Label='Social 4:5'; Description='Tall format, Instagram Feed'; W=4; H=5 }
+        '3' = @{ Label='Square 1:1'; Description='Instagram posts'; W=1; H=1 }
+        '4' = @{ Label='Classic 4:3'; Description='Retro aesthetic'; W=4; H=3 }
+        '5' = @{ Label='Classic 3:2'; Description='Standard for DSLR and mirrorless photography, inherited from 35mm film'; W=3; H=2 }
+        '6' = @{ Label='Wide 16:9'; Description='The global standard for HD/4K widescreen used by YouTube, television, and most modern monitors'; W=16; H=9 }
+        '7' = @{ Label='Cinema 21:9'; Description='Ultrawide, or 2.35:1/2.39:1, used for anamorphic cinematic films'; W=21; H=9 }
     }
     
     Write-Host "Select target aspect ratio:" -ForegroundColor Cyan
     foreach ($k in $formats.Keys | Sort-Object) {
         $f = $formats[$k]
-        Write-Host "[$k] $($f.Label)"
+        Write-Host "[$k] $($f.Label)" -ForegroundColor White
+        if ($f.Description) {
+            Write-Host "     $($f.Description)" -ForegroundColor DarkGray
+        }
     }
     
     Write-Host ""
