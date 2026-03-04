@@ -1569,6 +1569,7 @@ while ($true) {
     Write-Host "     General, video and audio information" -ForegroundColor Gray
     Write-Host ""
     Write-Host "[6] Exit" -ForegroundColor Cyan
+    Write-Host "     Close the script window" -ForegroundColor Gray
     Write-Host ""
     Write-Host "════════════════════════════════════════════════════════════════════════" -ForegroundColor DarkCyan
     Write-Host ""
