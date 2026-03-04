@@ -820,7 +820,7 @@ function Invoke-VideoTrimmer {
     
     # Trim method
     Write-Host "Select trim method:" -ForegroundColor Cyan
-    Write-Host "[0] `★ Default ★  Re-encode (frame-accurate, best results)"
+    Write-Host "[0] `Re-encode (frame-accurate, best results) ★ Default ★"
     Write-Host "[1] Fast (stream copy, no re-encoding)"
     Write-Host ""
     
@@ -1029,7 +1029,7 @@ function Invoke-VideoCropper {
     Write-Host "► Video Cropper" -ForegroundColor Cyan
     Write-Host ""
     
-    # Check FFmpeg
+    # Check FFmpeg *** to use code already present in FFmpeg Manager workflow, but simplified here to avoid extra prompts about opening the manager
     if (-not (Get-Command FFmpeg -ErrorAction SilentlyContinue)) {
         Write-Host "ERROR: FFmpeg was not found." -ForegroundColor Red
         $install = Read-Host -Prompt "Install FFmpeg now? (y/n)"
@@ -1047,31 +1047,9 @@ function Invoke-VideoCropper {
         }
     }
     
-    # Find input file
-    $sourceMatches = Get-ChildItem -File -ErrorAction SilentlyContinue | Where-Object {
-        @('.mkv', '.mp4', '.webm', '.mov', '.avi', '.wmv', '.flv', '.mpeg', '.mpg', '.m4v', '.3gp', '.ts', '.m2ts', '.ogv', '.vob', '.jpg', '.jpeg', '.png', '.bmp', '.gif', '.tiff', '.webp') -contains $_.Extension.ToLower()
-    }
-    
-    if (-not $sourceMatches -or $sourceMatches.Count -eq 0) {
-        Write-Host "WARNING: No video files found in the current folder." -ForegroundColor Yellow
-        Write-Host ""
-        Wait-ForUser
-        return
-    }
-    if ($sourceMatches.Count -gt 1) {
-        Write-Host "WARNING: Multiple files found. Using the first one." -ForegroundColor Yellow
-        Write-Host ""
-    }
-    
-    $inputFile = $sourceMatches[0]
-    $inputPath = [string]$inputFile.FullName
-    
-    Write-Host "Input file found: $($inputFile.Name)" -ForegroundColor Cyan
-    Write-Host ""
-    
     # Predefined crops
     $crops = @{
-        '0' = @{ Label='AUTO - Centered'; Width='ih'; Height='ih'; X='(iw-ih)/2'; Y='0' }
+        '0' = @{ Label='AUTO - Centered ★ Default ★'; Width='ih'; Height='ih'; X='(iw-ih)/2'; Y='0' }
         '1' = @{ Label='Centered 640x480'; Width=640; Height=480; X='(iw-640)/2'; Y='(ih-480)/2' }
         '2' = @{ Label='Wide 16:9'; Width='iw'; Height='iw*9/16'; X='0'; Y='(ih-ih*9/16)/2' }
         '3' = @{ Label='Vertical 9:16'; Width='ih*9/16'; Height='ih'; X='(iw-iw*9/16)/2'; Y='0' }
@@ -1091,7 +1069,7 @@ function Invoke-VideoCropper {
     Write-Host ""
     $cropChoice = $null
     while (-not $cropChoice) {
-        Write-Host "Enter crop choice (0-8). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter crop choice (0-8) or press Enter for Default. Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
         
         # Check if Escape key was pressed (VirtualKeyCode 27)
@@ -1108,7 +1086,7 @@ function Invoke-VideoCropper {
         if ($choice -in $crops.Keys) {
             $cropChoice = $choice
         } else {
-            Write-Host "Invalid input. Please enter a number between 0 and 8. Press Escape to cancel workflow. " -ForegroundColor Yellow
+            Write-Host "`nInvalid input. Please enter a number between 0 and 8, or press one of the instructed keys." -ForegroundColor Yellow
         }
     }
     
