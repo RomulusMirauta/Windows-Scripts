@@ -1112,7 +1112,7 @@ function Invoke-VideoCropper {
     
     # Codec selection
     Write-Host "Select output codec:" -ForegroundColor Cyan
-    Write-Host "[0] H.264 (libx264)"
+    Write-Host "[0] H.264 (libx264) ★ Default ★"
     Write-Host "[1] H.265 (libx265)"
     Write-Host "[2] VP9 (libvpx-vp9)"
     Write-Host "[3] Copy (no re-encoding)"
@@ -1120,7 +1120,7 @@ function Invoke-VideoCropper {
     
     $codecChoice = $null
     while (-not $codecChoice) {
-        Write-Host "Enter choice (0-3). Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
+        Write-Host "Enter choice (0-3) or press Enter for Default. Press Escape to cancel workflow: " -NoNewline -ForegroundColor Gray
         $key = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
         
         # Check if Escape key was pressed (VirtualKeyCode 27)
